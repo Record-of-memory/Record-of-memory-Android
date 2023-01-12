@@ -1,17 +1,12 @@
 package com.recordOfMemory.src.main.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
-import com.recordOfMemory.databinding.FragmentHomeBinding
-import com.recordOfMemory.src.main.home.models.PostSignUpRequest
-import com.recordOfMemory.src.main.home.models.SignUpResponse
-import com.recordOfMemory.src.main.home.models.UserResponse
 
-class HomeFragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2){
+class HomeFragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2_empty){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

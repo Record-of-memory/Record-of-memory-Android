@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+    <ImageView
+        android:id="@+id/item_diary2_grid_tv_img"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/diary2_box_item_grid_img"/>
+    <TextView
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:id="@+id/item_diary2_grid_name"
+        android:textSize="11sp"
+        android:fontFamily="@font/noto_sans_regular"
+        android:textColor="@color/black"
+        android:text="이름 자리"
+        android:includeFontPadding="false"/>
+</LinearLayout>
