@@ -6,38 +6,10 @@
     <solid android:color="#FFFFFF" />
 <!--    테두리 색-->
     <stroke android:color="#27544C"
-        android:width="2dp"/>
+        android:width="1dp"/>
     <corners android:bottomRightRadius="10dp"
         android:bottomLeftRadius="10dp"
         android:topLeftRadius="10dp"
         android:topRightRadius="0dp" />
 </shape>
-<!--<vector-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:aapt="http://schemas.android.com/aapt"-->
-<!--    android:width="106dp"-->
-<!--    android:height="95dp"-->
-<!--    android:viewportWidth="106"-->
-<!--    android:viewportHeight="95"-->
-<!--    >-->
 
-<!--    <group>-->
-
-<!--        <clip-path-->
-<!--            android:pathData="M10 0H96C101.523 0 106 4.47715 106 10V85C106 90.5228 101.523 95 96 95H10C4.47715 95 0 90.5228 0 85V10C0 4.47715 4.47715 0 10 0Z"-->
-<!--            />-->
-
-<!--        <path-->
-<!--            android:pathData="M0 0V95H106V0"-->
-<!--            android:fillColor="#FFFFFF"-->
-<!--            />-->
-
-<!--        <path-->
-<!--            android:pathData="M10 0H96C101.523 0 106 4.47715 106 10V85C106 90.5228 101.523 95 96 95H10C4.47715 95 0 90.5228 0 85V10C0 4.47715 4.47715 0 10 0Z"-->
-<!--            android:strokeWidth="2"-->
-<!--            android:strokeColor="#27544C"-->
-<!--            />-->
-
-<!--    </group>-->
-
-<!--</vector>-->
