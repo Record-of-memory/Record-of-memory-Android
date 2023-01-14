@@ -36,5 +36,6 @@
     <!-- MyPage -->
     <string name="my_page_tv_counter">%1d 번 눌렀습니다.</string>
     <string name="my_page_btn_counting_number">숫자 세기</string>
+    <string name="my_page_btn_logout"><u>로그아웃</u></string>
 
 </resources>
