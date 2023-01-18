@@ -22,38 +22,20 @@
 
 
     <TextView
-        android:id="@+id/daybook_btn_cancel"
+        android:id="@+id/daybook_btn_ok"
         android:layout_width="55dp"
         android:layout_height="30dp"
         android:background="@drawable/box_custom_dialog_gray_button"
         android:fontFamily="@font/noto_sans_regular"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="취소하기"
+        android:text="확인"
         android:textColor="@color/black"
         android:textSize="12sp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/daybook_btn_delete"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/daybook_dialog_title" />
 
-    <!--       foreground ~ : 클릭했을 때 효과를 준다-->
-    <TextView
-        android:id="@+id/daybook_btn_delete"
-        android:layout_width="55dp"
-        android:layout_height="30dp"
-        android:background="@drawable/box_custom_dialog_red_button"
-        android:fontFamily="@font/noto_sans_regular"
-        android:foreground="?attr/selectableItemBackground"
-        android:gravity="center"
-        android:text="삭제하기"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/daybook_btn_cancel"
-        app:layout_constraintTop_toBottomOf="@id/daybook_dialog_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
