@@ -37,4 +37,9 @@
     <string name="my_page_tv_counter">%1d 번 눌렀습니다.</string>
     <string name="my_page_btn_counting_number">숫자 세기</string>
 
+    <!-- Diary -->
+    <string name="diary_tv_title">나나님의 기억을 기록할 다이어리를 골라보세요!</string>
+    <string name="diary_btn_together">함께 쓰는</string>
+    <string name="diary_btn_alone">혼자 쓰는</string>
+    <string name="diary_tv_none">아직 다이어리가 없어요.      첫 다이어리를 만들어보세요!</string>
 </resources>
