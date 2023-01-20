@@ -74,7 +74,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-
     <Button
         android:id="@+id/icon_diary_add"
         android:layout_width="56dp"
