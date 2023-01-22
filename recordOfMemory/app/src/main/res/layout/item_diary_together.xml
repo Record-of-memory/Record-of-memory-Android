@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
     android:orientation="vertical">
 
 
@@ -11,14 +12,12 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icn_diary_item" />
+        app:srcCompat="@drawable/icn_diary" />
 
     <TextView
-        android:id="@+id/some_id"
+        android:id="@+id/tv_item_name"
         android:layout_width="53dp"
         android:layout_height="44dp"
         android:layout_alignParentLeft="true"
@@ -27,6 +26,7 @@
         android:fontFamily="@font/noto_sans_semi_bold"
         android:gravity="center_horizontal|center_vertical"
         android:text="나의 첫 다이어리"
+        android:textSize="14dp"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textFontWeight="600"

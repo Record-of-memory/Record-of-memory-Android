@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
     android:paddingTop="32dp">
 
 
@@ -34,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/diary_btn_alone"
         android:layout_width="60dp"
         android:layout_height="20dp"
@@ -42,15 +43,16 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="84dp"
         android:layout_marginTop="129dp"
-        android:background="@drawable/diary_btn_background"
-        android:textColor="@drawable/diary_btn_color"
+        android:background="@drawable/selector_btn"
         android:fontFamily="@font/noto_sans"
+        android:textColor="@drawable/diary_btn_color"
         android:gravity="center_horizontal|center_vertical"
         android:text="@string/diary_btn_alone"
+        android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/diary_btn_together"
         android:layout_width="60dp"
         android:layout_height="20dp"
@@ -58,23 +60,34 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="129dp"
-        android:background="@drawable/diary_btn_background"
+        android:background="@drawable/selector_btn"
+        android:textSize="15dp"
         android:textColor="@drawable/diary_btn_color"
         android:text="@string/diary_btn_together"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/diary_rv"
+    <GridLayout
+        android:id="@+id/diary_gl"
         android:layout_width="360dp"
-        android:layout_height="500dp"
+        android:layout_height="410dp"
         android:layout_marginBottom="38dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/diary_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_diary_together"
+            android:layout_marginBottom="38dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </GridLayout>
 
-    <Button
+    <android.widget.Button
         android:id="@+id/icon_diary_add"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -83,9 +96,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/icn_diary_plus"
         android:layout_marginBottom="116dp"
         android:elevation="5dp"
-        android:background="@drawable/icn_diary_plus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

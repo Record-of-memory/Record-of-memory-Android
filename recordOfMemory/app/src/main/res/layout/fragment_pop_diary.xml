@@ -1,70 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="260dp"
     android:layout_height="260dp"
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
-    android:background="#00000000"
     android:layout_gravity="center"
-
+    android:background="@color/white"
     android:orientation="vertical">
 
+    <android.widget.Button
+        android:id="@+id/pop_btn_close"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="230dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="231dp"
+        android:background="@drawable/diary_btn_close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-        android:id="@+id/some_id"
-        android:layout_width="match_parent"
+        android:id="@+id/pop_tv"
+        android:layout_width="178dp"
         android:layout_height="27dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="54dp"
         android:fontFamily="@font/noto_sans"
         android:gravity="center_horizontal|center_vertical"
         android:lineHeight="27.24px"
-        android:layout_marginTop="39dp"
         android:text="새 다이어리 만들기"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textFontWeight="600"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/pop_tv_name"
         android:layout_width="87dp"
-        android:layout_height="20dp"
+        android:layout_height="0dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="85dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="87dp"
+        android:layout_marginEnd="88dp"
+        android:fontFamily="@font/noto_sans"
         android:gravity="center_horizontal|center_vertical"
         android:lineHeight="20.43px"
         android:text="다이어리 이름"
-        android:fontFamily="@font/noto_sans"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textFontWeight="600"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/pop_et_name"
         android:layout_width="151dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="142dp"
+        android:layout_marginEnd="79dp"
+        android:layout_marginBottom="98dp"
         android:ems="10"
-        android:layout_marginLeft="55dp"
-        android:layout_marginTop="30dp"
-        android:inputType="textPersonName"
         android:fontFamily="@font/noto_sans"
+        android:inputType="textPersonName"
+        android:text="나의 첫 다이어리"
+        android:textAlignment="center"
         android:textFontWeight="400"
         android:textSize="15dp"
-        android:text="나의 첫 다이어리"
-        android:textAlignment="center" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/rectangle_7"
+    <android.widget.Button
+        android:id="@+id/pop_btn_confirm"
         android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="98dp"
+        android:layout_marginStart="98dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="102dp"
         android:layout_marginBottom="43dp"
         android:background="@drawable/backgorund_diary_button"
-        android:text="확인" />
+        android:text="확인"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
