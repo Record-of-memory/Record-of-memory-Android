@@ -141,7 +141,7 @@
             android:background="@drawable/mypage_person_background"
             android:padding="15dp"
             android:src="@drawable/icn_person"
-            android:foreground="?attr/selectableItemBackground"
+            android:clickable="false"
             />
     </FrameLayout>
 

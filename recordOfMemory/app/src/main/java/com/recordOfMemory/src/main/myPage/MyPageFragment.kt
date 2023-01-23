@@ -18,7 +18,7 @@ class MyPageFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding.mypageEditBtn.setOnClickListener {
-            (context as MainActivity).supportFragmentManager.beginTransaction()
+            requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, MyPageEditFragment())
                 .commitAllowingStateLoss()
         }

@@ -2,6 +2,7 @@ package com.recordOfMemory.src.main.myPage
 
 import android.app.Dialog
 import android.os.Bundle
+
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -17,13 +18,13 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.mypageEditBack.setOnClickListener { //뒤로가기 - 다른 방법이 있는지 확인할 것
-			(context as MainActivity).supportFragmentManager.beginTransaction()
+			requireActivity().supportFragmentManager.beginTransaction()
 				.replace(R.id.main_frm, MyPageFragment())
 				.commitAllowingStateLoss()
 		}
 
 		binding.mypageEditChangePassword.setOnClickListener { //비밀번호 변경
-			(context as MainActivity).supportFragmentManager.beginTransaction()
+			requireActivity().supportFragmentManager.beginTransaction()
 				.replace(R.id.main_frm, MyPageEditPasswordFragment())
 				.commitAllowingStateLoss()
 		}
@@ -40,11 +41,13 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
 			// 이름과 이미지 저장하기
 			checkName()
-
+			
+			//context?.hideKeyboard(view) //넘어가기 전에 키보드 내리기
 			(context as MainActivity).supportFragmentManager.beginTransaction()
 				.replace(R.id.main_frm, MyPageFragment())
 				.commitAllowingStateLoss()
 		}
+
 
 	}
 
