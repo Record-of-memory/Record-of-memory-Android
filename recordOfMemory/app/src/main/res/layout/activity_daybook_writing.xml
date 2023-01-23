@@ -100,41 +100,53 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <EditText
+                    android:id="@+id/daybook_writing_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="190dp"
+                    android:hint="기록하고 싶은 오늘의 기록은 어떤 기록인가요?\n자유롭게 작성해주세요 :)"
+                    android:textSize="11sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/noto_sans_regular"
+                    android:background="@null"
+                    android:paddingTop="45dp"
+                    android:gravity="top"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/daybook_writing_title">
+                    app:layout_constraintTop_toBottomOf="@id/daybook_writing_title"/>
 
-                    <EditText
-                        android:id="@+id/daybook_writing_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="기록하고 싶은 오늘의 기록은 어떤 기록인가요?\n자유롭게 작성해주세요 :)"
-                        android:textSize="11sp"
-                        android:textColor="@color/black"
-                        android:fontFamily="@font/noto_sans_regular"
-                        android:background="@null"
-                        android:paddingTop="45dp"
-                        android:gravity="top"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                <FrameLayout
+                    android:id="@+id/daybook_writing_fr"
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/daybook_writing_daybook">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/daybook_writing_image_cardview"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        app:cardCornerRadius="10dp"
+                        android:background="@drawable/box_custom_dialog"
+                        android:layout_gravity="bottom|left">
+
+                        <ImageView
+                            android:id="@+id/daybook_writing_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ex_img"
+                            />
+                    </androidx.cardview.widget.CardView>
 
                     <ImageView
-                        android:id="@+id/daybook_writing_image"
-                        android:layout_width="match_parent"
+                        android:id="@+id/daybook_writing_delete_btn"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        android:adjustViewBounds="true"
-                        android:maxHeight="280dp"
-                        android:scaleType="centerCrop"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/daybook_writing_content"
-                        />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_gravity="top|right"
+                        android:src="@drawable/icn_btn_x_with_border" />
+<!--                    TODO: 이 부분 왜 버튼이 밑으로 가는지 체크하기 -->
+
+                </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
