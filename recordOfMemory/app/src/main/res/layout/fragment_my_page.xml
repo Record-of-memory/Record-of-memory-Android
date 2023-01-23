@@ -7,6 +7,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:paddingHorizontal="24dp"
+    android:clickable="true"
     tools:context="com.recordOfMemory.src.main.myPage.MyPageFragment">
 
     <TextView
@@ -26,15 +27,16 @@
         android:id="@+id/mypage_edit_btn"
         android:layout_width="36dp"
         android:layout_height="24dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/mypage_button"
         android:fontFamily="@font/noto_sans_regular"
         android:gravity="center"
         android:text="수정"
         android:textColor="@color/black"
         android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@id/mypage_title"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/mypage_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/mypage_fr"
@@ -138,10 +140,13 @@
             android:layout_gravity="center_horizontal|top"
             android:background="@drawable/mypage_person_background"
             android:padding="15dp"
-            android:src="@drawable/icn_person" />
+            android:src="@drawable/icn_person"
+            android:foreground="?attr/selectableItemBackground"
+            />
     </FrameLayout>
 
     <TextView
+        android:id="@+id/mypage_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
