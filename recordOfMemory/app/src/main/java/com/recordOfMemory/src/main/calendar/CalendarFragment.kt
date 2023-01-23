@@ -5,10 +5,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
-import com.kizitonwose.calendar.core.CalendarDay
-import com.kizitonwose.calendar.core.DayPosition
-import com.kizitonwose.calendar.core.daysOfWeek
-import com.kizitonwose.calendar.core.yearMonth
+import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
@@ -43,8 +40,9 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(100)
         val endMonth = currentMonth.plusMonths(100)
-        //setupMonthCalendar(startMonth, endMonth, currentMonth, daysOfWeek)
-        setupMonthCalendar(startMonth, currentMonth, currentMonth, daysOfWeek) //다음 달로 스크롤 못 하게
+        setupMonthCalendar(startMonth, endMonth, currentMonth, daysOfWeek) //다음달로 스크롤 가능
+
+        setMonthChangeBtn()
     }
 
     private fun setupMonthCalendar(
@@ -60,7 +58,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
 
             init {
                 view.setOnClickListener {
-                    if (day.date < today && day.position == DayPosition.MonthDate) { //오늘 이후의 날은 선택 불가
+                    if (day.position == DayPosition.MonthDate) {
                         dateClicked(date = day.date)
                     }
                 }
@@ -75,7 +73,6 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         }
         monthCalendarView.monthScrollListener = {
             updateTitle()
-            updateMonthVisibility()
         }
         monthCalendarView.setup(startMonth, endMonth, daysOfWeek.first())
         monthCalendarView.scrollToMonth(currentMonth)
@@ -92,10 +89,6 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
                 today == date -> {  //오늘
                     textView.setTextColorRes(R.color.colorPrimary)
                     textView.setBackgroundResource(R.drawable.calendar_today_bg)
-                }
-                today < date ->{ //오늘 이후의 날은 선택 불가
-                    textView.setTextColorRes(R.color.brownGray)
-                    textView.background = null
                 }
                 else -> { //그 이외의 선택 가능한 날
                     textView.setTextColorRes(R.color.black)
@@ -128,15 +121,19 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         binding.calendarYearMonth.text = "$yearText $monthText"
     }
 
-    private fun updateMonthVisibility(){
-        val month = monthCalendarView.findFirstVisibleMonth()?.yearMonth ?: return
-        val todayMonth=today.yearMonth
+    private fun setMonthChangeBtn(){
+        binding.calendarDotPastMonth.setOnClickListener {
+            binding.calendarDays.findFirstVisibleMonth()?.let{
+                binding.calendarDays.smoothScrollToMonth(it.yearMonth.previousMonth)
+            }
+        }
 
-        if(month == todayMonth){
-            binding.calendarDotPreviousMonth.visibility=View.INVISIBLE
-        }else{
-            binding.calendarDotPreviousMonth.visibility=View.VISIBLE
+        binding.calendarDotNextMonth.setOnClickListener {
+            binding.calendarDays.findFirstVisibleMonth()?.let{
+                binding.calendarDays.smoothScrollToMonth(it.yearMonth.nextMonth)
+            }
         }
     }
+
 
 }
