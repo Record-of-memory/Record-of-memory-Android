@@ -1,8 +1,11 @@
 package com.recordOfMemory.src.main.myPage
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
 import com.recordOfMemory.R
@@ -31,6 +34,7 @@ class MyPageFragment :
     private fun logoutDialogFunction(){
         val logoutDialog = Dialog(requireContext())
         logoutDialog.setContentView(R.layout.dialog_custom)
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         logoutDialog.findViewById<TextView>(R.id.dialog1_title).text = "로그아웃하시겠어요?"
 

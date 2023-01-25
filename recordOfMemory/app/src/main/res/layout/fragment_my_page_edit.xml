@@ -107,15 +107,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/mypage_edit_person_img"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal|top"
             android:background="@drawable/mypage_person_background"
-            android:padding="15dp"
-            android:clickable="false"
-            android:src="@drawable/icn_person" />
+            android:src="@drawable/icn_person"
+            />
 
         <ImageView
             android:id="@+id/mypage_edit_image_btn"

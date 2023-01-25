@@ -79,4 +79,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
     implementation 'com.kizitonwose.calendar:view:2.1.1'
     implementation 'com.kizitonwose.calendar:compose:2.1.1'
+
+    //동그란 이미지
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
