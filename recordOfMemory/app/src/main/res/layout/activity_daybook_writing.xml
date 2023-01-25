@@ -2,8 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.recordOfMemory.src.daybook.DaybookActivity"
+    >
 
     <ImageView
         android:id="@+id/daybook_writing_iv_back"
@@ -12,6 +15,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:src="@drawable/icn_back"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="나의 첫 다이어리" />
+        android:text="나의 첫 다이어리" />
 
     <TextView
         android:id="@+id/daybook_writing_iv_more"
@@ -40,6 +44,7 @@
         android:text="완료"
         android:textColor="@color/black"
         android:textSize="11sp"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,7 +60,7 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/daybook_writing_diary_title"
-        tools:text="2022.11.24. (목)" />
+        android:text="2022.11.24. (목)" />
 
     <ImageView
         android:id="@+id/daybook_writing_click_heart_icon"
@@ -63,6 +68,7 @@
         android:layout_height="24dp"
         android:layout_marginEnd="40dp"
         android:src="@drawable/icn_calendar_selected"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="@id/daybook_writing_write_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/daybook_writing_write_time" />
@@ -123,16 +129,16 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/daybook_writing_image_cardview"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         app:cardCornerRadius="10dp"
                         android:background="@drawable/box_custom_dialog"
                         android:layout_gravity="bottom|left">
 
                         <ImageView
                             android:id="@+id/daybook_writing_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ex_img"
                             />
@@ -143,6 +149,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|right"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         android:src="@drawable/icn_btn_x_with_border" />
 <!--                    TODO: 이 부분 왜 버튼이 밑으로 가는지 체크하기 -->
 
@@ -156,6 +164,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icn_album"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/daybook_writing_scrollView"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="36dp"
