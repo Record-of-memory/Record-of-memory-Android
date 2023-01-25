@@ -67,25 +67,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <GridLayout
-        android:id="@+id/diary_gl"
-        android:layout_width="360dp"
-        android:layout_height="410dp"
-        android:layout_marginBottom="38dp"
+    <FrameLayout
+        android:id="@+id/diary_fr"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/diary_rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_diary_together"
-            android:layout_marginBottom="38dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </GridLayout>
+    </FrameLayout>
 
     <android.widget.Button
         android:id="@+id/icon_diary_add"
