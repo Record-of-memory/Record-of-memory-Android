@@ -33,7 +33,7 @@
         android:text="나의 첫 다이어리" />
 
     <TextView
-        android:id="@+id/daybook_writing_iv_more"
+        android:id="@+id/daybook_writing_iv_complete"
         android:layout_width="36dp"
         android:layout_height="24dp"
         android:layout_marginTop="32dp"
@@ -63,7 +63,7 @@
         android:text="2022.11.24. (목)" />
 
     <ImageView
-        android:id="@+id/daybook_writing_click_heart_icon"
+        android:id="@+id/daybook_writing_click_calendar_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="40dp"
@@ -124,6 +124,7 @@
                     android:id="@+id/daybook_writing_fr"
                     android:layout_width="67dp"
                     android:layout_height="67dp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="@id/daybook_writing_daybook">
 
