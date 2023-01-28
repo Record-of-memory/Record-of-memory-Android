@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -62,6 +63,7 @@ class DaybookWritingActivity :
 
 		binding.daybookWritingIvBack.setOnClickListener {  // 뒤로가기
 			//뒤로가기 눌렀을 때 경고창을 띄우기?
+			onBackPressed()
 		}
 
 		binding.daybookWritingAlbum.setOnClickListener { //사진 추가
@@ -71,6 +73,33 @@ class DaybookWritingActivity :
 		binding.daybookWritingDeleteBtn.setOnClickListener { //사진 삭제 (그냥 화면에서만 없애자)
 			binding.daybookWritingFr.visibility=View.GONE
 		}
+	}
+
+	override fun onBackPressed() {
+		if(binding.daybookWritingTitle.text.toString().isNotEmpty() || binding.daybookWritingContent.text.toString().isNotEmpty()){
+			backPressedDialogFunction()
+		}else{
+			super.onBackPressed()
+		}
+	}
+
+	private fun backPressedDialogFunction(){
+		val backPressedDialog= Dialog(this)
+		backPressedDialog.setContentView(R.layout.dialog_custom)
+		backPressedDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+		backPressedDialog.findViewById<TextView>(R.id.dialog1_title).text="작성중인 내용이 있습니다.\n취소하고 이전 페이지로\n이동하시겠습니까?"
+		val cancelBtn = backPressedDialog.findViewById<TextView>(R.id.dialog1_btn_cancel)
+		cancelBtn.text="취소하기"
+		cancelBtn.setOnClickListener {
+			backPressedDialog.dismiss()
+		}
+		val outBtn = backPressedDialog.findViewById<TextView>(R.id.dialog1_btn_delete)
+		outBtn.text="나가기"
+		outBtn.setOnClickListener {
+			super.onBackPressed()
+		}
+		backPressedDialog.show()
 	}
 
 	private fun chooseCameraOrAlbumDialogFunction(){
@@ -194,20 +223,25 @@ class DaybookWritingActivity :
 
 	private fun showDialogToGetPermission(requestCode: Int) { // dialog 수정할 것
 		val accessDialog = Dialog(this)
-		accessDialog.setContentView(R.layout.dialog_custom)
+		accessDialog.setContentView(R.layout.dialog_custom4)
 		accessDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-		var titleText = if(requestCode==100){
-			"'우리기억'이 카메라에\n 접근하려 합니다"
+		var titleText=""
+		var subText=""
+		if(requestCode==100){
+			titleText = "'우리기억'이 카메라에\n 접근하려 합니다"
+			subText = "포스트 작성 / 프로필 변경을 위해\n사용자의 카메라에 접근하려 합니다."
 		}else{
-			"'우리기억'이 사용자의\n 사진에 접근하려 합니다"
+			titleText = "'우리기억'이 사용자의\n 사진에 접근하려 합니다"
+			subText="포스트 작성 / 프로필 변경을 위해\n사용자의 앨범에 접근하려 합니다."
 		}
 
-		accessDialog.findViewById<TextView>(R.id.dialog1_title).text=titleText
-		val cancelBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_cancel)
+		accessDialog.findViewById<TextView>(R.id.dialog4_title).text=titleText
+		accessDialog.findViewById<TextView>(R.id.dialog4_subtitle).text=subText
+		val cancelBtn = accessDialog.findViewById<TextView>(R.id.dialog4_btn_cancel)
 		cancelBtn.text="취소"
 		cancelBtn.setOnClickListener { accessDialog.dismiss() }
-		val accessBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_delete)
+		val accessBtn = accessDialog.findViewById<TextView>(R.id.dialog4_btn_access)
 		accessBtn.text="허용"
 		accessBtn.setOnClickListener {
 			val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,

@@ -126,17 +126,22 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		accessDialog.setContentView(R.layout.dialog_custom)
 		accessDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-		var titleText = if(requestCode==100){
-			"'우리기억'이 카메라에\n 접근하려 합니다"
+		var titleText=""
+		var subText=""
+		if(requestCode==100){
+			titleText = "'우리기억'이 카메라에\n 접근하려 합니다"
+			subText = "포스트 작성 / 프로필 변경을 위해\n사용자의 카메라에 접근하려 합니다."
 		}else{
-			"'우리기억'이 사용자의\n 사진에 접근하려 합니다"
+			titleText = "'우리기억'이 사용자의\n 사진에 접근하려 합니다"
+			subText="포스트 작성 / 프로필 변경을 위해\n사용자의 앨범에 접근하려 합니다."
 		}
 
-		accessDialog.findViewById<TextView>(R.id.dialog1_title).text=titleText
-		val cancelBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_cancel)
+		accessDialog.findViewById<TextView>(R.id.dialog4_title).text=titleText
+		accessDialog.findViewById<TextView>(R.id.dialog4_subtitle).text=subText
+		val cancelBtn = accessDialog.findViewById<TextView>(R.id.dialog4_btn_cancel)
 		cancelBtn.text="취소"
 		cancelBtn.setOnClickListener { accessDialog.dismiss() }
-		val accessBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_delete)
+		val accessBtn = accessDialog.findViewById<TextView>(R.id.dialog4_btn_access)
 		accessBtn.text="허용"
 		accessBtn.setOnClickListener {
 			val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
