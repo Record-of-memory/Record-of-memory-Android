@@ -55,16 +55,7 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 
 		binding.mypageEditImageBtn.setOnClickListener {
 			//이미지 수정
-			AlertDialog.Builder(requireActivity())
-				.setTitle("앨범과 카메라 중에 선택하세요")
-				.setPositiveButton("앨범") { _, _ ->
-					checkPermission(STORAGE_PERMISSION, STORAGE_PERMISSION_REQUEST)
-				}
-				.setNegativeButton("카메라") { _, _ ->
-					checkPermission(CAMERA_PERMISSION, CAMERA_PERMISSION_REQUEST)
-				}
-				.create()
-				.show()
+			chooseCameraOrAlbumDialogFunction()
 		}
 
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
@@ -80,13 +71,28 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 
 	}
 
+	private fun chooseCameraOrAlbumDialogFunction(){
+		val chooseCameraOrAlbumDialog = Dialog(requireContext())
+		chooseCameraOrAlbumDialog.setContentView(R.layout.dialog_custom3)
+		chooseCameraOrAlbumDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+		chooseCameraOrAlbumDialog.findViewById<TextView>(R.id.dialog3_btn_camera).setOnClickListener {
+			checkPermission(CAMERA_PERMISSION, CAMERA_PERMISSION_REQUEST)
+			chooseCameraOrAlbumDialog.dismiss()
+		}
+		chooseCameraOrAlbumDialog.findViewById<TextView>(R.id.dialog3_btn_album).setOnClickListener {
+			checkPermission(STORAGE_PERMISSION, STORAGE_PERMISSION_REQUEST)
+			chooseCameraOrAlbumDialog.dismiss()
+		}
+		chooseCameraOrAlbumDialog.show()
+	}
+
 	private val cameraRequestPermissionLauncher = registerForActivityResult(
 		ActivityResultContracts.RequestPermission()
 	) { isGranted ->
 		if (isGranted) {
 			getImageAfterPermission(CAMERA_PERMISSION_REQUEST)
 		} else {
-			showDialogToGetPermission()
+			showDialogToGetPermission(CAMERA_PERMISSION_REQUEST)
 		}
 	}
 
@@ -97,7 +103,7 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		if (isAllGranted) {
 			getImageAfterPermission(STORAGE_PERMISSION_REQUEST)
 		} else {
-			showDialogToGetPermission()
+			showDialogToGetPermission(STORAGE_PERMISSION_REQUEST)
 		}
 	}
 
@@ -115,23 +121,31 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		}
 	}
 
-	private fun showDialogToGetPermission() { // dialog 수정할 것
-		val builder = AlertDialog.Builder(requireActivity())
-		builder.setTitle("Permisisons request")
-			.setMessage("We need the location permission for some reason. " +
-					"You need to move on Settings to grant some permissions")
+	private fun showDialogToGetPermission(requestCode: Int) { // dialog 수정할 것
+		val accessDialog = Dialog(requireContext())
+		accessDialog.setContentView(R.layout.dialog_custom)
+		accessDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-		builder.setPositiveButton("OK") { dialogInterface, i ->
+		var titleText = if(requestCode==100){
+			"'우리기억'이 카메라에\n 접근하려 합니다"
+		}else{
+			"'우리기억'이 사용자의\n 사진에 접근하려 합니다"
+		}
+
+		accessDialog.findViewById<TextView>(R.id.dialog1_title).text=titleText
+		val cancelBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_cancel)
+		cancelBtn.text="취소"
+		cancelBtn.setOnClickListener { accessDialog.dismiss() }
+		val accessBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_delete)
+		accessBtn.text="허용"
+		accessBtn.setOnClickListener {
 			val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
 				Uri.fromParts("package", activity?.packageName, null))
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-			startActivity(intent)   // 6
+			startActivity(intent)
+			accessDialog.dismiss()
 		}
-		builder.setNegativeButton("Later") { dialogInterface, i ->
-			// ignore
-		}
-		val dialog = builder.create()
-		dialog.show()
+		accessDialog.show()
 	}
 
 	private val galleryLauncher: ActivityResultLauncher<Intent> =

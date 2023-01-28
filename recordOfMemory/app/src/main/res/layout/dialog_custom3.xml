@@ -14,48 +14,47 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/noto_sans_semi_bold"
-        android:text="정말 일기를 삭제하시겠어요?"
+        android:text="앨범과 카메라 중에 선택해주세요"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
-        android:id="@+id/dialog1_btn_cancel"
+        android:id="@+id/dialog3_btn_camera"
         android:layout_width="55dp"
         android:layout_height="30dp"
         android:background="@drawable/box_custom_dialog_gray_button"
         android:fontFamily="@font/noto_sans_regular"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="취소하기"
+        android:text="카메라"
         android:textColor="@color/black"
         android:textSize="12sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/dialog1_btn_delete"
+        app:layout_constraintEnd_toStartOf="@id/dialog3_btn_album"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dialog1_title" />
 
     <!--       foreground ~ : 클릭했을 때 효과를 준다-->
     <TextView
-        android:id="@+id/dialog1_btn_delete"
+        android:id="@+id/dialog3_btn_album"
         android:layout_width="55dp"
         android:layout_height="30dp"
-        android:background="@drawable/box_custom_dialog_red_button"
+        android:background="@drawable/box_custom_dialog_gray_button"
         android:fontFamily="@font/noto_sans_regular"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="삭제하기"
+        android:text="앨범"
         android:textColor="@color/black"
         android:textSize="12sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/dialog1_btn_cancel"
+        app:layout_constraintStart_toEndOf="@id/dialog3_btn_camera"
         app:layout_constraintTop_toBottomOf="@id/dialog1_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

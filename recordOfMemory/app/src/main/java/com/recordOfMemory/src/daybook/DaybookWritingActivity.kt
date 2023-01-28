@@ -66,21 +66,26 @@ class DaybookWritingActivity :
 
 		binding.daybookWritingAlbum.setOnClickListener { //사진 추가
 			// 앨범 or 사진 선택 (dialog) 임시
-
-			AlertDialog.Builder(this)
-				.setTitle("앨범과 카메라 중에 선택하세요")
-				.setPositiveButton("앨범") { _, _ ->
-					checkPermission(STORAGE_PERMISSION, STORAGE_PERMISSION_REQUEST)
-				}
-				.setNegativeButton("카메라") { _, _ ->
-					checkPermission(CAMERA_PERMISSION, CAMERA_PERMISSION_REQUEST)
-				}
-				.create()
-				.show()
+			chooseCameraOrAlbumDialogFunction()
 		}
 		binding.daybookWritingDeleteBtn.setOnClickListener { //사진 삭제 (그냥 화면에서만 없애자)
 			binding.daybookWritingFr.visibility=View.GONE
 		}
+	}
+
+	private fun chooseCameraOrAlbumDialogFunction(){
+		val chooseCameraOrAlbumDialog = Dialog(this)
+		chooseCameraOrAlbumDialog.setContentView(R.layout.dialog_custom3)
+		chooseCameraOrAlbumDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+		chooseCameraOrAlbumDialog.findViewById<TextView>(R.id.dialog3_btn_camera).setOnClickListener {
+			checkPermission(CAMERA_PERMISSION, CAMERA_PERMISSION_REQUEST)
+			chooseCameraOrAlbumDialog.dismiss()
+		}
+		chooseCameraOrAlbumDialog.findViewById<TextView>(R.id.dialog3_btn_album).setOnClickListener {
+			checkPermission(STORAGE_PERMISSION, STORAGE_PERMISSION_REQUEST)
+			chooseCameraOrAlbumDialog.dismiss()
+		}
+		chooseCameraOrAlbumDialog.show()
 	}
 
 	private fun changeDate() {
@@ -172,7 +177,7 @@ class DaybookWritingActivity :
 		if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
 			getImageAfterPermission(requestCode)
 		}else{// 거부당했으면 커스텀 dialog를 통해 환경설정가서 하게 하자
-			showDialogToGetPermission()
+			showDialogToGetPermission(requestCode)
 		}
 
 	}
@@ -187,23 +192,31 @@ class DaybookWritingActivity :
 		}
 	}
 
-	private fun showDialogToGetPermission() { // dialog 수정할 것
-		val builder = AlertDialog.Builder(this)
-		builder.setTitle("Permisisons request")
-			.setMessage("We need the location permission for some reason. " +
-					"You need to move on Settings to grant some permissions")
+	private fun showDialogToGetPermission(requestCode: Int) { // dialog 수정할 것
+		val accessDialog = Dialog(this)
+		accessDialog.setContentView(R.layout.dialog_custom)
+		accessDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-		builder.setPositiveButton("OK") { dialogInterface, i ->
+		var titleText = if(requestCode==100){
+			"'우리기억'이 카메라에\n 접근하려 합니다"
+		}else{
+			"'우리기억'이 사용자의\n 사진에 접근하려 합니다"
+		}
+
+		accessDialog.findViewById<TextView>(R.id.dialog1_title).text=titleText
+		val cancelBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_cancel)
+		cancelBtn.text="취소"
+		cancelBtn.setOnClickListener { accessDialog.dismiss() }
+		val accessBtn = accessDialog.findViewById<TextView>(R.id.dialog1_btn_delete)
+		accessBtn.text="허용"
+		accessBtn.setOnClickListener {
 			val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
 				Uri.fromParts("package", packageName, null))
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-			startActivity(intent)   // 6
+			startActivity(intent)
+			accessDialog.dismiss()
 		}
-		builder.setNegativeButton("Later") { dialogInterface, i ->
-			// ignore
-		}
-		val dialog = builder.create()
-		dialog.show()
+		accessDialog.show()
 	}
 
 	override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
