@@ -42,6 +42,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         //메인 레이아웃 보이게 하기
 //        supportFragmentManager.beginTransaction().replace(R.id.main_frm, Diary2Fragment()).commitAllowingStateLoss()
 
+        //메인 레이아웃 보이게 하기
+        supportFragmentManager.beginTransaction().replace(R.id.main_frm, Diary2Fragment()).commitAllowingStateLoss()
+
         binding.mainBtmNav.run {
             setOnItemSelectedListener { item ->
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
