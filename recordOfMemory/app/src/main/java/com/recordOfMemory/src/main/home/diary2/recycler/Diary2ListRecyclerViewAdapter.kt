@@ -7,13 +7,13 @@ import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
-class Diary2ListRecyclerViewAdapter(var items: Diary2Fragment.itemListAdapterToList, itemList: ArrayList<GetDiary2Response>)
+class Diary2ListRecyclerViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<GetDiary2Response>)
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>() {
 //    }, Filterable{
 
     lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder
-    private var unFilteredList = itemList
-    private var filteredList = itemList
+//    private var unFilteredList = itemList
+//    private var filteredList = itemList
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Diary2ListRecyclerViewHolder {
@@ -27,15 +27,15 @@ class Diary2ListRecyclerViewAdapter(var items: Diary2Fragment.itemListAdapterToL
     }
 
     override fun onBindViewHolder(holder: Diary2ListRecyclerViewHolder, position: Int) {
-        holder.bindWithView(filteredList[position])
+        holder.bindWithView(itemList[position])
         holder.itemView.setOnClickListener {
-            val item = filteredList[position]
+            val item = itemList[position]
             items.getItemId(item)
         }
     }
 
     override fun getItemCount(): Int {
-        return filteredList.size
+        return itemList.size
     }
 
 //    override fun getFilter(): Filter {

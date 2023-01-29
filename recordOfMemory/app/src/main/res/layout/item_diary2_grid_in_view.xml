@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<layout xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <data>-->
+<!--        <variable-->
+<!--            name="model"-->
+<!--            type="com.recordOfMemory.src.main.home.diary2.recycler.models.Diary2GridInViewModel" />-->
+<!--    </data>-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <ImageView
+            android:id="@+id/item_diary2_grid_in_iv_img"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/diary2_box_item_grid_img"/>
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:id="@+id/item_diary2_grid_in_tv_title"
+            android:textSize="11sp"
+            android:fontFamily="@font/noto_sans_regular"
+            android:textColor="@color/black"
+            android:text="이름 자리"
+            android:includeFontPadding="false"/>
+    </LinearLayout>
+<!--</layout>-->
