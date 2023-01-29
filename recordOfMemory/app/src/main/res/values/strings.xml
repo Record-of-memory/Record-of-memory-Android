@@ -45,7 +45,7 @@
     <string name="diary2_invite_btn_complete">완료</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_btn_skip">건너뛰기</string>
+    <string name="onboarding_btn_skip"><u>건너뛰기</u></string>
     <string name="onboarding_tv_content">기록하고 싶은 기억이 있으신가요?</string>
     <string name="onboarding_tv_content_s">기록하고 싶은 오늘의 기록은 어떤 기록인가요?\n자유롭게 작성해주세요 :)</string>
     <string name="onboarding_tv_record_title">이 기록의 제목을 정해주세요.</string>

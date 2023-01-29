@@ -7,6 +7,17 @@
     tools:context="com.recordOfMemory.src.main.MainActivity">
 
     <FrameLayout
+        android:id="@+id/onboarding_frm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <FrameLayout
         android:id="@+id/main_frm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
