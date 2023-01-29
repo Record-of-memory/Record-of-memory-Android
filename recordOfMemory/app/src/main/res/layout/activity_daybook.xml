@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/daybook_iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/icn_back"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/daybook_diary_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:fontFamily="@font/noto_sans_semi_bold"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="나의 첫 다이어리" />
+
+    <ImageView
+        android:id="@+id/daybook_iv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/icn_more_vertical"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/daybook_write_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="37dp"
+        android:fontFamily="@font/noto_sans_semi_bold"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/daybook_diary_title"
+        android:text="2022.11.24. (목)  22:00" />
+
+    <ImageView
+        android:id="@+id/daybook_click_heart_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="38dp"
+        android:src="@drawable/icn_heart_selector"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@id/daybook_write_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/daybook_write_time" />
+
+    <ScrollView
+        android:id="@+id/daybook_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="12dp"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintBottom_toTopOf="@id/daybook_write"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/daybook_write_time">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/daybook_daybook_and_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/daybook_daybook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/diary2_box_content"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/daybook_comment_RV">
+
+                <TextView
+                    android:id="@+id/daybook_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/noto_sans_semi_bold"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="핑크뮬리가 예뻤던 날" />
+
+                <ImageView
+                    android:id="@+id/daybook_writer_icon"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/daybook_person_background"
+                    android:src="@drawable/icn_person"
+                    app:layout_constraintBottom_toBottomOf="@id/daybook_writer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/daybook_writer" />
+
+                <TextView
+                    android:id="@+id/daybook_writer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="@font/noto_sans_semi_bold"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    app:layout_constraintStart_toEndOf="@id/daybook_writer_icon"
+                    app:layout_constraintTop_toBottomOf="@id/daybook_title"
+                    android:text="나나" />
+
+                <TextView
+                    android:id="@+id/daybook_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/noto_sans_regular"
+                    android:textColor="@color/black"
+                    android:textSize="11sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/daybook_writer"
+                    android:text="하남 갈 일이 있어서 가족들이랑 하남 갔다가 짱 예쁜 핑크뮬리 보고왔다. 심지어 날씨도 엄청 좋은거야 적당한 햇빛과 적당한 바람까지 완벽한 날씨였다. 생각보다 사람이 많이 없어서 예쁜 사진도 엄청 많이 찍고 왔다. 하남 대표 맛집(?) 존맛탱 칼국수까지 완벽!"
+                     />
+
+                <!--                가로 길이는 일기 내용의 width로 유지, height는 최대 280dp(짧아도 됨)
+                                    비율은 맞게 하되, 넘어가면 자르기-->
+                <ImageView
+                    android:id="@+id/daybook_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="20dp"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="280dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toTopOf="@id/daybook_bottom_icons"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/daybook_content"
+                    android:src="@drawable/ex_img" />
+                <!--                비율 유지 -> 작을경우 확대: fitCenter, 사진 크기 유지 centerInside,
+                클경우 자르고 작으면 키움: centerCrop, 클경우 자르고 작으면 그대로: center-->
+                <!--                테두리 삭제, scaleType은 centerInside로 변경함-->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/daybook_bottom_icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/daybook_image">
+
+                    <ImageView
+                        android:id="@+id/daybook_heart_icon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/icn_heart_filled"
+                        app:layout_constraintBottom_toBottomOf="@id/daybook_heart_number"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/daybook_heart_number" />
+
+                    <TextView
+                        android:id="@+id/daybook_heart_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/noto_sans_regular"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toEndOf="@id/daybook_heart_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/daybook_comment_icon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/icn_comment_filled"
+                        app:layout_constraintBottom_toBottomOf="@id/daybook_comment_number"
+                        app:layout_constraintStart_toEndOf="@id/daybook_heart_number"
+                        app:layout_constraintTop_toTopOf="@id/daybook_comment_number" />
+
+                    <TextView
+                        android:id="@+id/daybook_comment_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/noto_sans_regular"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:textSize="10sp"
+                        app:layout_constraintStart_toEndOf="@id/daybook_comment_icon"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/daybook_comment_RV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/daybook_daybook"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:listitem="@layout/item_comment" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/daybook_write"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="76dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/daybook_write_comment_person_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/daybook_person_background"
+            android:src="@drawable/icn_person" />
+
+        <LinearLayout
+            android:id="@+id/daybook_write_comment_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/daybook_write_comment"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/daybook_write_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="11dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/noto_sans_regular"
+                android:hint="댓글을 입력해주세요"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+
+            <ImageView
+                android:id="@+id/daybook_btn_submit"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/icn_submit_comment" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

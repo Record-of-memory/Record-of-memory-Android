@@ -1,12 +1,18 @@
 package com.recordOfMemory.src.main
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
+import androidx.fragment.app.FragmentManager
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityMainBinding
 import com.recordOfMemory.src.main.calendar.CalendarFragment
-import com.recordOfMemory.src.main.home.HomeFragment
+import com.recordOfMemory.src.main.home.Diary2Fragment
 import com.recordOfMemory.src.main.myPage.MyPageFragment
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment1
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment2
@@ -25,18 +31,25 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         //온보딩 레이아웃 보이게 하기
         val transaction = supportFragmentManager.beginTransaction()
             .replace(binding.onboardingFrm.id, fragment1)
         transaction.commit()
         //메인 레이아웃 보이게 하기
-        supportFragmentManager.beginTransaction().replace(binding.mainFrm.id, HomeFragment()).commitAllowingStateLoss()
+//        supportFragmentManager.beginTransaction().replace(binding.mainFrm.id, HomeFragment()).commitAllowingStateLoss()
+
+        //메인 레이아웃 보이게 하기
+//        supportFragmentManager.beginTransaction().replace(R.id.main_frm, Diary2Fragment()).commitAllowingStateLoss()
+
         binding.mainBtmNav.run {
             setOnItemSelectedListener { item ->
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 when (item.itemId) {
                     R.id.menu_main_btm_nav_home -> {
                         supportFragmentManager.beginTransaction()
-                            .replace(binding.mainFrm.id, HomeFragment())
+                            .replace(binding.mainFrm.id, Diary2Fragment())
+//                            .replace(R.id.main_frm, Diary2Fragment())
                             .commitAllowingStateLoss()
                     }
                     R.id.menu_main_btm_nav_calendar -> {
@@ -80,5 +93,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             binding.mainBtmNav.visibility = View.VISIBLE
             binding.mainFrm.visibility = View.VISIBLE
         }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 }

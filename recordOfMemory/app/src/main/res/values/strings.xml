@@ -34,8 +34,18 @@
     <string name="sign_up_err_tv_password">비밀번호가 다릅니다</string>
     <string name="sign_up_err_tv_email">이메일 형식이 올바르지 않습니다</string>
 
+    <!-- Diary 2 -->
+    <string name="diary2_search_tv_empty">검색 결과가 없어요</string>
+    <string name="diary2_search_et">내용 검색</string>
+    <string name="dialog_diary2_more_invite_member">함께 쓸 멤버 초대하기</string>
+    <string name="dialog_diary2_more_show_member">함께 쓰는 멤버 보기</string>
+    <string name="dialog_diary2_more_exit_diary">다이어리 나가기</string>
+    <string name="diary2_invite_et_input_email">이메일을 입력해주세요</string>
+    <string name="diary2_invite_btn_invite">초대하기</string>
+    <string name="diary2_invite_btn_complete">완료</string>
+
     <!-- Onboarding -->
-    <string name="onboarding_btn_skip">건너뛰기</string>
+    <string name="onboarding_btn_skip"><u>건너뛰기</u></string>
     <string name="onboarding_tv_content">기록하고 싶은 기억이 있으신가요?</string>
     <string name="onboarding_tv_content_s">기록하고 싶은 오늘의 기록은 어떤 기록인가요?\n자유롭게 작성해주세요 :)</string>
     <string name="onboarding_tv_record_title">이 기록의 제목을 정해주세요.</string>
@@ -60,5 +70,12 @@
     <!-- MyPage -->
     <string name="my_page_tv_counter">%1d 번 눌렀습니다.</string>
     <string name="my_page_btn_counting_number">숫자 세기</string>
+    <string name="my_page_btn_logout"><u>로그아웃</u></string>
 
+    <!-- Diary -->
+    <string name="diary_tv_title">나나님의 기억을 기록할 다이어리를 골라보세요!</string>
+    <string name="diary_btn_together">함께 쓰는</string>
+    <string name="diary_btn_alone">혼자 쓰는</string>
+    <string name="diary_tv_none">아직 다이어리가 없어요.      첫 다이어리를 만들어보세요!</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
