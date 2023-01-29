@@ -10,14 +10,27 @@
     <string name="review">댓글</string>
     <string name="setting">설정</string>
     <string name="mypage">마이페이지</string>
+    <string name="next">다음</string>
+    <string name="start">시작하기</string>
 
     <!-- Sign Up -->
+    <string name="sign_up_btn_login">로그인</string>
+    <string name="sign_up_btn_find_password">비밀번호 찾기</string>
+    <string name="sign_up_tv_introduce">우리기억에 초대합니다</string>
+    <string name="sign_up_tv_start">함께 기억하고\n함께 기록하는\n우리만의 다이어리,\n우리기억</string>
+    <string name="sign_up_tv_accept_terms">우리기억과 함께 하기 위해\n이용약관에 동의해주세요</string>
+    <string name="sign_up_tv_terms_and_conditions">개인정보 수집 및 이용 안내</string>
+    <string name="sign_up_btn_agree_and_next">동의하고 계속하기</string>
+    <string name="sign_up_btn_login_email">이메일로 로그인하기</string>
+    <string name="sign_up_btn_join_membership">아직 회원이 아니신가요?</string>
     <string name="sign_up_tv_input_email">이메일 주소를 입력해주세요</string>
     <string name="sign_up_et_input_email">이메일을 입력해주세요</string>
     <string name="sign_up_dialog_tv_exist_email">이미 존재하는 메일 주소입니다.\n다시 시도해주세요.</string>
     <string name="sign_up_tv_input_password">비밀번호를 입력해주세요</string>
+    <string name="sign_up_tv_input_rules">영문, 숫자 포함 8~20자 이내</string>
     <string name="sign_up_tv_input_password_again">비밀번호를 한 번 더 입력해주세요</string>
     <string name="sign_up_tv_input_nickname">프로필을 완성하기 위해\n닉네임을 입력해주세요</string>
+    <string name="sign_up_et_input_nickname">닉네임을 입력해주세요</string>
     <string name="sign_up_err_tv_password">비밀번호가 다릅니다</string>
     <string name="sign_up_err_tv_email">이메일 형식이 올바르지 않습니다</string>
 
@@ -30,6 +43,17 @@
     <string name="diary2_invite_et_input_email">이메일을 입력해주세요</string>
     <string name="diary2_invite_btn_invite">초대하기</string>
     <string name="diary2_invite_btn_complete">완료</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_btn_skip"><u>건너뛰기</u></string>
+    <string name="onboarding_tv_content">기록하고 싶은 기억이 있으신가요?</string>
+    <string name="onboarding_tv_content_s">기록하고 싶은 오늘의 기록은 어떤 기록인가요?\n자유롭게 작성해주세요 :)</string>
+    <string name="onboarding_tv_record_title">이 기록의 제목을 정해주세요.</string>
+    <string name="onboarding_tv_record_title_s">제목은 최대 20자로 작성해주세요.</string>
+    <string name="onboarding_tv_diary_name">다이어리의 이름을 정해주세요.</string>
+    <string name="onboarding_tv_diary_name_s">이 기록을 담은 다이어리가 만들어졌어요!\n이 기록은 어떤 내용을 담고 있나요?</string>
+    <string name="onboarding_tv_diary_start">함께 기록하는 우리만의 다이어리\n우리기억에서 함께해요.</string>
+    <string name="onboarding_tv_diary_start_s">이메일로 함께할 사람을 초대할 수 있어요.</string>
 
     <!-- Main -->
     <string name="main_btm_nav_home_title">홈</string>
@@ -53,6 +77,5 @@
     <string name="diary_btn_together">함께 쓰는</string>
     <string name="diary_btn_alone">혼자 쓰는</string>
     <string name="diary_tv_none">아직 다이어리가 없어요.      첫 다이어리를 만들어보세요!</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
