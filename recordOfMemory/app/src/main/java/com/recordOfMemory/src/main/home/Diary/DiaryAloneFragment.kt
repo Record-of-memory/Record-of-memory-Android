@@ -12,36 +12,40 @@ import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
 class DiaryAloneFragment : Fragment() {
     private var _binding: FragmentDiaryAloneBinding? = null
     private val binding get() = _binding!!
+    lateinit var diaryAdapter: DiaryAdapter
+    val datas = mutableListOf<DiaryData>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        super.onCreate(savedInstanceState)
+        _binding = FragmentDiaryAloneBinding.inflate(inflater, container,false)
 
-        _binding = FragmentDiaryAloneBinding.inflate(inflater, container, false)
-        val itemList = ArrayList<DiaryData>()
+        diaryAdapter = DiaryAdapter(datas as ArrayList<DiaryData>)
+        binding.diaryRv.adapter = diaryAdapter
 
-        itemList.add(DiaryData("나의 첫 다이어리"))
-        itemList.add(DiaryData("비밀일기"))
-        itemList.add(DiaryData("보라돌이와 함께"))
-        itemList.add(DiaryData("나의 첫 다이어리"))
-        itemList.add(DiaryData("비밀일기"))
-        itemList.add(DiaryData("보라돌이와 함께"))
-        itemList.add(DiaryData("나의 첫 다이어리"))
-        itemList.add(DiaryData("비밀일기"))
-        itemList.add(DiaryData("보라돌이와 함께"))
 
-        val DiaryAdapter = DiaryAdapter(itemList)
-        DiaryAdapter.notifyDataSetChanged()
-        binding.diaryRv.adapter = DiaryAdapter
+        datas.apply {
+            add(DiaryData(title = "나의 첫 다이어리"))
+            add(DiaryData(title = "비밀일기"))
+            add(DiaryData(title = "보라돌이와 함께"))
+            add(DiaryData(title = "나의 첫 다이어리"))
+            add(DiaryData(title = "비밀일기"))
+            add(DiaryData(title = "보라돌이와 함께"))
+            add(DiaryData(title = "나의 첫 다이어리"))
+            add(DiaryData(title = "비밀일기"))
+            add(DiaryData(title = "보라돌이와 함께"))
+        }
+
+        diaryAdapter.datas = datas
+        diaryAdapter.notifyDataSetChanged()
 
         val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
         binding.diaryRv.layoutManager = manager
-        // 3. 프래그먼트 레이아웃 뷰 반환
         return binding.root
+
     }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

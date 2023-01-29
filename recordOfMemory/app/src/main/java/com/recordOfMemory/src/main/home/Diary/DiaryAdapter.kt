@@ -1,30 +1,41 @@
 package com.recordOfMemory.src.main.home.Diary
-import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
+import com.recordOfMemory.src.main.MainActivity
 
 class DiaryAdapter(val itemList: ArrayList<DiaryData>) :
     RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder>() {
 
+    var datas = mutableListOf<DiaryData>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiaryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_diary_together, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_diary, parent, false)
         return DiaryViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
-        holder.tv_item_name.text = itemList[position].title
+        holder.bind(datas[position])
     }
 
-    override fun getItemCount(): Int {
-        return itemList.count()
-    }
+    override fun getItemCount(): Int = datas.size
 
+    inner class DiaryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tv_item_name: TextView  = itemView.findViewById(R.id.tv_item_name)
 
-    inner class DiaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tv_item_name = itemView.findViewById<TextView>(R.id.tv_item_name)
+        fun bind(item: DiaryData) {
+            tv_item_name.text = item.title
+            itemView.setOnClickListener {
+                Toast
+                    .makeText(itemView.getContext(),"선택한 일기로 이동", Toast.LENGTH_SHORT)
+                    .show()
+                val intent = Intent(itemView.getContext(), MainActivity::class.java)
+                itemView.getContext().startActivity(intent)
+            }
+        }
+
     }
 }
