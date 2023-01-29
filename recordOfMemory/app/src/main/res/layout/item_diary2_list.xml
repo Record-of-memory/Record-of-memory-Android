@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="312dp"
+    android:layout_width="match_parent"
     android:layout_height="130dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/diary2_box_item_list"
-    android:paddingStart="11dp">
+    android:paddingStart="11dp"
+    android:layout_marginBottom="10dp">
     <TextView
         android:id="@+id/item_diary2_list_tv_title"
         android:layout_width="wrap_content"
@@ -20,10 +21,9 @@
     <TextView
         android:id="@+id/item_diary2_list_tv_content"
         android:layout_width="242dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:text="하남 갈 일이 있어서 가족들이랑 하남 갔다가 짱 예쁜 핑크뮬리 보고왔다. 심지어 날씨도 엄청 좋은거야 적당한 햇빛과 적당한 바람까지 완벽한 날씨였다. 생각보다 사람이 많이...kkkkkkkkkkkkkkkkkkkkkk"
         android:maxLength="110"
-        android:gravity="bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_diary2_list_tv_title"
         android:layout_marginTop="10dp"
@@ -33,7 +33,7 @@
         android:includeFontPadding="false"/>
 
     <ImageView
-        android:id="@+id/item_diary2_list_tv_img"
+        android:id="@+id/item_diary2_list_iv_img"
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:background="@drawable/diary2_box_item_list_img"
@@ -45,9 +45,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/item_diary2_list_tv_img"
-        app:layout_constraintEnd_toEndOf="@id/item_diary2_list_tv_img"
-        app:layout_constraintTop_toBottomOf="@id/item_diary2_list_tv_img"
+        app:layout_constraintStart_toStartOf="@id/item_diary2_list_iv_img"
+        app:layout_constraintEnd_toEndOf="@id/item_diary2_list_iv_img"
+        app:layout_constraintTop_toBottomOf="@id/item_diary2_list_iv_img"
         android:orientation="horizontal"
         android:gravity="center">
         <ImageView
@@ -97,7 +97,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_diary2_list_tv_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
         android:gravity="center">
@@ -106,6 +105,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/icn_user"/>
         <TextView
+            android:id="@+id/item_diary2_list_tv_writer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="유저"
