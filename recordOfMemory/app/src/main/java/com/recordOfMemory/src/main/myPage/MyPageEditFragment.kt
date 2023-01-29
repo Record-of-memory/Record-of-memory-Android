@@ -17,7 +17,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.recordOfMemory.R
@@ -29,9 +28,9 @@ import java.io.IOException
 
 class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit) {
 
-	val CAMERA_PERMISSION = arrayOf(android.Manifest.permission.CAMERA)
+	val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
-	val STORAGE_PERMISSION = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+	val STORAGE_PERMISSION = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	val STORAGE_PERMISSION_REQUEST = 200
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,9 +120,9 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		}
 	}
 
-	private fun showDialogToGetPermission(requestCode: Int) { // dialog 수정할 것
+	private fun showDialogToGetPermission(requestCode: Int) {
 		val accessDialog = Dialog(requireContext())
-		accessDialog.setContentView(R.layout.dialog_custom)
+		accessDialog.setContentView(R.layout.dialog_custom4)
 		accessDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 		var titleText=""
