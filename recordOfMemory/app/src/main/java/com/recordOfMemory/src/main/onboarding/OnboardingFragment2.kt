@@ -2,6 +2,8 @@ package com.recordOfMemory.src.main.onboarding
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +30,19 @@ class OnboardingFragment2 : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //시작할 땐 다음 버튼 비활성화
+        viewBinding.nextBtn.isEnabled = false
+
+        viewBinding.editRecordTitle.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            //값 변경 시 실행되는 함수
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //editText에 값이 있다면 true, 없으면 false 반환
+                viewBinding.nextBtn.isEnabled = viewBinding.editRecordTitle.text.toString().isNotEmpty()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
         //뒤로가기 누르면
         viewBinding.backBtn.setOnClickListener {
             mainActivity!!.openFragmentOnOnboarding(1)
