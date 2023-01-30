@@ -1,5 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
-import android.content.Context
+package com.recordOfMemory.src.main.home.diary
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
