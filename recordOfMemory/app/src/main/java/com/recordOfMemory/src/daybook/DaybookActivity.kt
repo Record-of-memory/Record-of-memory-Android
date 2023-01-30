@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
@@ -15,36 +14,15 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate) {
 	private var commentList = ArrayList<CommentData>()
-	lateinit var item : GetDiary2Response
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
-		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
-		} else {
-			intent.getSerializableExtra("item") as GetDiary2Response
-		}
-		println(item)
-		binding.daybookWriteTime.text = item.date
-		binding.daybookTitle.text = item.title
-		binding.daybookContent.text = item.content
-		binding.daybookWriter.text = item.writer
-
-		Glide.with(this).load(item.imgUrl)
-			.into(binding.daybookImage)
-
-		binding.daybookIvBack.setOnClickListener {
-			finish()
-		}
 
 		binding.daybookIvMore.setOnClickListener { //케밥메뉴 클릭
 			miniDialogFunction()
@@ -96,8 +74,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		//이미지 세팅하기
 
-		Glide.with(this).load(item.imgUrl)
-			.into(imgDialog.findViewById(R.id.big_image))
 		imgDialog.findViewById<ImageView>(R.id.big_image_close).setOnClickListener {
 			imgDialog.dismiss()
 		}

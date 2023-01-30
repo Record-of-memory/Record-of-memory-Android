@@ -1,15 +1,17 @@
 package com.recordOfMemory.src.main.home
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.recordOfMemory.R
 import com.recordOfMemory.databinding.ActivityDiaryBinding
-import com.recordOfMemory.src.main.home.diary.*
+import com.recordOfMemory.src.main.home.Diary.*
+
 
 class DiaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDiaryBinding
@@ -62,14 +64,22 @@ class DiaryActivity : AppCompatActivity() {
 
         binding.iconDiaryAdd.setOnClickListener {
             // Dialog만들기
-            val mDialogView = LayoutInflater.from(this).inflate(R.layout.fragment_pop_diary, null)
-            val mBuilder = AlertDialog.Builder(this)
-                .setView(mDialogView)
-            val  mAlertDialog = mBuilder.show()
+//            val mDialogView = LayoutInflater.from(this).inflate(R.layout.fragment_pop_diary, null)
+//            val mBuilder = AlertDialog.Builder(this)
+//                .setView(mDialogView)
+//            val  mAlertDialog = mBuilder.show()
+//            mAlertDialog.setContentView(R.layout.fragment_pop_diary)
+//            mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val mDialogView: Dialog
+            mDialogView = Dialog(this@DiaryActivity)
+            mDialogView.setContentView(R.layout.fragment_pop_diary)
+            mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            mDialogView.show()
 
             val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
             noButton.setOnClickListener {
-                mAlertDialog.dismiss()
+                mDialogView.dismiss()
             }
 
             val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
@@ -78,6 +88,29 @@ class DiaryActivity : AppCompatActivity() {
                     .makeText(this, "일기_전체보기로 이동", Toast.LENGTH_SHORT)
                     .show()
             }
+
+//            val mDialogView = LayoutInflater.from(this).inflate(R.layout.fragment_pop_diary, null)
+//            val mBuilder = AlertDialog.Builder(this)
+//                .setView(mDialogView)
+//            val  mAlertDialog = mBuilder.show()
+//            mAlertDialog.setContentView(R.layout.fragment_pop_diary)
+//            mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//
+//            //mAlertDialog.show()
+//
+//            val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
+//            noButton.setOnClickListener {
+//                mAlertDialog.dismiss()
+//            }
+//
+//            val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
+//            confirm.setOnClickListener() {
+//                Toast
+//                    .makeText(this, "일기_전체보기로 이동", Toast.LENGTH_SHORT)
+//                    .show()
+//            }
+
+
         }
     }
 }

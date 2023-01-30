@@ -1,6 +1,5 @@
 package com.recordOfMemory.src.main.home.diary2
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +14,6 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2SearchBinding
-import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.home.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.recycler.Diary2SearchRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
@@ -25,21 +23,18 @@ Diary2Interface{
     inner class itemListAdapterToList {
         // 일기 open function
         fun getItemId(item: GetDiary2Response) {
-//            openItem(item)
-            println(item)
-            startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item))
+            openItem(item)
         }
     }
 
     // 일기 open
     fun openItem(item: GetDiary2Response) {
-//        startActivity(Intent(activity, DaybookActivity(item)::class.java))
+        val itemFragment = ItemFragment(item)
 
-//        val fm = requireActivity().supportFragmentManager
-//        val transaction: FragmentTransaction = fm.beginTransaction()
-//
-//        val email = ApplicationClass.sSharedPreferences.getString("email", "")
+        val fm = requireActivity().supportFragmentManager
+        val transaction: FragmentTransaction = fm.beginTransaction()
+
+        val email = ApplicationClass.sSharedPreferences.getString("email", "")
 //        if(email == "NO") {
 //            transaction
 //                .replace(R.id.main_frm, LoginFragment())

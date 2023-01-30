@@ -7,26 +7,10 @@
     tools:context="com.recordOfMemory.src.main.MainActivity">
 
     <FrameLayout
-        android:id="@+id/onboarding_frm"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-
-    <FrameLayout
         android:id="@+id/main_frm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/main_btm_nav"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginBottom="?attr/actionBarSize" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_btm_nav"
@@ -38,7 +22,6 @@
         app:itemTextColor="@drawable/main_btm_nav_item_color"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/menu_main_bottom_nav"
-        android:visibility="invisible"/>
+        app:menu="@menu/menu_main_bottom_nav" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.recordOfMemory.src.main.home.diary2.retrofit.models
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 data class GetDiary2Response(
     @SerializedName("itemId") val itemId : String,
@@ -10,4 +9,4 @@ data class GetDiary2Response(
     @SerializedName("date") val date : String,
     @SerializedName("writer") val writer : String,
     @SerializedName("imgUrl") val imgUrl : String
-) : Serializable
+)

@@ -7,7 +7,7 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentItemBinding
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
-class ItemActivity(val item: GetDiary2Response): BaseFragment<FragmentItemBinding>(FragmentItemBinding::bind, R.layout.fragment_item) {
+class ItemFragment(val item: GetDiary2Response): BaseFragment<FragmentItemBinding>(FragmentItemBinding::bind, R.layout.fragment_item) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //

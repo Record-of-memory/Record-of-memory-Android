@@ -1,19 +1,20 @@
 package com.recordOfMemory.src.main.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass.Companion.sSharedPreferences
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
-import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.home.diary2.Diary2SearchFragment
-import com.recordOfMemory.src.main.home.diary2.recycler.Diary2GridRecyclerOutViewAdapter
+import com.recordOfMemory.src.main.home.diary2.ItemFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.Diary2ListRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.recycler.models.Diary2GridOutViewModel
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
 class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2){
@@ -23,22 +24,18 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
     inner class itemListAdapterToList {
         // 일기 open function
         fun getItemId(item: GetDiary2Response) {
-//            openItem(item)
-            println(item)
-            startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item))
+            openItem(item)
         }
     }
 
     // 일기 open
     fun openItem(item: GetDiary2Response) {
-        println(item)
-//        startActivity(Intent(activity, DaybookActivity(item)::class.java))
+        val itemFragment = ItemFragment(item)
 
-//        val fm = requireActivity().supportFragmentManager
-//        val transaction: FragmentTransaction = fm.beginTransaction()
-//
-//        val email = sSharedPreferences.getString("email", "")
+        val fm = requireActivity().supportFragmentManager
+        val transaction: FragmentTransaction = fm.beginTransaction()
+
+        val email = sSharedPreferences.getString("email", "")
 //        if(email == "NO") {
 //            transaction
 //                .replace(R.id.main_frm, LoginFragment())
@@ -56,15 +53,11 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val items = itemListAdapterToList()
-
         binding.diary2IvMore.setOnClickListener {
 
         }
 
         var itemList = ArrayList<GetDiary2Response>()
-        var itemLists = ArrayList<Diary2GridOutViewModel>()
-
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
@@ -84,9 +77,6 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
         itemList.add(GetDiary2Response(itemId = "1", title = "ss", content = "가가가가가가", date = "23.01.01",writer = "구리",
             imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
 
-        itemLists.add(Diary2GridOutViewModel("구리", itemList))
-        itemLists.add(Diary2GridOutViewModel("나나", itemList))
-
         super.onViewCreated(view, savedInstanceState)
 
         binding.diary2IvSearch.setOnClickListener {
@@ -103,12 +93,6 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
             if(binding.diary2IvList.isChecked) {
                 binding.diary2IvList.isChecked = true
                 binding.diary2IvGrid.isChecked = false
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, itemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
-                }
             }
             else {
                 binding.diary2IvList.isChecked = true
@@ -119,17 +103,13 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
             if(binding.diary2IvGrid.isChecked) {
                 binding.diary2IvGrid.isChecked = true
                 binding.diary2IvList.isChecked = false
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, itemLists)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
-                }
             }
             else {
                 binding.diary2IvGrid.isChecked = true
             }
         }
+
+        val items = itemListAdapterToList()
         // list
         if(stateFlag) {
             val diary2LayoutManager = LinearLayoutManager(context)
@@ -137,16 +117,18 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
             binding.diary2RecyclerView.apply {
                 layoutManager = diary2LayoutManager
                 adapter = diary2RecyclerVIewAdapter
+//            diary2RecyclerVIewAdapter.filter.filter("wood")
             }
         }
 
         // grid
         else {
-            val diary2LayoutManager = LinearLayoutManager(context)
-            val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, itemLists)
+            val diary2LayoutManager = GridLayoutManager(context, 2)
+            val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, itemList)
             binding.diary2RecyclerView.apply {
                 layoutManager = diary2LayoutManager
                 adapter = diary2RecyclerVIewAdapter
+    //            diary2RecyclerVIewAdapter.filter.filter("wood")
             }
 
         }

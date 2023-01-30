@@ -3,15 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@color/green0">
     <androidx.constraintlayout.widget.ConstraintLayout
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
         <ImageButton
             android:id="@+id/back_btn"
             android:layout_width="wrap_content"
@@ -26,26 +24,16 @@
             android:paddingTop="0dp"
             />
 
-        <ImageView
-            android:id="@+id/half_circle_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/background_login"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="68dp" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_up_tv_introduce"
-            app:layout_constraintStart_toStartOf="@id/half_circle_image"
-            app:layout_constraintEnd_toEndOf="@id/half_circle_image"
+            android:text="@string/sign_up_tv_input_email"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="20dp"
             android:textColor="@color/colorPrimary"
-            android:layout_marginTop="155dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="76dp"
             android:fontFamily="@font/noto_sans_bold"
             />
 
@@ -56,7 +44,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="284dp"
+            android:layout_marginTop="149dp"
             android:layout_marginHorizontal="24dp"
             android:orientation="vertical"
             android:background="@drawable/box_edit_text">
@@ -69,74 +57,65 @@
                 android:textSize="11dp"
                 android:textColorHint="@color/brownGray"
                 android:fontFamily="@font/noto_sans_regular"
-                android:paddingTop="10dp"
+                android:paddingTop="11dp"
                 android:paddingBottom="0dp"
-                android:paddingStart="12dp"
+                android:paddingStart="10dp"
                 />
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/layout_pswd"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="33dp"
+            android:textColor="@color/red"
+            android:text="@string/sign_up_err_tv_email"
+            android:textSize="11dp"
+            android:layout_marginTop="193dp"
+            android:fontFamily="@font/noto_sans_regular"/>
+
+        <ImageView
+            android:id="@+id/empty_circles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icn_empty_circles"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_email"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="24dp"
-            android:orientation="vertical"
-            android:background="@drawable/box_edit_text">
-            <EditText
-                android:id="@+id/edit_pswd"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/sign_up_tv_input_password"
-                android:textSize="11dp"
-                android:textColorHint="@color/brownGray"
-                android:fontFamily="@font/noto_sans_regular"
-                android:paddingTop="10dp"
-                android:paddingBottom="0dp"
-                android:paddingStart="12dp"/>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="462dp"/>
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icn_filled_circle"
+            app:layout_constraintStart_toStartOf="@id/empty_circles"
+            app:layout_constraintTop_toTopOf="@id/empty_circles"
+            app:layout_constraintBottom_toBottomOf="@id/empty_circles"
+            android:layout_marginStart="0.5dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="620dp"
         >
-
         <Button
-            android:id="@+id/login_btn"
+            android:id="@+id/next_btn"
             android:layout_width="0dp"
             android:layout_height="44dp"
             android:background="@drawable/box_main_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="96dp"
-            android:text="@string/sign_up_btn_login"
+            android:text="@string/next"
             android:textSize="15dp"
             android:textColor="@color/black"
-            android:fontFamily="@font/noto_sans_semi_bold"/>
-
-        <Button
-            android:id="@+id/search_pswd_btn"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_btn"
-            android:backgroundTint="@android:color/transparent"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/sign_up_btn_find_password"
-            android:textSize="12dp"
-            android:layout_marginHorizontal="24dp"
-            android:paddingTop="0dp"
-            android:fontFamily="@font/noto_sans_regular"/>
+            android:fontFamily="@font/noto_sans_bold"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
