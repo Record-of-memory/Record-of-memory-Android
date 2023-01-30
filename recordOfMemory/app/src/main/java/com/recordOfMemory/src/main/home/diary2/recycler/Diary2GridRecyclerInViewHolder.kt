@@ -1,0 +1,25 @@
+package com.recordOfMemory.src.main.home.diary2.recycler
+
+import android.content.Context
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.recordOfMemory.R
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+
+class Diary2GridRecyclerInViewHolder(val context: Context, itemView: View)
+    : RecyclerView.ViewHolder(itemView) {
+
+    val itemImg = itemView.findViewById<View>(R.id.item_diary2_grid_in_iv_img)
+    val itemTitle = itemView.findViewById<TextView>(R.id.item_diary2_grid_in_tv_title)
+
+    fun bindWithView(item: GetDiary2Response) {
+        println(item.imgUrl)
+
+        Glide.with(itemView).load(item.imgUrl)
+            .into(itemImg as ImageView)
+        itemTitle.text = item.title
+    }
+}

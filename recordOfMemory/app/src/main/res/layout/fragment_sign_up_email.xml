@@ -9,7 +9,8 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layout_btn">
         <ImageButton
             android:id="@+id/back_btn"
             android:layout_width="wrap_content"
@@ -21,12 +22,13 @@
             android:layout_marginTop="32dp"
             android:layout_marginStart="24dp"
             android:paddingStart="0dp"
-            android:paddingTop="0dp"/>
+            android:paddingTop="0dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_up_tv_input_password"
+            android:text="@string/sign_up_tv_input_email"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="20dp"
@@ -35,19 +37,9 @@
             android:layout_marginTop="76dp"
             android:fontFamily="@font/noto_sans_bold"
             />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/layout_pswd"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="131dp"
-            android:textColor="@color/black"
-            android:text="@string/sign_up_tv_input_rules"
-            android:fontFamily="@font/noto_sans_regular"
-            android:textSize="11dp"/>
 
         <LinearLayout
-            android:id="@+id/layout_pswd"
+            android:id="@+id/layout_email"
             android:layout_width="match_parent"
             android:layout_height="38dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,36 +50,11 @@
             android:orientation="vertical"
             android:background="@drawable/box_edit_text">
             <EditText
-                android:id="@+id/edit_pswd"
+                android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:backgroundTint="@android:color/transparent"
-                android:hint="@string/sign_up_tv_input_password"
-                android:textSize="11dp"
-                android:textColorHint="@color/brownGray"
-                android:fontFamily="@font/noto_sans_regular"
-                android:paddingTop="11dp"
-                android:paddingBottom="0dp"
-                android:paddingStart="10dp"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/layout_check_pswd"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
-            app:layout_constraintStart_toStartOf="@+id/layout_pswd"
-            app:layout_constraintEnd_toEndOf="@+id/layout_pswd"
-            app:layout_constraintTop_toBottomOf="@+id/layout_pswd"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="24dp"
-            android:orientation="vertical"
-            android:background="@drawable/box_edit_text">
-            <EditText
-                android:id="@+id/edit_check_pswd"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/sign_up_tv_input_password_again"
+                android:hint="@string/sign_up_et_input_email"
                 android:textSize="11dp"
                 android:textColorHint="@color/brownGray"
                 android:fontFamily="@font/noto_sans_regular"
@@ -97,15 +64,16 @@
                 />
         </LinearLayout>
         <TextView
+            android:id="@+id/tv_email_format_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="33dp"
             android:textColor="@color/red"
-            android:text="@string/sign_up_err_tv_password"
+            android:text="@string/sign_up_err_tv_email"
             android:textSize="11dp"
-            android:layout_marginTop="240dp"
+            android:layout_marginTop="193dp"
             android:fontFamily="@font/noto_sans_regular"/>
 
         <ImageView
@@ -115,8 +83,8 @@
             android:src="@drawable/icn_empty_circles"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="462dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="37dp"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -127,24 +95,14 @@
             app:layout_constraintBottom_toBottomOf="@id/empty_circles"
             android:layout_marginStart="0.5dp"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icn_filled_circle"
-            app:layout_constraintStart_toStartOf="@id/empty_circles"
-            app:layout_constraintTop_toTopOf="@id/empty_circles"
-            app:layout_constraintBottom_toBottomOf="@id/empty_circles"
-            app:layout_constraintEnd_toEndOf="@id/empty_circles"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_btn"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="620dp"
         >
         <Button
             android:id="@+id/next_btn"
@@ -154,7 +112,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="96dp"
             android:text="@string/next"
             android:textSize="15dp"
             android:textColor="@color/black"

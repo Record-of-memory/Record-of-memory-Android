@@ -1,10 +1,12 @@
 package com.recordOfMemory.src.main.calendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.MonthDayBinder
@@ -13,17 +15,34 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentCalendarBinding
 import com.recordOfMemory.databinding.CalendarDayContainerBinding
+import com.recordOfMemory.src.daybook.DaybookActivity
+import com.recordOfMemory.src.main.calendar.recycler.CalendarInterface
+import com.recordOfMemory.src.main.calendar.recycler.CalendarRecyclerViewAdapter
+import com.recordOfMemory.src.main.home.diary2.recycler.Diary2ListRecyclerViewAdapter
+import com.recordOfMemory.src.main.home.diary2.recycler.Diary2SearchRecyclerViewAdapter
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
-class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::bind, R.layout.fragment_calendar){
+class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::bind, R.layout.fragment_calendar),
+    CalendarInterface {
 
     private val monthCalendarView: CalendarView get() = binding.calendarDays
 
     private var selectedDate :LocalDate ?= null
     private val today = LocalDate.now()
 
+    inner class itemListAdapterToList {
+        // 일기 open function
+        fun getItemId(item: GetDiary2Response) {
+//            openItem(item)
+            println(item)
+            startActivity(
+                Intent(activity, DaybookActivity::class.java)
+                .putExtra("item", item))
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,6 +62,32 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         setupMonthCalendar(startMonth, endMonth, currentMonth, daysOfWeek) //다음달로 스크롤 가능
 
         setMonthChangeBtn()
+
+        val items = itemListAdapterToList()
+        val diary2LayoutManager = LinearLayoutManager(context)
+
+        val itemList = ArrayList<GetDiary2Response>()
+
+        itemList.add(
+            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
+        )
+
+        itemList.add(
+            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
+        )
+
+        itemList.add(
+            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
+        )
+
+        val diary2RecyclerViewAdapter = CalendarRecyclerViewAdapter(items, itemList)
+        binding.calendarRecyclerView.apply {
+            layoutManager = diary2LayoutManager
+            adapter = diary2RecyclerViewAdapter
+        }
     }
 
     private fun setupMonthCalendar(
