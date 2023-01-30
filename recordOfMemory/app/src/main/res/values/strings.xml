@@ -78,4 +78,7 @@
     <string name="diary_btn_alone">혼자 쓰는</string>
     <string name="diary_tv_none">아직 다이어리가 없어요.      첫 다이어리를 만들어보세요!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Calendar -->
+    <string name="calendar_tv_my_first_diary">나의 첫 다이어리</string>
 </resources>
