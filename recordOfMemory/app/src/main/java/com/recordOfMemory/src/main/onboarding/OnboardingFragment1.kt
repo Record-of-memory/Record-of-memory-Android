@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.recordOfMemory.databinding.FragmentOnboarding1Binding
 import com.recordOfMemory.src.main.MainActivity
 

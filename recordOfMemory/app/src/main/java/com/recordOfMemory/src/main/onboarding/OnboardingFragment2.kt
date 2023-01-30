@@ -52,9 +52,4 @@ class OnboardingFragment2 : Fragment() {
             mainActivity!!.openFragmentOnOnboarding(3)
         }
     }
-
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        viewBinding = null
-//    }
 }
