@@ -1,14 +1,19 @@
 package com.recordOfMemory.src.main.signUp
 
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.recordOfMemory.R
 import com.recordOfMemory.databinding.FragmentSignUpEmailBinding
 import java.util.regex.Pattern
 
@@ -32,6 +37,8 @@ class SignUpEmailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //시작할 땐 이메일 형식 에러 메시지 가려놓기
+        viewBinding.tvEmailFormatError.visibility = View.INVISIBLE
 
         viewBinding.editEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -49,7 +56,7 @@ class SignUpEmailFragment : Fragment() {
         //다음 버튼 누르면
         viewBinding.nextBtn.setOnClickListener {
             if (checkEmail()) {
-                signUpActivity!!.openFragmentSignUp(4)
+                logoutDialogFunction()
             } else {
                 Toast.makeText(activity, "이메일 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
             }
@@ -69,5 +76,24 @@ class SignUpEmailFragment : Fragment() {
             viewBinding.tvEmailFormatError.visibility = View.VISIBLE
             return false
         }
+    }
+
+    private fun logoutDialogFunction(){
+        val logoutDialog = Dialog(requireContext())
+        logoutDialog.setContentView(R.layout.dialog_custom5)
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        logoutDialog.findViewById<TextView>(R.id.dialog5_btn_cancel).setOnClickListener {
+            // dialog 내림
+            logoutDialog.dismiss()
+        }
+
+        val logoutBtn=logoutDialog.findViewById<TextView>(R.id.dialog5_btn_access)
+        logoutBtn.setOnClickListener {
+            logoutDialog.dismiss()
+            signUpActivity!!.openFragmentSignUp(4)
+        }
+
+        logoutDialog.show()
     }
 }
