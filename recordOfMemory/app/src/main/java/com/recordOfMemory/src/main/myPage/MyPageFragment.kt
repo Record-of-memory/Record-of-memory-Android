@@ -8,11 +8,13 @@ import android.view.View
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageBinding
 import com.recordOfMemory.src.main.MainActivity
 import com.recordOfMemory.src.main.calendar.CalendarFragment
+import com.recordOfMemory.src.main.home.diary2.Diary2SearchFragment
 
 class MyPageFragment :
     BaseFragment<FragmentMyPageBinding>(FragmentMyPageBinding::bind, R.layout.fragment_my_page) {
@@ -20,10 +22,15 @@ class MyPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val fm = requireActivity().supportFragmentManager
+        val transaction: FragmentTransaction = fm.beginTransaction()
+
         binding.mypageEditBtn.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
+            transaction
                 .replace(R.id.main_frm, MyPageEditFragment())
-                .commitAllowingStateLoss()
+                .addToBackStack(null)
+                .commit()
+            transaction.isAddToBackStackAllowed
         }
 
         binding.mypageLogout.setOnClickListener {

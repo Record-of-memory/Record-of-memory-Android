@@ -19,10 +19,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageEditBinding
 import com.recordOfMemory.src.main.MainActivity
+import com.recordOfMemory.src.main.home.Diary2Fragment
 import java.io.IOException
 
 
@@ -35,17 +38,24 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		binding.mypageEditBack.setOnClickListener { //뒤로가기 - 다른 방법이 있는지 확인할 것
-			requireActivity().supportFragmentManager.beginTransaction()
-				.replace(R.id.main_frm, MyPageFragment())
-				.commitAllowingStateLoss()
+			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+			transaction
+				.replace(R.id.main_frm,MyPageFragment())
+				.addToBackStack(null)
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 		binding.mypageEditChangePassword.setOnClickListener { //비밀번호 변경
-			requireActivity().supportFragmentManager.beginTransaction()
+			transaction
 				.replace(R.id.main_frm, MyPageEditPasswordFragment())
-				.commitAllowingStateLoss()
+				.addToBackStack(null)
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 		binding.mypageEditDeleteAccount.setOnClickListener { //계정 탈퇴하기

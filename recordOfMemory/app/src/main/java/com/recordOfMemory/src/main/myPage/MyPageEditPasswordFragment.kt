@@ -3,6 +3,8 @@ package com.recordOfMemory.src.main.myPage
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageEditPasswordBinding
@@ -18,11 +20,16 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		binding.passwordBack.setOnClickListener { //뒤로 가기
-			requireActivity().supportFragmentManager.beginTransaction()
-				.replace(R.id.main_frm, MyPageEditFragment())
-				.commitAllowingStateLoss()
+			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+			transaction
+				.replace(R.id.main_frm,MyPageEditFragment())
+				.addToBackStack(null)
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 		binding.passwordCompleteBtn.setOnClickListener { //완료
@@ -32,7 +39,7 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 
 
 				//화면 전환
-				requireActivity().supportFragmentManager.beginTransaction()
+				transaction
 					.replace(R.id.main_frm, MyPageFragment())
 					.commitAllowingStateLoss()
 			}
