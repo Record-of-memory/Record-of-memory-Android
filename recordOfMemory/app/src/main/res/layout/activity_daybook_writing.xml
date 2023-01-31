@@ -60,7 +60,7 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/daybook_writing_diary_title"
-        android:text="2022.11.24. (목)" />
+        android:text="" />
 
     <ImageView
         android:id="@+id/daybook_writing_click_calendar_icon"

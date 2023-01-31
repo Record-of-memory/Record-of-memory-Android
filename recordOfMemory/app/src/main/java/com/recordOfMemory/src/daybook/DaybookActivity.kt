@@ -1,6 +1,7 @@
 package com.recordOfMemory.src.daybook
 
 import android.app.Dialog
+import android.app.ProgressDialog.show
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -20,10 +22,14 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate) {
 	private var commentList = ArrayList<CommentData>()
 	lateinit var item : GetDiary2Response
+	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -66,6 +72,20 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		val commentAdapter = CommentAdapter(commentList)
 		binding.daybookCommentRV.adapter=commentAdapter
 
+
+		binding.daybookBtnSubmit.setOnClickListener {
+			var comment=binding.daybookWriteComment
+			if(!comment.text.toString().isNullOrEmpty()){
+				//댓글 업데이트 - 사용자의 이름을 알고있어야 함
+				//백엔드에 정보 보내기
+				commentList.add(CommentData("유저",comment.text.toString(),sdfMini.format(System.currentTimeMillis())))
+				commentAdapter.notifyDataSetChanged()
+				comment.setText("")
+				binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+			}else{
+				commentDialogFunction()
+			}
+		}
 	}
 
 	private fun miniDialogFunction(){
@@ -77,8 +97,18 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_edit).setOnClickListener {
 			// 수정
 			// 원래 일기의 내용을 같이 넘겨줘야할 것 같다.
-			startActivity(Intent(this,DaybookWritingActivity::class.java))
+
+			val intent=Intent(this,DaybookWritingActivity::class.java)
+			intent.putExtra("screen_type","update")
+			intent.putExtra("diary_title",binding.daybookDiaryTitle.text)
+			intent.putExtra("daybook_title",binding.daybookTitle.text)
+			intent.putExtra("content",binding.daybookContent.text)
+			intent.putExtra("date",binding.daybookWriteTime.text)
+
+			// TODO: 이미지도 보내기
+			startActivity(intent)
 			miniDialog.dismiss()
+
 		}
 
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_delete).setOnClickListener {
@@ -114,11 +144,24 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
 					v.clearFocus()
 					val imm: InputMethodManager =
-						getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+						getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 					imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
 				}
 			}
 		}
 		return super.dispatchTouchEvent(event)
+	}
+
+
+	private fun commentDialogFunction() {
+		val commentDialog = Dialog(this)
+		commentDialog.setContentView(R.layout.dialog_custom2)
+		commentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+		commentDialog.findViewById<TextView>(R.id.dialog2_title).text = "내용을 입력해주세요."
+		commentDialog.findViewById<TextView>(R.id.dialog2_btn_ok).setOnClickListener {
+			commentDialog.dismiss()
+		}
+
+		commentDialog.show()
 	}
 }
