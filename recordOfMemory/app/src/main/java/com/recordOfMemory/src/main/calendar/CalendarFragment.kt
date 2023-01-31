@@ -24,14 +24,18 @@ import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
-class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::bind, R.layout.fragment_calendar),
-    CalendarInterface {
+class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::bind, R.layout.fragment_calendar){
 
     private val monthCalendarView: CalendarView get() = binding.calendarDays
 
     private var selectedDate :LocalDate ?= null
     private val today = LocalDate.now()
+    lateinit var diary2RecyclerViewAdapter : CalendarRecyclerViewAdapter
+
 
     inner class itemListAdapterToList {
         // 일기 open function
@@ -52,7 +56,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
             .map { it as TextView }
             .forEachIndexed { index, textView ->
                 val str=daysOfWeek[index].name
-                textView.text = str.substring(0,1) + str.substring(1,2).toLowerCase() // Mo, Tu, We ...
+                textView.text = str.substring(0,1) + str.substring(1,2).lowercase(Locale.ROOT) // Mo, Tu, We ...
                 textView.setTextColorRes(R.color.brownGray)
             }
 
@@ -63,6 +67,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
 
         setMonthChangeBtn()
 
+        // recycler view 연결
         val items = itemListAdapterToList()
         val diary2LayoutManager = LinearLayoutManager(context)
 
@@ -83,7 +88,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
                 imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
         )
 
-        val diary2RecyclerViewAdapter = CalendarRecyclerViewAdapter(items, itemList)
+        diary2RecyclerViewAdapter = CalendarRecyclerViewAdapter(items, itemList)
         binding.calendarRecyclerView.apply {
             layoutManager = diary2LayoutManager
             adapter = diary2RecyclerViewAdapter
@@ -151,6 +156,12 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
             selectedDate = null
         } else { //그게 아니라면 항상 새로 선택한 것으로 추가
             selectedDate = date
+            // LocalDate 파싱
+            val formatter = DateTimeFormatter.ofPattern("yy.MM.dd")
+            val selectedDateString = date.format(formatter)
+            println("date: $selectedDateString")
+            diary2RecyclerViewAdapter.filter.filter(selectedDateString)
+            binding.calendarRecyclerView.adapter = diary2RecyclerViewAdapter
             Toast.makeText(context,"$date", Toast.LENGTH_SHORT).show()
         }
 
@@ -166,19 +177,17 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         binding.calendarYearMonth.text = "$yearText $monthText"
     }
 
-    private fun setMonthChangeBtn(){
+    private fun setMonthChangeBtn() {
         binding.calendarDotPastMonth.setOnClickListener {
-            binding.calendarDays.findFirstVisibleMonth()?.let{
+            binding.calendarDays.findFirstVisibleMonth()?.let {
                 binding.calendarDays.smoothScrollToMonth(it.yearMonth.previousMonth)
             }
         }
 
         binding.calendarDotNextMonth.setOnClickListener {
-            binding.calendarDays.findFirstVisibleMonth()?.let{
+            binding.calendarDays.findFirstVisibleMonth()?.let {
                 binding.calendarDays.smoothScrollToMonth(it.yearMonth.nextMonth)
             }
         }
     }
-
-
 }
