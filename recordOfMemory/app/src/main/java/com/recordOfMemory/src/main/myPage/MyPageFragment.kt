@@ -1,6 +1,7 @@
 package com.recordOfMemory.src.main.myPage
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,6 +16,7 @@ import com.recordOfMemory.databinding.FragmentMyPageBinding
 import com.recordOfMemory.src.main.MainActivity
 import com.recordOfMemory.src.main.calendar.CalendarFragment
 import com.recordOfMemory.src.main.home.diary2.Diary2SearchFragment
+import com.recordOfMemory.src.splash.SplashActivity
 
 class MyPageFragment :
     BaseFragment<FragmentMyPageBinding>(FragmentMyPageBinding::bind, R.layout.fragment_my_page) {
@@ -56,6 +58,11 @@ class MyPageFragment :
             //로그아웃
             Toast.makeText(context, "로그아웃", Toast.LENGTH_SHORT).show()
             logoutDialog.dismiss()
+
+            // 로그아웃 하고
+
+            //화면은 스플래시 화면으로
+            startActivity(Intent(context,SplashActivity::class.java))
         }
 
         logoutDialog.show()

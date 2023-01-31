@@ -39,9 +39,12 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 
 
 				//화면 전환
+				fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 				transaction
-					.replace(R.id.main_frm, MyPageFragment())
+					.replace(R.id.main_frm, MyPageEditFragment()) //수정 화면으로 가게
+					.addToBackStack(null)
 					.commitAllowingStateLoss()
+				transaction.isAddToBackStackAllowed
 			}
 		}
 
