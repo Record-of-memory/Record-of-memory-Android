@@ -2,6 +2,7 @@ package com.recordOfMemory.src.main.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.system.Os.bind
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentTransaction
@@ -10,6 +11,7 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
+import com.recordOfMemory.src.daybook.DaybookWritingActivity
 import com.recordOfMemory.src.main.home.diary2.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.Diary2GridRecyclerOutViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.Diary2ListRecyclerViewAdapter
@@ -95,6 +97,12 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed
+        }
+
+        binding.diary2BtnWrite.setOnClickListener { //버튼 누르면 새로은 일기 쓰는 화면으로 전환
+            val intent=Intent(context,DaybookWritingActivity::class.java)
+            intent.putExtra("screen_type","create")
+            startActivity(intent)
         }
 
         // list view

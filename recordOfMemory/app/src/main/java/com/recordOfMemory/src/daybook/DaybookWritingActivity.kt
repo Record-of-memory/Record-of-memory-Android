@@ -41,13 +41,24 @@ class DaybookWritingActivity :
 
 
 	private val sdfFull = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
-	private val sdfMini = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA) //날짜 포맷
+	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		binding.daybookWritingWriteTime.text =
-			sdfFull.format(System.currentTimeMillis()) //오늘 날짜로 기본 세팅
+		val screenType=intent.getStringExtra("screen_type")
+		if(screenType=="update"){
+			binding.daybookWritingDiaryTitle.text=intent.getStringExtra("diary_title")
+			binding.daybookWritingTitle.setText(intent.getStringExtra("daybook_title"))
+			binding.daybookWritingContent.setText(intent.getStringExtra("content"))
+			binding.daybookWritingWriteTime.text =intent.getStringExtra("date")
+
+
+		}else{
+			binding.daybookWritingWriteTime.text =
+				sdfFull.format(System.currentTimeMillis()) //오늘 날짜로 기본 세팅
+		}
+
 
 		binding.daybookWritingClickCalendarIcon.setOnClickListener { //날짜 수정
 			changeDate()
@@ -58,7 +69,9 @@ class DaybookWritingActivity :
 			if (checkTitle()) {
 				// 데이터 저장하고 일기 화면으로 돌아가기
 				Toast.makeText(this,"제목 입력함",Toast.LENGTH_SHORT).show()
+
 			}
+
 		}
 
 		binding.daybookWritingIvBack.setOnClickListener {  // 뒤로가기
