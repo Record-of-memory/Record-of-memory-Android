@@ -84,10 +84,9 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
                         .show()
                 }
             }
-
-            }
-
         }
+
+    }
 
 }
 
