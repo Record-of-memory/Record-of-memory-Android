@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -17,6 +18,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
@@ -52,9 +54,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			finish()
 		}
 
-		binding.daybookIvMore.setOnClickListener { //케밥메뉴 클릭
-			miniDialogFunction()
-		}
 
 		binding.daybookImage.setOnClickListener { //이미지 클릭
 			imageDialogFunction()
@@ -86,7 +85,26 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				commentDialogFunction()
 			}
 		}
+
+		/* 일기작성자인지 아닌지에 따라 화면이 다르게 보임 */
+		binding.daybookIvMore.setOnClickListener { //케밥메뉴 클릭
+			miniDialogFunction()
+		}
+
+		binding.daybookClickHeartIcon.setOnClickListener {
+			binding.daybookClickHeartIcon.isSelected = !binding.daybookClickHeartIcon.isSelected
+		}
 	}
+//
+//	private fun changeHeartStatus(){
+//		if(binding.daybookClickHeartIcon.isSelected){
+//			binding.daybookClickHeartIcon.isSelected=false
+//		}else{
+//			binding.daybookClickHeartIcon.isSelected= true
+//		}
+//		Toast.makeText(this,"${binding.daybookClickHeartIcon.isSelected}",Toast.LENGTH_SHORT).show()
+//		Log.e("list isChecked", binding.daybookClickHeartIcon.isSelected.toString())
+//	}
 
 	private fun miniDialogFunction(){
 		val miniDialog = Dialog(this)
