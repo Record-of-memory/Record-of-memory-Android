@@ -12,11 +12,21 @@
         android:orientation="vertical"
         android:padding="10dp"
         xmlns:android="http://schemas.android.com/apk/res/android">
-        <ImageView
-            android:id="@+id/item_diary2_grid_in_iv_img"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/diary2_box_item_grid_img"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:gravity="center"
+            android:background="@drawable/diary2_box_item_grid_img">
+
+            <ImageView
+                android:id="@+id/item_diary2_grid_in_iv_img"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ex_img"
+                android:background="@drawable/diary2_box_item_grid_img"/>
+        </LinearLayout>
         <TextView
             android:layout_gravity="center"
             android:gravity="center"

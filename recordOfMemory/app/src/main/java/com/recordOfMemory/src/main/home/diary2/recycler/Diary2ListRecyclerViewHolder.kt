@@ -21,6 +21,7 @@ class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
     fun bindWithView(item: GetDiary2Response) {
         Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)
+        itemImg.clipToOutline = true
         itemTitle.text = item.title
         itemContent.text = item.content
         itemWriter.text = item.writer

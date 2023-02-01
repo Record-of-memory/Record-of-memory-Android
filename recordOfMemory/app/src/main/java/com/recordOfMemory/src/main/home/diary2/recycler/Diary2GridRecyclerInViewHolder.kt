@@ -20,6 +20,7 @@ class Diary2GridRecyclerInViewHolder(val context: Context, itemView: View)
 
         Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)
+        itemImg.clipToOutline = true
         itemTitle.text = item.title
     }
 }

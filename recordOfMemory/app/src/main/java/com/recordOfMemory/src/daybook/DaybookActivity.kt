@@ -77,7 +77,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_edit).setOnClickListener {
 			// 수정
 			// 원래 일기의 내용을 같이 넘겨줘야할 것 같다.
-			startActivity(Intent(this,DaybookWritingActivity::class.java))
+			startActivity(Intent(this, DaybookWritingActivity::class.java))
 			miniDialog.dismiss()
 		}
 
