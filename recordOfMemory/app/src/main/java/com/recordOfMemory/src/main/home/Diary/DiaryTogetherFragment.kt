@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
@@ -54,14 +55,6 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         }
 
         binding.iconDiaryAdd.setOnClickListener {
-            // Dialog만들기
-//            val mDialogView = LayoutInflater.from(this).inflate(R.layout.fragment_pop_diary, null)
-//            val mBuilder = AlertDialog.Builder(this)
-//                .setView(mDialogView)
-//            val  mAlertDialog = mBuilder.show()
-//            mAlertDialog.setContentView(R.layout.fragment_pop_diary)
-//            mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
             val mDialogView = Dialog(requireContext())
             mDialogView.setContentView(R.layout.fragment_pop_diary)
             mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -74,31 +67,21 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
             val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
             confirm.setOnClickListener() {
-                Toast
-                    .makeText(requireContext(), "일기_전체보기로 이동", Toast.LENGTH_SHORT)
-                    .show()
+                val newItem = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
+                if (newItem.length == 0) {
+                    Toast
+                        .makeText(requireContext(), "다이어리 제목을 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    var contact = DiaryData(title = newItem)
+                    datas.add(contact)
+                    diaryAdapter.notifyDataSetChanged()
+                    mDialogView.dismiss() //다이어리 생성 후에도 모달창 사라짐
+                    Toast
+                        .makeText(requireContext(), "새 다이어리가 생성되었습니다", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
-
-            //            val mDialogView = LayoutInflater.from(this).inflate(R.layout.fragment_pop_diary, null)
-//            val mBuilder = AlertDialog.Builder(this)
-//                .setView(mDialogView)
-//            val  mAlertDialog = mBuilder.show()
-//            mAlertDialog.setContentView(R.layout.fragment_pop_diary)
-//            mAlertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//
-//            //mAlertDialog.show()
-//
-//            val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
-//            noButton.setOnClickListener {
-//                mAlertDialog.dismiss()
-//            }
-//
-//            val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
-//            confirm.setOnClickListener() {
-//                Toast
-//                    .makeText(this, "일기_전체보기로 이동", Toast.LENGTH_SHORT)
-//                    .show()
-//            }
         }
     }
 }
