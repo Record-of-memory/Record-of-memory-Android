@@ -79,12 +79,16 @@ class DaybookWritingActivity :
 			onBackPressed()
 		}
 
+
+		binding.daybookWritingAlbum.isEnabled = binding.daybookWritingFr.visibility==View.GONE
 		binding.daybookWritingAlbum.setOnClickListener { //사진 추가
-			// 앨범 or 사진 선택 (dialog) 임시
-			chooseCameraOrAlbumDialogFunction()
+			if(binding.daybookWritingFr.visibility==View.GONE){ //이미 추가된 사진이 없을 때만 사진 추가
+				chooseCameraOrAlbumDialogFunction()
+			}
 		}
 		binding.daybookWritingDeleteBtn.setOnClickListener { //사진 삭제 (그냥 화면에서만 없애자)
 			binding.daybookWritingFr.visibility=View.GONE
+			binding.daybookWritingAlbum.isEnabled=true
 		}
 	}
 
@@ -177,6 +181,7 @@ class DaybookWritingActivity :
 //					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
 					binding.daybookWritingImage.setImageURI(contentURI)
 					binding.daybookWritingFr.visibility= View.VISIBLE
+					binding.daybookWritingAlbum.isEnabled=false
 				}catch (e:IOException){
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to load image from gallery", Toast.LENGTH_SHORT).show()
@@ -191,6 +196,7 @@ class DaybookWritingActivity :
 					val thumbNail: Bitmap = it!!.data!!.extras?.get("data") as Bitmap
 					binding.daybookWritingImage.setImageBitmap(thumbNail) // 이미지 연결
 					binding.daybookWritingFr.visibility= View.VISIBLE
+					binding.daybookWritingAlbum.isEnabled=false
 				} catch (e: IOException) {
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to take photo from Camera", Toast.LENGTH_SHORT).show()
