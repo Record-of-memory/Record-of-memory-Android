@@ -1,24 +1,20 @@
 package com.recordOfMemory.src.daybook
 
 import android.app.Dialog
-import android.app.ProgressDialog.show
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
@@ -26,12 +22,13 @@ import com.recordOfMemory.databinding.ActivityDaybookBinding
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate) {
 	private var commentList = ArrayList<CommentData>()
 	lateinit var item : GetDiary2Response
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
+	private lateinit var imageUri:String
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -47,8 +44,17 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		binding.daybookContent.text = item.content
 		binding.daybookWriter.text = item.writer
 
-		Glide.with(this).load(item.imgUrl)
-			.into(binding.daybookImage)
+		if(!item.imgUrl.isNullOrEmpty()){
+			Glide.with(this).load(item.imgUrl)
+				.into(binding.daybookImage)
+		}
+
+		imageUri= intent.getStringExtra("imageUri").toString()
+		if(!imageUri.isNullOrEmpty()){
+			val img= Uri.parse(imageUri)
+			binding.daybookImage.setImageURI(img)
+		}
+
 
 		binding.daybookIvBack.setOnClickListener {
 			finish()
@@ -59,13 +65,15 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			imageDialogFunction()
 		}
 
-		commentList.apply {
-			add(CommentData("나나","정말 예쁜 사진이네~","22.11.23"))
-			add(CommentData("짱구","노는게 제일 좋아. 친구들 모여라","22.11.22"))
-			add(CommentData("뽀로로","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
-			add(CommentData("따라쟁이","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
-			add(CommentData("둘리","호잇~!","22.11.20"))
-			add(CommentData("뽀삐","나도 곰인형 갖고 싶어","22.11.04"))
+		if(intent.getStringExtra("screen_type")=="read"){ // 더미 데이터를 위한 댓글
+			commentList.apply {
+				add(CommentData("나나","정말 예쁜 사진이네~","22.11.23"))
+				add(CommentData("짱구","노는게 제일 좋아. 친구들 모여라","22.11.22"))
+				add(CommentData("뽀로로","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
+				add(CommentData("따라쟁이","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
+				add(CommentData("둘리","호잇~!","22.11.20"))
+				add(CommentData("뽀삐","나도 곰인형 갖고 싶어","22.11.04"))
+			}
 		}
 
 		val commentAdapter = CommentAdapter(commentList)
@@ -95,16 +103,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			binding.daybookClickHeartIcon.isSelected = !binding.daybookClickHeartIcon.isSelected
 		}
 	}
-//
-//	private fun changeHeartStatus(){
-//		if(binding.daybookClickHeartIcon.isSelected){
-//			binding.daybookClickHeartIcon.isSelected=false
-//		}else{
-//			binding.daybookClickHeartIcon.isSelected= true
-//		}
-//		Toast.makeText(this,"${binding.daybookClickHeartIcon.isSelected}",Toast.LENGTH_SHORT).show()
-//		Log.e("list isChecked", binding.daybookClickHeartIcon.isSelected.toString())
-//	}
+
 
 	private fun miniDialogFunction(){
 		val miniDialog = Dialog(this)
@@ -118,12 +117,14 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 			val intent=Intent(this,DaybookWritingActivity::class.java)
 			intent.putExtra("screen_type","update")
-			intent.putExtra("diary_title",binding.daybookDiaryTitle.text)
-			intent.putExtra("daybook_title",binding.daybookTitle.text)
-			intent.putExtra("content",binding.daybookContent.text)
-			intent.putExtra("date",binding.daybookWriteTime.text)
 
-			// TODO: 이미지도 보내기
+			var itemSend= GetDiary2Response(itemId = "99", title = item.title, content = item.content, date = item.date,writer = item.writer,
+				imgUrl = item.imgUrl)
+
+			intent.putExtra("item",itemSend)
+			if(!imageUri.isNullOrEmpty()){
+				intent.putExtra("imageUri",imageUri)
+			}
 			startActivity(intent)
 			miniDialog.dismiss()
 
@@ -143,9 +144,14 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		imgDialog.setContentView(R.layout.dialog_image)
 
 		//이미지 세팅하기
+		if(!item.imgUrl.isNullOrEmpty()){
+			Glide.with(this).load(item.imgUrl)
+				.into(imgDialog.findViewById(R.id.big_image))
+		}
+		if(!imageUri.isNullOrEmpty()){
+			imgDialog.findViewById<ImageView>(R.id.big_image).setImageURI(Uri.parse(imageUri))
+		}
 
-		Glide.with(this).load(item.imgUrl)
-			.into(imgDialog.findViewById(R.id.big_image))
 		imgDialog.findViewById<ImageView>(R.id.big_image_close).setOnClickListener {
 			imgDialog.dismiss()
 		}

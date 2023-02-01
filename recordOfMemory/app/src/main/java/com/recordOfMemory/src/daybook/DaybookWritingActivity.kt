@@ -1,7 +1,9 @@
 package com.recordOfMemory.src.daybook
 
+import android.R.attr.bitmap
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,9 +11,10 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.view.MotionEvent
@@ -22,14 +25,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookWritingBinding
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class DaybookWritingActivity :
 	BaseActivity<ActivityDaybookWritingBinding>(ActivityDaybookWritingBinding::inflate) {
@@ -43,16 +51,36 @@ class DaybookWritingActivity :
 	private val sdfFull = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 
+	private lateinit var imageUri:Uri
+	private lateinit var item : GetDiary2Response
+	private lateinit var writer:String
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		val screenType=intent.getStringExtra("screen_type")
 		if(screenType=="update"){
-			binding.daybookWritingDiaryTitle.text=intent.getStringExtra("diary_title")
-			binding.daybookWritingTitle.setText(intent.getStringExtra("daybook_title"))
-			binding.daybookWritingContent.setText(intent.getStringExtra("content"))
-			binding.daybookWritingWriteTime.text =intent.getStringExtra("date")
+			item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+				intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
+			} else {
+				intent.getSerializableExtra("item") as GetDiary2Response
+			}
+			println(item)
+			binding.daybookWritingWriteTime.text = item.date
+			binding.daybookWritingTitle.setText(item.title)
+			binding.daybookWritingContent.setText(item.content)
+			writer = item.writer
+			if(!item.imgUrl.isNullOrEmpty()){ //이미지가 존재하면 추가해두기
+				Glide.with(this).load(item.imgUrl).into(binding.daybookWritingImage)
+				binding.daybookWritingFr.visibility=View.VISIBLE
+			}
 
+			var imageUri=intent.getStringExtra("imageUri")
+			if(!imageUri.isNullOrEmpty()){
+				val img= Uri.parse(imageUri)
+				binding.daybookWritingImage.setImageURI(img)
+				binding.daybookWritingFr.visibility=View.VISIBLE
+			}
 
 		}else{
 			binding.daybookWritingWriteTime.text =
@@ -68,8 +96,25 @@ class DaybookWritingActivity :
 			//제목 있는지 체크
 			if (checkTitle()) {
 				// 데이터 저장하고 일기 화면으로 돌아가기
-				Toast.makeText(this,"제목 입력함",Toast.LENGTH_SHORT).show()
+				val intent=Intent(this,DaybookActivity::class.java)
 
+				val title=binding.daybookWritingTitle.text //일기 타이틀 (다이어리 타이틀 나중에 추가하자)
+				val content=binding.daybookWritingContent.text
+				val date = binding.daybookWritingWriteTime.text
+				val writer:String = if(screenType=="create"){
+					"카리"
+				}else item.writer
+
+				var itemSend= GetDiary2Response(itemId = "99", title = "$title", content = "$content", date = "$date",writer = writer,
+					imgUrl = "")
+				intent.putExtra("item",itemSend)
+
+				if(binding.daybookWritingFr.visibility==View.VISIBLE){
+					intent.putExtra("imageUri",imageUri.toString())
+				}
+
+				finish()
+				startActivity(intent)
 			}
 
 		}
@@ -78,7 +123,6 @@ class DaybookWritingActivity :
 			//뒤로가기 눌렀을 때 경고창을 띄우기?
 			onBackPressed()
 		}
-
 
 		binding.daybookWritingAlbum.isEnabled = binding.daybookWritingFr.visibility==View.GONE
 		binding.daybookWritingAlbum.setOnClickListener { //사진 추가
@@ -177,17 +221,31 @@ class DaybookWritingActivity :
 			if (it.resultCode == RESULT_OK && it.data!=null){
 				val contentURI= it.data!!.data
 				try{
-//					val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,contentURI )  //아직까진 굴러감
-//					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
-					binding.daybookWritingImage.setImageURI(contentURI)
+					val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,contentURI )  //아직까진 굴러감
+					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
+					//binding.daybookWritingImage.setImageURI(contentURI)
+
 					binding.daybookWritingFr.visibility= View.VISIBLE
 					binding.daybookWritingAlbum.isEnabled=false
+
+//					if (contentURI != null) {
+//						imageUri=contentURI
+//					}
+					//imageBitmap=selectedImageBitmap
+					imageUri=getImageUri(this,selectedImageBitmap)
 				}catch (e:IOException){
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to load image from gallery", Toast.LENGTH_SHORT).show()
 				}
 			}
 		}
+
+	private fun getImageUri(inContext: Context?, inImage: Bitmap?): Uri {
+		val bytes = ByteArrayOutputStream()
+		inImage?.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+		val path = MediaStore.Images.Media.insertImage(inContext?.getContentResolver(), inImage, "Title" + " - " + Calendar.getInstance().getTime(), null)
+		return Uri.parse(path)
+	}
 
 	private val cameraLauncher: ActivityResultLauncher<Intent> =
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -197,6 +255,8 @@ class DaybookWritingActivity :
 					binding.daybookWritingImage.setImageBitmap(thumbNail) // 이미지 연결
 					binding.daybookWritingFr.visibility= View.VISIBLE
 					binding.daybookWritingAlbum.isEnabled=false
+					imageUri=getImageUri(this,thumbNail)
+
 				} catch (e: IOException) {
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to take photo from Camera", Toast.LENGTH_SHORT).show()
@@ -218,7 +278,7 @@ class DaybookWritingActivity :
 	override fun onRequestPermissionsResult(
 		requestCode: Int,
 		permissions: Array<out String>,
-		grantResults: IntArray
+		grantResults: IntArray,
 	) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
