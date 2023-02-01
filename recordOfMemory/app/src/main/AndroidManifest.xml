@@ -60,14 +60,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".src.main.signUp.SignUpActivity"
-            android:exported="true"
+            android:name="com.recordOfMemory.src.main.signUp.SignUpActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

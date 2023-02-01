@@ -3,11 +3,12 @@ package com.recordOfMemory.src.main.onboarding
 import android.R
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.recordOfMemory.databinding.FragmentOnboarding1Binding
 import com.recordOfMemory.src.main.MainActivity
 
@@ -32,6 +33,19 @@ class OnboardingFragment1 : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //시작할 땐 다음 버튼 비활성화
+        viewBinding.nextBtn.isEnabled = false
+
+        viewBinding.editRecordContent.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            //값 변경 시 실행되는 함수
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //editText에 값이 있다면 true, 없으면 false 반환
+                viewBinding.nextBtn.isEnabled = viewBinding.editRecordContent.text.toString().isNotEmpty()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
         //다음 누르면
         viewBinding.nextBtn.setOnClickListener {
             mainActivity!!.openFragmentOnOnboarding(2)

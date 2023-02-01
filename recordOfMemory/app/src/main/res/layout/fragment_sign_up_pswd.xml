@@ -50,7 +50,7 @@
         <LinearLayout
             android:id="@+id/layout_pswd"
             android:layout_width="match_parent"
-            android:layout_height="38dp"
+            android:layout_height="40dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -70,12 +70,13 @@
                 android:paddingTop="11dp"
                 android:paddingBottom="0dp"
                 android:paddingStart="10dp"
+                android:inputType="textPassword"
                 />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/layout_check_pswd"
             android:layout_width="match_parent"
-            android:layout_height="38dp"
+            android:layout_height="40dp"
             app:layout_constraintStart_toStartOf="@+id/layout_pswd"
             app:layout_constraintEnd_toEndOf="@+id/layout_pswd"
             app:layout_constraintTop_toBottomOf="@+id/layout_pswd"
@@ -95,6 +96,7 @@
                 android:paddingTop="11dp"
                 android:paddingBottom="0dp"
                 android:paddingStart="10dp"
+                android:inputType="textPassword"
                 />
         </LinearLayout>
         <TextView
