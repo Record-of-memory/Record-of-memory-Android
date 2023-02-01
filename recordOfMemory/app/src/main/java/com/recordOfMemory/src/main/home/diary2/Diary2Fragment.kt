@@ -1,10 +1,15 @@
-package com.recordOfMemory.src.main.home
+package com.recordOfMemory.src.main.home.diary2
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.system.Os.bind
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
+import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.recordOfMemory.R
@@ -12,10 +17,13 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.daybook.DaybookWritingActivity
-import com.recordOfMemory.src.main.home.diary2.Diary2SearchFragment
-import com.recordOfMemory.src.main.home.diary2.recycler.Diary2GridRecyclerOutViewAdapter
-import com.recordOfMemory.src.main.home.diary2.recycler.Diary2ListRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.recycler.models.Diary2GridOutViewModel
+import com.recordOfMemory.src.main.home.Diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.diary2.member.invite.Diary2InviteMemberFragment
+import com.recordOfMemory.src.main.home.diary2.member.show.Diary2ShowMemberFragment
+import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
+import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
+import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewAdapter
+import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
 class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2){
@@ -37,8 +45,8 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
     }
 
     // 일기 open
-    fun openItem(item: GetDiary2Response) {
-        println(item)
+//    fun openItem(item: GetDiary2Response) {
+//        println(item)
 //        startActivity(Intent(activity, DaybookActivity(item)::class.java))
 
 //        val fm = requireActivity().supportFragmentManager
@@ -59,7 +67,7 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
 //                .commit()
 //            transaction.isAddToBackStackAllowed
 //        }
-    }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val items = itemListAdapterToList()
@@ -163,6 +171,10 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
 
         }
 
+        binding.diary2IvMore.setOnClickListener {
+            showPopup()
+        }
+
 
 
 //        binding.homeButtonTryGetJwt.setOnClickListener {
@@ -203,5 +215,92 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
 //    override fun onPostSignUpFailure(message: String) {
 //        dismissLoadingDialog()
 //        showCustomToast("오류 : $message")
+    }
+
+    private fun showPopup() {
+        val mDialogView = Dialog(requireContext())
+        mDialogView.setContentView(R.layout.dialog_diary2_more)
+        mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val window = mDialogView.window
+
+        val layoutParams = WindowManager.LayoutParams()
+        layoutParams.copyFrom(window?.attributes)
+        layoutParams.gravity = Gravity.TOP or Gravity.END
+        layoutParams.x = 120
+        layoutParams.y = 200
+        window?.attributes = layoutParams
+
+//        val params = mDialogView.window!!.attributes
+//        params.width = WindowManager.LayoutParams.WRAP_CONTENT
+//        params.height = WindowManager.LayoutParams.WRAP_CONTENT
+//        mDialogView.window?.attributes = params
+        mDialogView.show()
+
+        mDialogView.findViewById<TextView>(R.id.dialog_diary2_more_tv_invite_member).setOnClickListener {
+            val fm = requireActivity().supportFragmentManager
+            val transaction: FragmentTransaction = fm.beginTransaction()
+
+            transaction
+                .replace(R.id.main_frm, Diary2InviteMemberFragment())
+                .addToBackStack(null)
+                .commit()
+            transaction.isAddToBackStackAllowed
+            mDialogView.dismiss()
+        }
+        mDialogView.findViewById<TextView>(R.id.dialog_diary2_more_tv_show_member).setOnClickListener {
+            val fm = requireActivity().supportFragmentManager
+            val transaction: FragmentTransaction = fm.beginTransaction()
+
+            transaction
+                .replace(R.id.main_frm, Diary2ShowMemberFragment())
+                .addToBackStack(null)
+                .commit()
+            transaction.isAddToBackStackAllowed
+            mDialogView.dismiss()
+        }
+        mDialogView.findViewById<TextView>(R.id.dialog_diary2_more_tv_exit_diary).setOnClickListener {
+            showCustomDialog()
+            mDialogView.dismiss()
+        }
+    }
+
+    fun showCustomDialog() {
+        val customDialog= Dialog(requireContext())
+        customDialog.setContentView(R.layout.dialog_diary2_leave)
+        customDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val cancelBtn = customDialog.findViewById<TextView>(R.id.dialog_diary2_leave_btn_cancel)
+        cancelBtn.setOnClickListener {
+            customDialog.dismiss()
+        }
+        val leaveBtn = customDialog.findViewById<TextView>(R.id.dialog_diary2_leave_btn_leave)
+        leaveBtn.setOnClickListener {
+            onGetLeaveSuccess()
+            customDialog.dismiss()
+        }
+        customDialog.show()
+    }
+
+    fun onGetLeaveSuccess() {
+        val customDialog= Dialog(requireContext())
+        customDialog.setContentView(R.layout.dialog_custom2)
+        customDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        customDialog.findViewById<TextView>(R.id.dialog2_title).text="다이어리가 삭제되었어요."
+
+
+        val okBtn = customDialog.findViewById<TextView>(R.id.dialog2_btn_ok)
+        okBtn.setOnClickListener {
+            val fm = requireActivity().supportFragmentManager
+            val transaction: FragmentTransaction = fm.beginTransaction()
+
+            transaction
+                .replace(R.id.main_frm, DiaryTogetherFragment())
+                .addToBackStack(null)
+                .commit()
+            transaction.isAddToBackStackAllowed
+            customDialog.dismiss()
+        }
+        customDialog.show()
     }
 }

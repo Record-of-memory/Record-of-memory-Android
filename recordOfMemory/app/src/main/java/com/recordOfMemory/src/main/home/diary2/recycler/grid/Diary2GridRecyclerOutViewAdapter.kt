@@ -1,37 +1,39 @@
-package com.recordOfMemory.src.main.home.diary2.recycler
+package com.recordOfMemory.src.main.home.diary2.recycler.grid
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
+import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
 
-class Diary2ListRecyclerViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<GetDiary2Response>)
-    : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>() {
+class Diary2GridRecyclerOutViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<Diary2GridOutViewModel>)
+    : RecyclerView.Adapter<Diary2GridRecyclerOutViewHolder>() {
 //    }, Filterable{
 
-    lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder
+    lateinit var diary2GridRecyclerOutViewHolder : Diary2GridRecyclerOutViewHolder
 //    private var unFilteredList = itemList
 //    private var filteredList = itemList
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Diary2ListRecyclerViewHolder {
-        diary2ListRecyclerViewHolder = Diary2ListRecyclerViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Diary2GridRecyclerOutViewHolder {
+        diary2GridRecyclerOutViewHolder = Diary2GridRecyclerOutViewHolder(
             parent.context,
+            items,
             LayoutInflater
                 .from(parent.context)
-                .inflate(R.layout.item_diary2_list, parent, false)
+                .inflate(R.layout.item_diary2_grid_out_view, parent, false)
         )
-        return diary2ListRecyclerViewHolder
+
+        return diary2GridRecyclerOutViewHolder
     }
 
-    override fun onBindViewHolder(holder: Diary2ListRecyclerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: Diary2GridRecyclerOutViewHolder, position: Int) {
         holder.bindWithView(itemList[position])
-        holder.itemView.setOnClickListener {
-            val item = itemList[position]
-            items.getItemId(item)
-        }
+//        holder.itemView.setOnClickListener {
+//            val item = filteredList[position]
+//            items.getItemId(item)
+//        }
     }
 
     override fun getItemCount(): Int {

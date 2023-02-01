@@ -82,16 +82,12 @@
         app:layout_constraintStart_toStartOf="parent"/>
     <android.widget.Button
         android:id="@+id/icon_diary_add"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
         android:layout_marginEnd="24dp"
+        app:layout_goneMarginBottom="20dp"
         android:background="@drawable/icn_diary_plus"
-        android:layout_marginBottom="116dp"
-        android:elevation="5dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

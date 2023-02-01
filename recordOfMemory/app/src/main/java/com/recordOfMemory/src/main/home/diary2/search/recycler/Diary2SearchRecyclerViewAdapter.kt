@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.calendar.recycler
+package com.recordOfMemory.src.main.home.diary2.search.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,12 +6,14 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.calendar.CalendarFragment
+import com.recordOfMemory.src.main.home.diary2.Diary2Interface
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 
-class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetDiary2Response>)
+class Diary2SearchRecyclerViewAdapter(val diary2Interface: Diary2Interface, var items: Diary2SearchFragment.itemListAdapterToList, itemList: ArrayList<GetDiary2Response>)
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable {
+
     lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder
     private var unFilteredList = itemList
     private var filteredList = itemList
@@ -53,7 +55,7 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
                     } else {
                         val filteringList = ArrayList<GetDiary2Response>()
                         for (item in unFilteredList) {
-                            if (item.date.contains(charString)) {
+                            if (item.title.contains(charString) || item.content.contains(charString)) {
                                 filteringList.add(item)
                             }
                         }
@@ -69,8 +71,10 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
                 filteredList = results.values as ArrayList<GetDiary2Response>
                 println(filteredList)
+                diary2Interface.onGetItemSize(filteredList.size)
                 notifyDataSetChanged()
             }
         }
+
     }
 }

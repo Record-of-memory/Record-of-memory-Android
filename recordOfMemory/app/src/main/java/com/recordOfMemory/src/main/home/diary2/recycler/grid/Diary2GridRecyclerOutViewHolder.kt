@@ -1,18 +1,13 @@
-package com.recordOfMemory.src.main.home.diary2.recycler
+package com.recordOfMemory.src.main.home.diary2.recycler.grid
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import android.view.View.inflate
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.recycler.models.Diary2GridOutViewModel
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
+import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
 
 class Diary2GridRecyclerOutViewHolder(val context: Context, val items: Diary2Fragment.itemListAdapterToList, itemView: View)
     : RecyclerView.ViewHolder(itemView) {

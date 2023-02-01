@@ -1,5 +1,4 @@
 package com.recordOfMemory.src.main.home.Diary
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.MainActivity
-import com.recordOfMemory.src.main.home.Diary2Fragment
+import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 
 class DiaryAdapter(val itemList: ArrayList<DiaryData>) :
     RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder>() {

@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.diary2.recycler
+package com.recordOfMemory.src.main.home.diary2.recycler.grid
 
 import android.content.Context
 import android.view.View
@@ -20,6 +20,7 @@ class Diary2GridRecyclerInViewHolder(val context: Context, itemView: View)
 
         Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)
+        itemImg.clipToOutline = true
         itemTitle.text = item.title
     }
 }

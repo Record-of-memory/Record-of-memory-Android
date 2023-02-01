@@ -59,6 +59,7 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
             mDialogView.setContentView(R.layout.fragment_pop_diary)
             mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             mDialogView.show()
+            mDialogView.setCancelable(false)
 
             val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
             noButton.setOnClickListener {

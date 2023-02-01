@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.diary2.recycler
+package com.recordOfMemory.src.main.home.diary2.search.recycler
 
 import android.content.Context
 import android.view.View
@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
-class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
+class Diary2SearchRecyclerViewHolder(val context: Context, itemView: View)
     : RecyclerView.ViewHolder(itemView) {
 
     val itemImg = itemView.findViewById<View>(R.id.item_diary2_list_iv_img)
