@@ -28,7 +28,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	private var commentList = ArrayList<CommentData>()
 	lateinit var item : GetDiary2Response
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
-	private lateinit var imageUri:String
+	private var imageUri:String=""
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -85,7 +85,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			if(!comment.text.toString().isNullOrEmpty()){
 				//댓글 업데이트 - 사용자의 이름을 알고있어야 함
 				//백엔드에 정보 보내기
-				commentList.add(CommentData("유저",comment.text.toString(),sdfMini.format(System.currentTimeMillis())))
+				commentList.add(CommentData("kari",comment.text.toString(),sdfMini.format(System.currentTimeMillis())))
 				commentAdapter.notifyDataSetChanged()
 				comment.setText("")
 				binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로

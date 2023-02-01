@@ -26,8 +26,10 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
         fun getItemId(item: GetDiary2Response) {
 //            openItem(item)
             println(item)
-            startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item))
+            var intent=Intent(activity, DaybookActivity::class.java)
+            intent.putExtra("item",item)
+            intent.putExtra("screen_type","read")
+            startActivity(intent)
         }
     }
 
