@@ -6,16 +6,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageBinding
-import com.recordOfMemory.src.main.MainActivity
-import com.recordOfMemory.src.main.calendar.CalendarFragment
-import com.recordOfMemory.src.main.home.diary2.Diary2SearchFragment
 import com.recordOfMemory.src.splash.SplashActivity
 
 class MyPageFragment :

@@ -16,10 +16,7 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentCalendarBinding
 import com.recordOfMemory.databinding.CalendarDayContainerBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
-import com.recordOfMemory.src.main.calendar.recycler.CalendarInterface
 import com.recordOfMemory.src.main.calendar.recycler.CalendarRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.recycler.Diary2ListRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.recycler.Diary2SearchRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 import java.time.DayOfWeek
 import java.time.LocalDate

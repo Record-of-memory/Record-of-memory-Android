@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingVertical="10dp">
+    <ImageView
+        android:id="@+id/item_diary2_show_member_iv_profile"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/icn_user"/>
+    <TextView
+        android:id="@+id/item_diary2_show_member_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이름"
+        android:layout_marginStart="11dp"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/noto_sans_semi_bold"
+        android:includeFontPadding="false" />
+</LinearLayout>

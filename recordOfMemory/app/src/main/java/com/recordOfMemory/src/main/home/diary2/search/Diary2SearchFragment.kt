@@ -1,10 +1,9 @@
-package com.recordOfMemory.src.main.home.diary2
+package com.recordOfMemory.src.main.home.diary2.search
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -12,16 +11,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.recordOfMemory.R
-import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2SearchBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
-import com.recordOfMemory.src.main.home.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.recycler.Diary2SearchRecyclerViewAdapter
+import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
+import com.recordOfMemory.src.main.home.diary2.Diary2Interface
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.search.recycler.Diary2SearchRecyclerViewAdapter
 
 class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentDiary2SearchBinding::bind, R.layout.fragment_diary2_search),
-Diary2Interface{
+    Diary2Interface {
     inner class itemListAdapterToList {
         // 일기 open function
         fun getItemId(item: GetDiary2Response) {

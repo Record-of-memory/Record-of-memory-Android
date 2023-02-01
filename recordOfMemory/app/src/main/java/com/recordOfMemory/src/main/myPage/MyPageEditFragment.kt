@@ -24,8 +24,6 @@ import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageEditBinding
-import com.recordOfMemory.src.main.MainActivity
-import com.recordOfMemory.src.main.home.Diary2Fragment
 import com.recordOfMemory.src.splash.SplashActivity
 import java.io.IOException
 

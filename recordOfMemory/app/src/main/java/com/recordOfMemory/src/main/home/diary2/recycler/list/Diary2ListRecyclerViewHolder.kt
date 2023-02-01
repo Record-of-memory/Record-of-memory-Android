@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.diary2.recycler
+package com.recordOfMemory.src.main.home.diary2.recycler.list
 
 import android.content.Context
 import android.view.View

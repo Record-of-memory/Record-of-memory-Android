@@ -1,10 +1,10 @@
-package com.recordOfMemory.src.main.home.diary2.recycler
+package com.recordOfMemory.src.main.home.diary2.recycler.grid
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.Diary2Fragment
+import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 
 class Diary2GridRecyclerInViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<GetDiary2Response>)
