@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit
 
 // 앱이 실행될때 1번만 실행이 됩니다.
 class ApplicationClass : Application() {
-    val API_URL = "https://edu-api-test.softsquared.com/"
+    // 서버 주소를 입력
+    val API_URL = "http://record-of-memory.kro.kr:8080/"
 
     // 테스트 서버 주소
     // val API_URL = "http://dev-api.test.com/"
@@ -34,7 +35,7 @@ class ApplicationClass : Application() {
     override fun onCreate() {
         super.onCreate()
         sSharedPreferences =
-            applicationContext.getSharedPreferences("SOFTSQUARED_TEMPLATE_APP", MODE_PRIVATE)
+            applicationContext.getSharedPreferences("RECORD_OF_MEMORY_APP", MODE_PRIVATE)
         // 레트로핏 인스턴스 생성
         initRetrofitInstance()
     }

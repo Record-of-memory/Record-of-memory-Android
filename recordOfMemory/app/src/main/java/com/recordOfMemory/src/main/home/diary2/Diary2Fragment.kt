@@ -17,14 +17,16 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.daybook.DaybookWritingActivity
-import com.recordOfMemory.src.main.home.Diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
 import com.recordOfMemory.src.main.home.diary2.member.invite.Diary2InviteMemberFragment
 import com.recordOfMemory.src.main.home.diary2.member.show.Diary2ShowMemberFragment
 import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
+import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiaryRequest
 
 class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2){
     // true - list / false - grid
@@ -131,6 +133,10 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
             }
         }
         binding.diary2IvGrid.setOnClickListener {
+
+            val postDiariesRequest = PostDiaryRequest(name = "", diaryType = "")
+            DiaryService(this).tryPostDiaries(postDiariesRequest)
+
             Log.e("grid isChecked", binding.diary2IvGrid.isChecked.toString())
             if(binding.diary2IvGrid.isChecked) {
                 binding.diary2IvGrid.isChecked = true

@@ -4,10 +4,14 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class GetDiary2Response(
-    @SerializedName("itemId") val itemId : String,
+    @SerializedName("id") val id : String,
     @SerializedName("title") val title : String,
     @SerializedName("content") val content : String,
+    @SerializedName("imgUrl") val imgUrl : String,
     @SerializedName("date") val date : String,
-    @SerializedName("writer") val writer : String,
-    @SerializedName("imgUrl") val imgUrl : String
+    @SerializedName("user") val user : User,
+    @SerializedName("status") val status: String,
+    @SerializedName("diary") val diary : String,
+    @SerializedName("likeCnt") val likeCnt : String,
+    @SerializedName("cmtCnt") val cmtCnt : String
 ) : Serializable

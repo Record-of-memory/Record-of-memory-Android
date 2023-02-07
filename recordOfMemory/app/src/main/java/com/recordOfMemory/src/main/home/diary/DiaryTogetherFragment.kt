@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
 import android.graphics.Color
@@ -11,33 +11,28 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
-import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
+import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
 
-class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone) {
+class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together) {
     lateinit var diaryAdapter: DiaryAdapter
     val datas = mutableListOf<DiaryData>()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         diaryAdapter = DiaryAdapter(datas as ArrayList<DiaryData>)
         binding.diaryRv.adapter = diaryAdapter
 
-
         datas.apply {
-            add(DiaryData(title = "나의 첫 다이어리"))
-            add(DiaryData(title = "비밀일기"))
-            add(DiaryData(title = "보라돌이와 함께"))
-            add(DiaryData(title = "나의 첫 다이어리"))
-            add(DiaryData(title = "비밀일기"))
-            add(DiaryData(title = "보라돌이와 함께"))
-            add(DiaryData(title = "나의 첫 다이어리"))
-            add(DiaryData(title = "비밀일기"))
-            add(DiaryData(title = "보라돌이와 함께"))
+            add(DiaryData(title = "우정일기"))
+            add(DiaryData(title = "우리끼리"))
+            add(DiaryData(title = "여행일기"))
+            add(DiaryData(title = "우정일기"))
+            add(DiaryData(title = "우리끼리"))
+            add(DiaryData(title = "여행일기"))
+            add(DiaryData(title = "우정일기"))
+            add(DiaryData(title = "우리끼리"))
+            add(DiaryData(title = "여행일기"))
         }
-
-        val fm = requireActivity().supportFragmentManager
-        val transaction: FragmentTransaction = fm.beginTransaction()
 
         diaryAdapter.datas = datas
         diaryAdapter.notifyDataSetChanged()
@@ -45,10 +40,14 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
         binding.diaryRv.layoutManager = manager
 
-        binding.diaryBtnAlone.isSelected = true
-        binding.diaryBtnTogether.setOnClickListener {
+        binding.diaryBtnTogether.isSelected = true
+
+        val fm = requireActivity().supportFragmentManager
+        val transaction: FragmentTransaction = fm.beginTransaction()
+
+        binding.diaryBtnAlone.setOnClickListener {
             transaction
-                .replace(R.id.main_frm, DiaryTogetherFragment())
+                .replace(R.id.main_frm, DiaryAloneFragment())
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed
@@ -104,5 +103,3 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         }
     }
 }
-
-
