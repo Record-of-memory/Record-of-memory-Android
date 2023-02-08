@@ -5,20 +5,31 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageBinding
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
+import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
+import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import com.recordOfMemory.src.splash.SplashActivity
 
 class MyPageFragment :
-    BaseFragment<FragmentMyPageBinding>(FragmentMyPageBinding::bind, R.layout.fragment_my_page) {
+    BaseFragment<FragmentMyPageBinding>(FragmentMyPageBinding::bind, R.layout.fragment_my_page),MyPageInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 마이페이지 정보 조회
+        MyPageService(this).tryGetUsers()
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
@@ -51,16 +62,40 @@ class MyPageFragment :
         val logoutBtn=logoutDialog.findViewById<TextView>(R.id.dialog1_btn_delete)
         logoutBtn.text="로그아웃"
         logoutBtn.setOnClickListener {
-            //로그아웃
-            Toast.makeText(context, "로그아웃", Toast.LENGTH_SHORT).show()
             logoutDialog.dismiss()
 
-            // 로그아웃 하고
-
-            //화면은 스플래시 화면으로
-            startActivity(Intent(context,SplashActivity::class.java))
+            // 로그아웃
+            val postSignOutRequest=PostSignOutRequest(refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NzcwODYyNjF9.3blFkHwDHAb98Gc_ENLfLcr3n_o6-6YkAsdQY-QwfW5XUvn8QK9-XDzNCNng6OSAbXQaCwLWfjbAJlZbqT2feg")
+            MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
 
         logoutDialog.show()
+    }
+
+    override fun onPostSignOutSuccess(response: PostSignOutResponse) {
+        Log.d("성공","${response.information.message}")
+        //로그아웃 성공 시 화면은 스플래시 화면으로
+        startActivity(Intent(context,SplashActivity::class.java))
+    }
+
+    override fun onPostSignOutFailure(message: String) {
+        Log.d("실패","$message")
+        Toast.makeText(context,"로그아웃 실패",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onGetUsersSuccess(response: GetUsersResponse) {
+        binding.mypageBoxName.text=response.information.nickname
+        binding.mypageBoxAccount.text=response.information.email
+        if(response.information.imageUrl.isNullOrEmpty()){
+            binding.mypagePersonImg.setImageResource(R.drawable.icn_person)
+        }else{
+            Glide.with(this).load(response.information.imageUrl)
+                .into(binding.mypagePersonImg)
+        }
+    }
+
+    override fun onGetUsersFailure(message: String) {
+        Log.d("실패","$message")
+        Toast.makeText(context,"정보 가져오기 실패",Toast.LENGTH_SHORT).show()
     }
 }

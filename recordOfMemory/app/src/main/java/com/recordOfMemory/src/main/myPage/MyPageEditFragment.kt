@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 
 import android.view.View
 import android.widget.TextView
@@ -24,11 +25,16 @@ import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageEditBinding
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditService
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
+import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.splash.SplashActivity
 import java.io.IOException
 
 
-class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit) {
+class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface {
 
 	val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
@@ -219,14 +225,11 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		}
 
 		deleteAccountDialog.findViewById<TextView>(R.id.mypage_btn_delete).setOnClickListener {
-			//탈퇴하기
-			Toast.makeText(context, "탈퇴하기", Toast.LENGTH_SHORT).show()
 			deleteAccountDialog.dismiss()
 
-			// 탈퇴(백엔드) 및 로그아웃 하고
-
-			//화면은 스플래시 화면으로
-			startActivity(Intent(context, SplashActivity::class.java))
+			// 탈퇴(백엔드)
+			// TODO: 여기 로그아웃 해야하나?
+			MyPageEditService(this).tryDeleteUsers()
 		}
 
 		deleteAccountDialog.show()
@@ -242,6 +245,17 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 
 			true
 		}
+	}
+
+	override fun onDeleteUsersSuccess(response: DeleteUsersResponse) {
+		Log.d("성공","${response.information.message}")
+		//화면은 스플래시 화면으로
+		startActivity(Intent(context, SplashActivity::class.java))
+	}
+
+	override fun onDeleteUsersFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(context,"로그아웃 실패",Toast.LENGTH_SHORT).show()
 	}
 
 }
