@@ -23,10 +23,9 @@ import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
 import com.recordOfMemory.src.daybook.retrofit.CommentInterface
 import com.recordOfMemory.src.daybook.retrofit.CommentService
-import com.recordOfMemory.src.daybook.retrofit.models.Comment
-import com.recordOfMemory.src.daybook.retrofit.models.GetCommentsResponse
-import com.recordOfMemory.src.daybook.retrofit.models.PostCommentRequest
-import com.recordOfMemory.src.daybook.retrofit.models.PostCommentResponse
+import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
+import com.recordOfMemory.src.daybook.retrofit.DaybookService
+import com.recordOfMemory.src.daybook.retrofit.models.*
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
@@ -37,7 +36,7 @@ import java.util.*
 
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
-	MyPageInterface {
+	MyPageInterface, DaybookInterface {
 	private var commentList = ArrayList<Comment>()
 	private lateinit var commentAdapter :CommentAdapter
 	lateinit var item : GetDiary2Response
@@ -87,9 +86,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		binding.daybookBtnSubmit.setOnClickListener {
 			var comment=binding.daybookWriteComment
 			if(!comment.text.toString().isNullOrEmpty()){
-				//댓글 업데이트 - 사용자의 이름을 알고있어야 함
-				//백엔드에 정보 보내기
-
 				//일기 정보 불러와서 id 수정
 				val commentText=comment.text.toString()
 				val postCommentRequest=PostCommentRequest( recordId = 3, content = commentText)
@@ -97,7 +93,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				CommentService(this).tryPostComment(postCommentRequest)
 
 				//이부분 댓글 조회 이후 수정
-				// 현재 기기를 사용하는 유저의 정보를 어디서 가져오지? 마이페이지 그거 쓰면 되나...
+				// 현재 기기를 사용하는 유저의 정보를 백엔드에서 가져와서 세팅
 				userComment.content=commentText
 				userComment.createdAt=sdfMini.format(System.currentTimeMillis())
 				commentList.add(0,userComment)
@@ -146,7 +142,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_delete).setOnClickListener {
 			// 삭제
-			Toast.makeText(this,"일기 삭제",Toast.LENGTH_SHORT).show()
+			val patchDaybookRequest=PatchDaybookRequest(recordId = 12) 
+			DaybookService(this).tryDeleteDaybook(patchDaybookRequest)
 			miniDialog.dismiss()
 		}
 
@@ -240,5 +237,14 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onGetUsersFailure(message: String) {
 		Log.d("실패","$message")
 		Toast.makeText(this,"유저 정보를 가져올 수 없습니다",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {
+		finish()
+	}
+
+	override fun onDeleteDaybookFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"일기를 삭제할 수 없습니다.",Toast.LENGTH_SHORT).show()
 	}
 }

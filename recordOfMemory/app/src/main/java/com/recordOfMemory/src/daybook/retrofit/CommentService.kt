@@ -11,7 +11,7 @@ import retrofit2.Response
 
 class CommentService(val commentInterface: CommentInterface) {
 	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImlhdCI6MTY3NTk2NTgzMSwiZXhwIjoxNjc1OTY5NDMxfQ.5pj5i5qJHNtKJ6QRn5qVpO8K8NDtI3GFCUBRW9zxdIPDGqrsLoesxf8TbDILEutWAhFnnydpvUNBkPOnpgSsAQ"
+		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk2Nzg5NCwiZXhwIjoxNjc1OTcxNDk0fQ.q6RiphbVCL6MXgT3uUbBhOj9CRKQ7J40oW8dPNLt6ifFfScbKF4fMMJr-BINV_KajAMmj9-x6dRW19-TsIJwQg"
 	private val commentRetrofitInterface:CommentRetrofitInterface=ApplicationClass.sRetrofit.create(CommentRetrofitInterface::class.java)
 
 	fun tryGetComments(){
