@@ -9,7 +9,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
-    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNjc1OTUyNDEyLCJleHAiOjE2NzU5NTYwMTJ9.WQUsVs4Lo-NNlow8kZQ-UlBWczTgzR5qLJDCIyV5L0VJL8tYOBmQ-0TYJywdnglqdcIvh0OBBA9d2PNggUEmyA"
+    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNjc1OTU2NDI0LCJleHAiOjE2NzU5NjAwMjR9.tUvLwZ6KUyX2xydiitqNCC5_Jm-R-Mup-PwDvdig6cT0xcfvtcNmPkBbRAHdzSk70RIVD5I1FJEsnpB7zjweWA"
 
     fun  tryGetDiaries() {
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
