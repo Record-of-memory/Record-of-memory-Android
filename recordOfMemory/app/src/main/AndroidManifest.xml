@@ -18,14 +18,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity
-            android:name="com.recordOfMemory.src.main.home.DiaryFragment"
-            android:exported="false"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value=""/>
-        </activity>
+<!--        <activity-->
+<!--            android:name="com.recordOfMemory.src.main.home.DiaryFragment"-->
+<!--            android:exported="false"-->
+<!--            android:theme="@style/AppTheme.NoActionBar">-->
+<!--            <meta-data-->
+<!--                android:name="android.app.lib_name"-->
+<!--                android:value=""/>-->
+<!--        </activity>-->
         <activity
             android:name="com.recordOfMemory.src.splash.SplashActivity"
             android:exported="true"

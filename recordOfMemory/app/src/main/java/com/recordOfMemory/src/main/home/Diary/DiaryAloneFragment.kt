@@ -26,32 +26,32 @@ import retrofit2.Response
 
 class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone), DiaryFragmentInterface {
     lateinit var diaryAdapter: DiaryAdapter
-    val DiaryData = mutableListOf<ResultDiaries>()
+   //val DiaryData = mutableListOf<ResultDiaries>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        diaryAdapter = DiaryAdapter(DiaryData as ArrayList<ResultDiaries>)
-        binding.diaryRv.adapter = diaryAdapter
+//        diaryAdapter = DiaryAdapter(DiaryData as ArrayList<ResultDiaries>)
+//        binding.diaryRv.adapter = diaryAdapter
 
 
-        DiaryData.apply {
-            add(ResultDiaries(id=0,nickname="",name = "나의 첫 다이어리", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "비밀일기", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "보라돌이와 함께", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "나의 첫 다이어리", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "비밀일기", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "보라돌이와 함께", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "나의 첫 다이어리", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "비밀일기", diaryType= "ALONE"))
-            add(ResultDiaries(id=0,nickname="",name = "보라돌이와 함께", diaryType= "ALONE"))
-        }
+//        DiaryData.apply {
+//            add(ResultDiaries(id=0,nickname="",name = "나의 첫 다이어리", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "비밀일기", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "보라돌이와 함께", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "나의 첫 다이어리", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "비밀일기", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "보라돌이와 함께", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "나의 첫 다이어리", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "비밀일기", diaryType= "ALONE"))
+//            add(ResultDiaries(id=0,nickname="",name = "보라돌이와 함께", diaryType= "ALONE"))
+//        }
+//
+//        diaryAdapter.DiaryData = DiaryData
+//        diaryAdapter.notifyDataSetChanged()
 
-        diaryAdapter.DiaryData = DiaryData
-        diaryAdapter.notifyDataSetChanged()
-
-        val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
-        binding.diaryRv.layoutManager = manager
+//        val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
+//        binding.diaryRv.layoutManager = manager
 
         binding.diaryBtnAlone.isSelected = true
 
@@ -106,41 +106,21 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()
             }
-                //벡앤드에 데이터 전달
-//                val diaryRetrofitService = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
-//                diaryRetrofitService.postDiary(newItemName,"WITH").enqueue(object : Callback<GetDiaryResponse>{
-//                    override fun onResponse(call: Call<GetDiaryResponse>, response: Response<GetDiaryResponse>) {
-//                        if (response.isSuccessful) {
-//                            var data = response.body()
-//                        }
-//                    }
-//                    override fun onFailure(call: Call<GetDiaryResponse>, t: Throwable) {
-//                        t.message?.let { Log.d("this is error", it) }
-//                    }
-//                })
 
         }
     }
 
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
+        val data = response.result
         if (response.isSuccess) {
-            val body = response.result
-            if (response.code == 200) {
-                body?.let {
-                    //어댑터로 내용 뿌리기?
-//                    for (document in body!!.id) {
-//                        DiaryData.apply {
-//                            add(
-//                                ResultDiaries(
-//                                    name = body.name,
-//                                    diaryType = body.diaryType
-//                                )
-//                            )}
-//                        }
-                    }
-                } else { // 네트워크 실패 - 응답은 성공, 바디에 내용은 없는 경우
-                    // <아직 다이어리가 없어요. 첫 다이어리를 만들어보세요!> 프레그먼트 띄우기
-            }
+            diaryAdapter = DiaryAdapter(data)
+            binding.diaryRv.adapter = diaryAdapter
+            diaryAdapter.notifyDataSetChanged()
+            val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
+            binding.diaryRv.layoutManager = manager
+            //else { // 네트워크 실패 - 응답은 성공, 바디에 내용은 없는 경우
+            // <아직 다이어리가 없어요. 첫 다이어리를 만들어보세요!> 프레그먼트 띄우기
+            //}
         }
     }
     override fun onGetDiariesFailure(message: String) {

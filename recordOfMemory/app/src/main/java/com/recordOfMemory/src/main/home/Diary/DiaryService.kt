@@ -9,12 +9,18 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
+    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNjc1OTUyNDEyLCJleHAiOjE2NzU5NTYwMTJ9.WQUsVs4Lo-NNlow8kZQ-UlBWczTgzR5qLJDCIyV5L0VJL8tYOBmQ-0TYJywdnglqdcIvh0OBBA9d2PNggUEmyA"
 
     fun  tryGetDiaries() {
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
-        diaryRetrofitInterface.getDiaries(Authorization = "").enqueue(object : Callback<GetDiariesResponse>{
+        diaryRetrofitInterface.getDiaries(Authorization = X_ACCESS_TOKEN).enqueue(object : Callback<GetDiariesResponse>{
             override fun onResponse(call: Call<GetDiariesResponse>, response: Response<GetDiariesResponse>) {
-                diaryFragmentInterface.onGetDiariesSuccess(response.body() as GetDiariesResponse)
+                //response.code()
+                (response.body() as GetDiariesResponse?)?.let {
+                    diaryFragmentInterface.onGetDiariesSuccess(
+                        it
+                    )
+                }
             }
 
             override fun onFailure(call: Call<GetDiariesResponse>, t: Throwable) {
@@ -25,9 +31,13 @@ class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
 
     fun tryPostDiaries(params: PostDiariesRequest){
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
-        diaryRetrofitInterface.postDiaries(Authorization = "", params = params).enqueue(object : Callback<PostDiariesResponse>{
+        diaryRetrofitInterface.postDiaries(Authorization = X_ACCESS_TOKEN, params = params).enqueue(object : Callback<PostDiariesResponse>{
             override fun onResponse(call: Call<PostDiariesResponse>, response: Response<PostDiariesResponse>) {
-                diaryFragmentInterface.onPostDiariesSuccess(response.body() as PostDiariesResponse)
+                (response.body() as PostDiariesResponse?)?.let {
+                    diaryFragmentInterface.onPostDiariesSuccess(
+                        it
+                    )
+                }
             }
 
             override fun onFailure(call: Call<PostDiariesResponse>, t: Throwable) {

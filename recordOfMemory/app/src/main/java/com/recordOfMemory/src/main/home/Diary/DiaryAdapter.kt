@@ -15,7 +15,7 @@ import com.recordOfMemory.src.main.home.Diary2Fragment
 class DiaryAdapter(val itemList: ArrayList<ResultDiaries>) :
     RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder>() {
 
-    var DiaryData = mutableListOf<ResultDiaries>()
+    //var DiaryData = mutableListOf<ResultDiaries>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiaryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_diary, parent, false)
@@ -23,10 +23,10 @@ class DiaryAdapter(val itemList: ArrayList<ResultDiaries>) :
     }
 
     override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
-        holder.bind(DiaryData[position])
+        holder.bind(itemList[position])
     }
 
-    override fun getItemCount(): Int = DiaryData.size
+    override fun getItemCount(): Int = itemList.size
 
     inner class DiaryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_item_name: TextView  = itemView.findViewById(R.id.tv_item_name)

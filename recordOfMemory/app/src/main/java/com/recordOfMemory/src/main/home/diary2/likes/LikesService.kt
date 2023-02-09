@@ -8,7 +8,7 @@ import retrofit2.Response
 class LikesService(val likesInterface: LikesInterface) {
     fun tryPostLikes(postLikesRequest: PostLikesRequest){
         val likesRetrofitInterface = ApplicationClass.sRetrofit.create(LikesRetrofitInterface::class.java)
-        likesRetrofitInterface.postlikes(postLikesRequest).enqueue(object :
+        likesRetrofitInterface.postlikes(Authorization = "", params = postLikesRequest).enqueue(object :
             Callback<LikesResponse> {
             override fun onResponse(call: Call<LikesResponse>, response: Response<LikesResponse>) {
                 likesInterface.onPostLikesSuccess(response.body() as LikesResponse)
