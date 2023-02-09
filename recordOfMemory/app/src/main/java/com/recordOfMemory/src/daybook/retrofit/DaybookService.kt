@@ -11,7 +11,7 @@ import retrofit2.create
 
 class DaybookService(val daybookInterface: DaybookInterface){
 	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk3NjM2NywiZXhwIjoxNjc1OTc5OTY3fQ.a_JmP4aX7xGoF2nZJFAhlyAY46QEbE_Hndm_fCmZjJRXm-DwJEtxEzVV5blu7xPpLhMg25EaIghAOjhsRXt5_A"
+		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk3OTMyNiwiZXhwIjoxNjc1OTgyOTI2fQ.3rX1Q4XPvw7FC-I6idDNc6h-0_fTDO5fjoV2zGKiVzjLsUMaTJA4nYBQ8UhUZ-rdnfyhdxUICc7UfMlYwBo5kQ"
 	private val daybookRetrofitInterface:DaybookRetrofitInterface=ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
 
 	fun tryDeleteDaybook(params: PatchDaybookRequest){

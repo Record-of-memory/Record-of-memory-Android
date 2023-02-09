@@ -13,7 +13,8 @@ import retrofit2.Response
 import java.io.IOException
 
 class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
-	private val auth:String="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImlhdCI6MTY3NTk0ODM5MSwiZXhwIjoxNjc1OTUxOTkxfQ.V47pUxb2EUPcGpfA4du3mUctLP0Tm-R9GyVoKC7kBm1Omd01jYzD9ENqTbwhKnPBF4UzkusjlkwbN2HsiYjLCg"
+	private val auth:String=
+		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk3OTMyNiwiZXhwIjoxNjc1OTgyOTI2fQ.3rX1Q4XPvw7FC-I6idDNc6h-0_fTDO5fjoV2zGKiVzjLsUMaTJA4nYBQ8UhUZ-rdnfyhdxUICc7UfMlYwBo5kQ"
 	private val myPageEditRetrofitInterface: MyPageEditRetrofitInterface = ApplicationClass.sRetrofit.create(MyPageEditRetrofitInterface::class.java)
 
 	fun tryDeleteUsers(){
@@ -22,18 +23,8 @@ class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
 				if(response.isSuccessful){
 					myPageEditInterface.onDeleteUsersSuccess(response.body() as DeleteUsersResponse)
 				}else{
-					///////////////여기 안 받아짐
 					Log.d("fail","fail to delete Account")
-
-					val gson = GsonBuilder().create()
-					try {
-						val error = gson.fromJson(response.errorBody()!!.string(),DeleteUsersResponse::class.java)
-						// 로그인 실패 에러 메시지
-						myPageEditInterface.onDeleteUsersFailure("fail")
-					} catch (e: IOException) {
-						// 통신 오류 에러 메시지
-						myPageEditInterface.onDeleteUsersFailure(e.message ?: "통신 오류")
-					}
+					myPageEditInterface.onDeleteUsersFailure("fail")
 				}
 			}
 

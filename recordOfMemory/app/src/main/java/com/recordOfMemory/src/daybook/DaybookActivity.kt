@@ -91,8 +91,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				userComment.content=commentText
 				userComment.createdAt=sdfMini.format(System.currentTimeMillis())
 				commentList.add(0,userComment)
-				commentAdapter.notifyDataSetChanged()
-
+				commentAdapter.notifyItemInserted(0)
 			}else{
 				commentDialogFunction()
 			}
@@ -245,7 +244,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		daybookId=item.id
 		binding.daybookDiaryTitle.text=item.diary
-		binding.daybookWriteTime.text=item.date  ///////이부분 형식 바꾸기
 
 		if(item.date.contains("T")){
 			val date= sdfFull.parse(item.date.split("T")[0])

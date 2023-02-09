@@ -84,6 +84,11 @@ class MyPageFragment :
     }
 
     override fun onGetUsersSuccess(response: GetUsersResponse) {
+        Log.d("응답이 비었나",response.information.toString())
+
+        //MyPageEditFragment에서 좌측 상단의 뒤로가기 버튼 누르면, binding쪽에서 문제 발생. java.lang.NullPointerException 왜 생기는거지...
+        //40번째 줄에 addToBackStack(null)을 주석처리하면 문제 없이 binding이 잘 되는데,
+        //이러면 MyPageEditFragment에서 핸드폰 자체의 뒤로가기 기능을 썼을 때, MyPageFragment가 안나오고 앱 종료 된다.....
         binding.mypageBoxName.text=response.information.nickname
         binding.mypageBoxAccount.text=response.information.email
         if(response.information.imageUrl.isNullOrEmpty()){
