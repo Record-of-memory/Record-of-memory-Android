@@ -16,24 +16,35 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
 import com.recordOfMemory.src.daybook.retrofit.CommentInterface
 import com.recordOfMemory.src.daybook.retrofit.CommentService
+import com.recordOfMemory.src.daybook.retrofit.models.Comment
+import com.recordOfMemory.src.daybook.retrofit.models.GetCommentsResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PostCommentRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PostCommentResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
+import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface {
-	private var commentList = ArrayList<CommentData>()
+class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
+	MyPageInterface {
+	private var commentList = ArrayList<Comment>()
+	private lateinit var commentAdapter :CommentAdapter
 	lateinit var item : GetDiary2Response
-	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 	private var imageUri:String=""
+	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
+
+	private lateinit var userComment:Comment
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -70,20 +81,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			imageDialogFunction()
 		}
 
-		if(intent.getStringExtra("screen_type")=="read"){ // 더미 데이터를 위한 댓글
-			commentList.apply {
-				add(CommentData("나나","정말 예쁜 사진이네~","22.11.23"))
-				add(CommentData("짱구","노는게 제일 좋아. 친구들 모여라","22.11.22"))
-				add(CommentData("뽀로로","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
-				add(CommentData("따라쟁이","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
-				add(CommentData("둘리","호잇~!","22.11.20"))
-				add(CommentData("뽀삐","나도 곰인형 갖고 싶어","22.11.04"))
-			}
-		}
-
-		val commentAdapter = CommentAdapter(commentList)
-		binding.daybookCommentRV.adapter=commentAdapter
-
+		CommentService(this).tryGetComments()
+		MyPageService(this).tryGetUsers()
 
 		binding.daybookBtnSubmit.setOnClickListener {
 			var comment=binding.daybookWriteComment
@@ -92,12 +91,16 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				//백엔드에 정보 보내기
 
 				//일기 정보 불러와서 id 수정
-				val postCommentRequest=PostCommentRequest( recordId = 3, content = comment.text.toString())
+				val commentText=comment.text.toString()
+				val postCommentRequest=PostCommentRequest( recordId = 3, content = commentText)
 				Log.d("내용",postCommentRequest.toString())
 				CommentService(this).tryPostComment(postCommentRequest)
 
 				//이부분 댓글 조회 이후 수정
-				commentList.add(CommentData("kari",comment.text.toString(),sdfMini.format(System.currentTimeMillis())))
+				// 현재 기기를 사용하는 유저의 정보를 어디서 가져오지? 마이페이지 그거 쓰면 되나...
+				userComment.content=commentText
+				userComment.createdAt=sdfMini.format(System.currentTimeMillis())
+				commentList.add(0,userComment)
 				commentAdapter.notifyDataSetChanged()
 
 			}else{
@@ -202,11 +205,40 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onPostCommentSuccess(response: PostCommentResponse) {
 		binding.daybookWriteComment.setText("")
-		binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+		//binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
 	}
 
 	override fun onPostCommentFailure(message: String) {
 		Log.d("실패","$message")
 		Toast.makeText(this,"댓글 작성 실패",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onGetCommentsSuccess(response: GetCommentsResponse) {
+		commentList=response.information.data
+		commentAdapter = CommentAdapter(commentList)
+		binding.daybookCommentRV.adapter=commentAdapter
+
+	}
+
+	override fun onGetCommentsFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"댓글 로딩 실패",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onPostSignOutSuccess(response: PostSignOutResponse) {
+		//사용 안함
+	}
+
+	override fun onPostSignOutFailure(message: String) {
+		//사용 안함
+	}
+
+	override fun onGetUsersSuccess(response: GetUsersResponse) {
+		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
+	}
+
+	override fun onGetUsersFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"유저 정보를 가져올 수 없습니다",Toast.LENGTH_SHORT).show()
 	}
 }

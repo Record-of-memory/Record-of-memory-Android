@@ -7,12 +7,12 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface CommentRetrofitInterface {
-//	//댓글 조회 API
-//	@GET("/api/comments")
-//	fun getComments(
-//		@Header("Authorization") Authorization: String,
-//		@Path("id") id:Int
-//	): Call<GetCommentsResponse>
+	//댓글 조회 API
+	@GET("/api/comments/{id}")
+	fun getComments(
+		@Header("Authorization") Authorization: String,
+		@Path("id") id:Int
+	): Call<GetCommentsResponse>
 
 	//댓글 입력 API
 	@POST("/api/comments")

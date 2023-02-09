@@ -66,7 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/daybook_write_time" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/daybook_scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -231,6 +231,8 @@
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/daybook_daybook"
@@ -249,7 +251,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:id="@+id/daybook_write"

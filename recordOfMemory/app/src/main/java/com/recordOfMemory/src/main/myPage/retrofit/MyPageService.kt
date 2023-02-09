@@ -12,7 +12,8 @@ import retrofit2.Response
 import java.io.IOException
 
 class MyPageService(val myPageInterface: MyPageInterface) {
-	private val auth:String="wyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImlhdCI6MTY3NTk0OTU2MSwiZXhwIjoxNjc1OTUzMTYxfQ.hI8Rlw_zhYjZc7lkrv2OqgwKtY4M_JcY21w-FFzhZV5JSlQz1gHWwiPt8jvnqVWt_Wt4ZSaZcZ0w7TokwdoxtQ"
+	private val auth:String=
+		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsImlhdCI6MTY3NTk2NTgzMSwiZXhwIjoxNjc1OTY5NDMxfQ.5pj5i5qJHNtKJ6QRn5qVpO8K8NDtI3GFCUBRW9zxdIPDGqrsLoesxf8TbDILEutWAhFnnydpvUNBkPOnpgSsAQ"
 	private val myPageRetrofitInterface: MyPageRetrofitInterface = ApplicationClass.sRetrofit.create(MyPageRetrofitInterface::class.java)
 
 	fun tryPostSignOut(params: PostSignOutRequest){

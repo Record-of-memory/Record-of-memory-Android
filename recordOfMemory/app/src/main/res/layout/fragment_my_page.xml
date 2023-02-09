@@ -72,7 +72,7 @@
                 android:id="@+id/mypage_box_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="나나"
+                android:text=""
                 android:fontFamily="@font/noto_sans_regular"
                 android:textSize="15sp"
                 android:textColor="@color/black"
@@ -111,7 +111,7 @@
                 android:id="@+id/mypage_box_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="hello@gmail.com"
+                android:text=""
                 android:fontFamily="@font/noto_sans_regular"
                 android:textSize="15sp"
                 android:textColor="@color/black"
@@ -140,7 +140,6 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal|top"
             android:background="@drawable/mypage_person_background"
-            android:src="@drawable/icn_person"
             android:clickable="false"
             />
     </FrameLayout>
