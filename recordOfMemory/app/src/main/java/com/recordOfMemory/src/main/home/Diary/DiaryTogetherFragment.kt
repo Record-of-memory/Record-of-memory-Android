@@ -16,7 +16,9 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass.Companion.sRetrofit
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiaryResponse
+import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,28 +26,26 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together) {
+class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together), DiaryFragmentInterface  {
     lateinit var diaryAdapter: DiaryAdapter
-    val DiaryData = mutableListOf<DiaryData>()
-    lateinit var item : GetDiaryResponse
-    private var nickname:String=""
+    val DiaryData = mutableListOf<ResultDiaries>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        diaryAdapter = DiaryAdapter(DiaryData as ArrayList<DiaryData>)
+        diaryAdapter = DiaryAdapter(DiaryData as ArrayList<ResultDiaries>)
         binding.diaryRv.adapter = diaryAdapter
 
         DiaryData.apply {
-            add(DiaryData(title = "우정일기", diaryType= "WITH"))
-            add(DiaryData(title = "우리끼리", diaryType= "WITH"))
-            add(DiaryData(title = "여행일기", diaryType= "WITH"))
-            add(DiaryData(title = "우정일기", diaryType= "WITH"))
-            add(DiaryData(title = "우리끼리", diaryType= "WITH"))
-            add(DiaryData(title = "여행일기", diaryType= "WITH"))
-            add(DiaryData(title = "우정일기", diaryType= "WITH"))
-            add(DiaryData(title = "우리끼리", diaryType= "WITH"))
-            add(DiaryData(title = "여행일기", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "우정일기", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "우리끼리", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "여행일기", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "우정일기", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "우리끼리", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "여행일기", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "우정일기", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "우리끼리", diaryType= "WITH"))
+            add(ResultDiaries(id=0,nickname="",name = "여행일기", diaryType= "WITH"))
         } //더미데이터
 
         diaryAdapter.DiaryData = DiaryData
@@ -61,6 +61,7 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
         //백엔드로부터 user 정보 받아서 diary_tv_title 변경하기
 //        loadData() //유저에 해당하는 다이어리 데이터
+        DiaryService(this).tryGetDiaries()
 
         binding.diaryBtnAlone.setOnClickListener { //혼자쓰는 으로 전환
             transaction
@@ -118,18 +119,14 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
         confirm.setOnClickListener() {
             val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
-            if (newItemName.length == 0) {
-                Toast
-                    .makeText(requireContext(), "다이어리 제목을 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                var newItem = DiaryData(title = newItemName, diaryType= "WITH")
-                DiaryData.add(newItem)
+            if (0 < newItemName.length && newItemName.length < 10){ //10자 이상하면 버튼이 회색으로 변하게하기
+                var newItem = PostDiariesRequest(name = newItemName, diaryType= "WITH")
+                //DiaryData.add(newItem)
                 diaryAdapter.notifyDataSetChanged()
-                mDialogView.dismiss() //다이어리 생성 후에도 모달창 사라짐
-                Toast
-                    .makeText(requireContext(), "새 다이어리가 생성되었습니다", Toast.LENGTH_SHORT)
-                    .show()
+                DiaryService(this).tryPostDiaries(newItem)
+                mDialogView.dismiss()
+            }
+            //val postDiariesRequest = PostDiariesRequest(name = newItemName, diaryType = "WITH")
 
                 //벡앤드에 데이터 전달
 //                val diaryRetrofitService = sRetrofit.create(DiaryRetrofitInterface::class.java)
@@ -145,5 +142,39 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 //                })
             }
         }
+
+    override fun onGetDiariesSuccess(response: GetDiariesResponse) {
+        if (response.isSuccess) {
+            val body = response.result
+            if (response.code == 200) {
+                body?.let {
+                    //어댑터로 내용 뿌리기?
+//                    for (document in body!!.id) {
+//                        DiaryData.apply {
+//                            add(
+//                                ResultDiaries(
+//                                    name = body.name,
+//                                    diaryType = body.diaryType
+//                                )
+//                            )}
+//                        }
+                }
+            } else { // 네트워크 실패 - 응답은 성공, 바디에 내용은 없는 경우
+                // <아직 다이어리가 없어요. 첫 다이어리를 만들어보세요!> 프레그먼트 띄우기
+            }
+        }
     }
+
+    override fun onGetDiariesFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
+
+    override fun onPostDiariesSuccess(response: PostDiariesResponse) {
+        showCustomToast("성공")
+    }
+
+    override fun onPostDiariesFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
+
 }
