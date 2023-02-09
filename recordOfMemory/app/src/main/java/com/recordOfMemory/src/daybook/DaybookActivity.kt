@@ -1,51 +1,46 @@
 package com.recordOfMemory.src.daybook
 
 import android.app.Dialog
-import android.app.ProgressDialog.show
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate) {
 	private var commentList = ArrayList<CommentData>()
-	lateinit var item : GetDiary2Response
+	lateinit var item : GetRecordResponse
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
+			intent.getSerializableExtra("item", GetRecordResponse::class.java)!!
 		} else {
-			intent.getSerializableExtra("item") as GetDiary2Response
+			intent.getSerializableExtra("item") as GetRecordResponse
 		}
 		println(item)
 		binding.daybookWriteTime.text = item.date
 		binding.daybookTitle.text = item.title
 		binding.daybookContent.text = item.content
-		binding.daybookWriter.text = item.writer
+		binding.daybookWriter.text = item.user
 
 		Glide.with(this).load(item.imgUrl)
 			.into(binding.daybookImage)

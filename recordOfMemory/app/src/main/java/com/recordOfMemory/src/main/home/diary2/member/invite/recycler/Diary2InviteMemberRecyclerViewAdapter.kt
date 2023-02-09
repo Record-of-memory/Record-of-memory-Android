@@ -6,16 +6,17 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.diary2.Diary2Interface
-import com.recordOfMemory.src.main.home.diary2.member.models.GetMemberResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
+import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 
-class Diary2InviteMemberRecyclerViewAdapter(val diary2Interface: Diary2Interface, val itemList: ArrayList<GetMemberResponse>)
+class Diary2InviteMemberRecyclerViewAdapter(val diary2InviteInterface: Diary2InviteInterface, val itemList: ArrayList<GetUserResponse>)
     : RecyclerView.Adapter<Diary2InviteMemberRecyclerViewHolder>(), Filterable {
 
     lateinit var diary2InviteMemberRecyclerViewHolder : Diary2InviteMemberRecyclerViewHolder
-    private var unFilteredList = itemList
-    private var filteredList = itemList
+    private var unFilteredList = ArrayList<GetUserResponse>()
+    private var filteredList = ArrayList<GetUserResponse>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Diary2InviteMemberRecyclerViewHolder {
         diary2InviteMemberRecyclerViewHolder = Diary2InviteMemberRecyclerViewHolder(
@@ -30,6 +31,7 @@ class Diary2InviteMemberRecyclerViewAdapter(val diary2Interface: Diary2Interface
     override fun onBindViewHolder(holder: Diary2InviteMemberRecyclerViewHolder, position: Int) {
         holder.bindWithView(filteredList[position])
         holder.itemButton.setOnClickListener {
+            val postDiary2InviteRequest = PostDiary2InviteRequest(email = filteredList[position].email, diaryId = "1")
             holder.itemButton.isEnabled = false
             holder.itemButton.text = "완료"
             // http 통신 필요
@@ -47,14 +49,14 @@ class Diary2InviteMemberRecyclerViewAdapter(val diary2Interface: Diary2Interface
                 val charString = constraint.toString()
                 if(charString == "") {
                     val filterResults = FilterResults()
-                    filterResults.values = ArrayList<GetDiary2Response>()
+                    filterResults.values = ArrayList<GetRecordResponse>()
                     return filterResults
                 }
                 else {
                     filteredList = if (charString.isEmpty()) {
                         unFilteredList
                     } else {
-                        val filteringList = ArrayList<GetMemberResponse>()
+                        val filteringList = ArrayList<GetUserResponse>()
                         for (item in unFilteredList) {
                             if (item.email.contains(charString)) {
                                 filteringList.add(item)
@@ -70,9 +72,9 @@ class Diary2InviteMemberRecyclerViewAdapter(val diary2Interface: Diary2Interface
             }
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
-                filteredList = results.values as ArrayList<GetMemberResponse>
+                filteredList = results.values as ArrayList<GetUserResponse>
                 println(filteredList)
-                diary2Interface.onGetItemSize(filteredList.size)
+                diary2InviteInterface.onGetItemSize(filteredList.size)
                 notifyDataSetChanged()
             }
         }

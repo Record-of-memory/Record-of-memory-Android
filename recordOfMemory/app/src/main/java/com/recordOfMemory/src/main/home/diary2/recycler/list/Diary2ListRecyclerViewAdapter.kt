@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 
-class Diary2ListRecyclerViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<GetDiary2Response>)
-    : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>() {
+class Diary2ListRecyclerViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<GetRecordResponse>)
+    : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>() { init {
+    setHasStableIds(true)
+    }
 //    }, Filterable{
 
     lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder

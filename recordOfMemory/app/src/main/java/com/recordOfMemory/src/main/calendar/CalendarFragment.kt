@@ -17,7 +17,7 @@ import com.recordOfMemory.databinding.FragmentCalendarBinding
 import com.recordOfMemory.databinding.CalendarDayContainerBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.calendar.recycler.CalendarRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -36,7 +36,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
 
     inner class itemListAdapterToList {
         // 일기 open function
-        fun getItemId(item: GetDiary2Response) {
+        fun getItemId(item: GetRecordResponse) {
 //            openItem(item)
             println(item)
             startActivity(
@@ -68,21 +68,24 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         val items = itemListAdapterToList()
         val diary2LayoutManager = LinearLayoutManager(context)
 
-        val itemList = ArrayList<GetDiary2Response>()
+        val itemList = ArrayList<GetRecordResponse>()
 
         itemList.add(
-            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
+            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
         )
 
         itemList.add(
-            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
+            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
         )
 
         itemList.add(
-            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
+            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+                imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
         )
 
         diary2RecyclerViewAdapter = CalendarRecyclerViewAdapter(items, itemList)

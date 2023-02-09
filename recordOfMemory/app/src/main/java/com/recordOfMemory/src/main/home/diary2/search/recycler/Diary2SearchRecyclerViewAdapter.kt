@@ -6,13 +6,15 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.diary2.Diary2Interface
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
+import com.recordOfMemory.src.main.home.diary2.search.retrofit.Diary2SearchInterface
 
-class Diary2SearchRecyclerViewAdapter(val diary2Interface: Diary2Interface, var items: Diary2SearchFragment.itemListAdapterToList, itemList: ArrayList<GetDiary2Response>)
-    : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable {
+class Diary2SearchRecyclerViewAdapter(val diary2SearchInterface: Diary2SearchInterface, var items: Diary2SearchFragment.itemListAdapterToList, itemList: ArrayList<GetRecordResponse>)
+    : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable { init{
+    setHasStableIds(true)
+    }
 
     lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder
     private var unFilteredList = itemList
@@ -46,14 +48,14 @@ class Diary2SearchRecyclerViewAdapter(val diary2Interface: Diary2Interface, var 
                 val charString = constraint.toString()
                 if(charString == "") {
                     val filterResults = FilterResults()
-                    filterResults.values = ArrayList<GetDiary2Response>()
+                    filterResults.values = ArrayList<GetRecordResponse>()
                     return filterResults
                 }
                 else {
                     filteredList = if (charString.isEmpty()) {
                         unFilteredList
                     } else {
-                        val filteringList = ArrayList<GetDiary2Response>()
+                        val filteringList = ArrayList<GetRecordResponse>()
                         for (item in unFilteredList) {
                             if (item.title.contains(charString) || item.content.contains(charString)) {
                                 filteringList.add(item)
@@ -69,9 +71,9 @@ class Diary2SearchRecyclerViewAdapter(val diary2Interface: Diary2Interface, var 
             }
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
-                filteredList = results.values as ArrayList<GetDiary2Response>
+                filteredList = results.values as ArrayList<GetRecordResponse>
                 println(filteredList)
-                diary2Interface.onGetItemSize(filteredList.size)
+                diary2SearchInterface.onGetItemSize(filteredList.size)
                 notifyDataSetChanged()
             }
         }

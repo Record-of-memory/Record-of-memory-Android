@@ -10,7 +10,7 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2ShowMemberBinding
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.member.models.GetMemberResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
 import com.recordOfMemory.src.main.home.diary2.member.show.recycler.Diary2ShowMemberRecyclerViewAdapter
 
 class Diary2ShowMemberFragment:
@@ -18,17 +18,17 @@ class Diary2ShowMemberFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var itemList = ArrayList<GetMemberResponse>()
+        var itemList = ArrayList<GetUserResponse>()
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
 
         itemList.add(
-            GetMemberResponse(
-                userId = "1",
+            GetUserResponse(
                 nickname = "택현",
-                imageUrl = null,
-                email = "taekhyun@naver.com"
+                imageUrl = "",
+                email = "taekhyun@naver.com",
+                role = ""
             )
         )
 

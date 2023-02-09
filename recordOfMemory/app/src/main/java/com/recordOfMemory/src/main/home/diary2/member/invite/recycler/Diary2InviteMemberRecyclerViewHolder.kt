@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.diary2.member.models.GetMemberResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
 
 class Diary2InviteMemberRecyclerViewHolder(val context: Context, itemView: View)
     : RecyclerView.ViewHolder(itemView) {
@@ -17,7 +17,7 @@ class Diary2InviteMemberRecyclerViewHolder(val context: Context, itemView: View)
     val itemNickname = itemView.findViewById<TextView>(R.id.item_diary2_invite_member_tv_nickname)
     val itemButton = itemView.findViewById<Button>(R.id.item_diary2_invite_member_btn_invite)
 
-    fun bindWithView(item: GetMemberResponse) {
+    fun bindWithView(item: GetUserResponse) {
         if (item.imageUrl != null) {
             Glide.with(itemView).load(item.imageUrl)
                 .into(itemImg as ImageView)

@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.diary2.member.models.GetMemberResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
 
-class Diary2ShowMemberRecyclerViewAdapter(val itemList: ArrayList<GetMemberResponse>)
+class Diary2ShowMemberRecyclerViewAdapter(val itemList: ArrayList<GetUserResponse>)
     : RecyclerView.Adapter<Diary2ShowMemberRecyclerViewHolder>() {
 
     lateinit var diary2InviteMemberRecyclerViewHolder : Diary2ShowMemberRecyclerViewHolder

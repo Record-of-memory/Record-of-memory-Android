@@ -13,7 +13,7 @@ class DiaryService(val diaryInterface: DiaryInterface) {
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
         diaryRetrofitInterface.getDiaries(Authorization = "", params = params).enqueue(object : Callback<PostDiaryResponse> {
             override fun onResponse(call: Call<PostDiaryResponse>, response: Response<PostDiaryResponse>) {
-                diaryInterface.onPostDiarySuccess(response.body() as String)
+                diaryInterface.onPostDiarySuccess(response.body() as PostDiaryResponse)
             }
 
             override fun onFailure(call: Call<PostDiaryResponse>, t: Throwable) {

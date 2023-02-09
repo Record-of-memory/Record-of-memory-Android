@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
@@ -24,17 +25,24 @@ import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
-import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
-import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiaryRequest
+import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Interface
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 
-class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2){
+class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2),
+Diary2Interface{
     // true - list / false - grid
     var stateFlag = true
 
+    var listItemList = ArrayList<GetRecordResponse>()
+    var gridItemList = ArrayList<Diary2GridOutViewModel>()
+    val items = itemListAdapterToList()
+
+
     inner class itemListAdapterToList {
         // 일기 open function
-        fun getItemId(item: GetDiary2Response) {
+        fun getItemId(item: GetRecordResponse) {
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
@@ -68,38 +76,44 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
 //    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val items = itemListAdapterToList()
-
-        binding.diary2IvMore.setOnClickListener {
-
-        }
-
-        var itemList = ArrayList<GetDiary2Response>()
-        var itemLists = ArrayList<Diary2GridOutViewModel>()
-
+//        val items = itemListAdapterToList()
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
 
-        itemList.add(GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-        imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
+//        val jsonObject = JSONObject("{\"userId\":\"${id}\",\"category\":\"${category}\",\"title\":\"${title}\",\"contents\":\"${contents}\",\"hashTags\":${jsonArray}}").toString()
+//        val jsonBody = RequestBody.create(parse("application/json"),jsonObject)
 
-        itemList.add(GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
+        showLoadingDialog(requireContext())
+        Diary2Service(this).tryGetRecords("1")
 
-        itemList.add(GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
 
-        itemList.add(GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
 
-        itemList.add(GetDiary2Response(itemId = "1", title = "ss", content = "가가가가가가", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
-
-        itemLists.add(Diary2GridOutViewModel("구리", itemList))
-        itemLists.add(Diary2GridOutViewModel("나나", itemList))
+//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+//        imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
+//
+//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
+//
+//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
+//
+//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
+//
+//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "가가가가가가", date = "23.01.01",writer = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
 
         super.onViewCreated(view, savedInstanceState)
+
+//        // 토큰 저장
+//        val editor = ApplicationClass.sSharedPreferences.edit()
+//        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.accessToken)
+//        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.refreshToken)
+//        editor.apply()
+//
+//        // 토큰 불러오기
+//        val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN)
 
         binding.diary2IvSearch.setOnClickListener {
             transaction
@@ -122,7 +136,7 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
                 binding.diary2IvList.isChecked = true
                 binding.diary2IvGrid.isChecked = false
                 val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, itemList)
+                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
                 binding.diary2RecyclerView.apply {
                     layoutManager = diary2LayoutManager
                     adapter = diary2RecyclerVIewAdapter
@@ -133,16 +147,15 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
             }
         }
         binding.diary2IvGrid.setOnClickListener {
-
-            val postDiariesRequest = PostDiaryRequest(name = "", diaryType = "")
-            DiaryService(this).tryPostDiaries(postDiariesRequest)
+            gridItemList.add(Diary2GridOutViewModel("구리", listItemList))
+            gridItemList.add(Diary2GridOutViewModel("나나", listItemList))
 
             Log.e("grid isChecked", binding.diary2IvGrid.isChecked.toString())
             if(binding.diary2IvGrid.isChecked) {
                 binding.diary2IvGrid.isChecked = true
                 binding.diary2IvList.isChecked = false
                 val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, itemLists)
+                val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, gridItemList)
                 binding.diary2RecyclerView.apply {
                     layoutManager = diary2LayoutManager
                     adapter = diary2RecyclerVIewAdapter
@@ -152,71 +165,11 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
                 binding.diary2IvGrid.isChecked = true
             }
         }
-        // list
-        if(stateFlag) {
-            val diary2LayoutManager = LinearLayoutManager(context)
-            val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, itemList)
-            binding.diary2RecyclerView.apply {
-                layoutManager = diary2LayoutManager
-                adapter = diary2RecyclerVIewAdapter
-            }
-        }
-
-        // grid
-        else {
-            val diary2LayoutManager = LinearLayoutManager(context)
-            val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, itemLists)
-            binding.diary2RecyclerView.apply {
-                layoutManager = diary2LayoutManager
-                adapter = diary2RecyclerVIewAdapter
-            }
-
-        }
 
         binding.diary2IvMore.setOnClickListener {
             showPopup()
         }
 
-
-
-//        binding.homeButtonTryGetJwt.setOnClickListener {
-//            showLoadingDialog(requireContext())
-//            HomeService(this).tryGetUsers()
-//        }
-//
-//        binding.homeBtnTryPostHttpMethod.setOnClickListener {
-//            val email = binding.homeEtId.text.toString()
-//            val password = binding.homeEtPw.text.toString()
-//            val postRequest = PostSignUpRequest(email = email, password = password,
-//                    confirmPassword = password, nickname = "test", phoneNumber = "010-0000-0000")
-//            showLoadingDialog(requireContext())
-//            HomeService(this).tryPostSignUp(postRequest)
-//        }
-//    }
-//
-//    override fun onGetUserSuccess(response: UserResponse) {
-//        dismissLoadingDialog()
-//        for (User in response.result) {
-//            Log.d("HomeFragment", User.toString())
-//        }
-//        binding.homeButtonTryGetJwt.text = response.message
-//        showCustomToast("Get JWT 성공")
-//    }
-//
-//    override fun onGetUserFailure(message: String) {
-//        dismissLoadingDialog()
-//        showCustomToast("오류 : $message")
-//    }
-//
-//    override fun onPostSignUpSuccess(response: SignUpResponse) {
-//        dismissLoadingDialog()
-//        binding.homeBtnTryPostHttpMethod.text = response.message
-//        response.message?.let { showCustomToast(it) }
-//    }
-//
-//    override fun onPostSignUpFailure(message: String) {
-//        dismissLoadingDialog()
-//        showCustomToast("오류 : $message")
     }
 
     private fun showPopup() {
@@ -304,5 +257,34 @@ class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding
             customDialog.dismiss()
         }
         customDialog.show()
+    }
+
+    override fun onGetRecordsSuccess(response: GetRecordsResponse) {
+        dismissLoadingDialog()
+        listItemList = response.information
+        // list
+        if(stateFlag) {
+            val diary2LayoutManager = LinearLayoutManager(context)
+            val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
+            binding.diary2RecyclerView.apply {
+                layoutManager = diary2LayoutManager
+                adapter = diary2RecyclerVIewAdapter
+            }
+        }
+
+        // grid
+        else {
+            val diary2LayoutManager = LinearLayoutManager(context)
+            val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, gridItemList)
+            binding.diary2RecyclerView.apply {
+                layoutManager = diary2LayoutManager
+                adapter = diary2RecyclerVIewAdapter
+            }
+
+        }
+    }
+
+    override fun onGetRecordsFailure(message: String) {
+        TODO("Not yet implemented")
     }
 }
