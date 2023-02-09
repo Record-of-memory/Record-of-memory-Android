@@ -8,5 +8,5 @@ data class PostSignOutResponse(
 )
 
 data class SignOutInformation(
-	@SerializedName("message") override val message: String
-):FailureInformation()
+	@SerializedName("message") val message: String
+)

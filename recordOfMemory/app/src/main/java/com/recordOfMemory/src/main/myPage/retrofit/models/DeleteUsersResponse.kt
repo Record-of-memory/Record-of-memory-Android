@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class DeleteUsersResponse(
 	@SerializedName("check") val check:Boolean,
-	@SerializedName("information") val information: UsersInformation
+	@SerializedName("information") val information: DeleteUsersInformation
 )
 
 data class DeleteUsersInformation(
-	@SerializedName("message") override val message:String
-):FailureInformation()
+	@SerializedName("message") val message:String
+)

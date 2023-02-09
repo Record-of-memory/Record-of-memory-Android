@@ -65,7 +65,7 @@ class MyPageFragment :
             logoutDialog.dismiss()
 
             // 로그아웃
-            val postSignOutRequest=PostSignOutRequest(refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NzcwODYyNjF9.3blFkHwDHAb98Gc_ENLfLcr3n_o6-6YkAsdQY-QwfW5XUvn8QK9-XDzNCNng6OSAbXQaCwLWfjbAJlZbqT2feg")
+            val postSignOutRequest=PostSignOutRequest(refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NzcxNTkxNjF9.ExSfPwle9LtcEh5e4CQIv89Y3hDlwq-_Wib7qIogO1ZeirM9sOze7-eM9REAdCWzwyeJhE8FUlZ2oaZ52Egnng")
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
 

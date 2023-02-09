@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
@@ -19,12 +20,16 @@ import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
+import com.recordOfMemory.src.daybook.retrofit.CommentInterface
+import com.recordOfMemory.src.daybook.retrofit.CommentService
+import com.recordOfMemory.src.daybook.retrofit.models.PostCommentRequest
+import com.recordOfMemory.src.daybook.retrofit.models.PostCommentResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate) {
+class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface {
 	private var commentList = ArrayList<CommentData>()
 	lateinit var item : GetDiary2Response
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
@@ -85,10 +90,16 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			if(!comment.text.toString().isNullOrEmpty()){
 				//댓글 업데이트 - 사용자의 이름을 알고있어야 함
 				//백엔드에 정보 보내기
+
+				//일기 정보 불러와서 id 수정
+				val postCommentRequest=PostCommentRequest( recordId = 3, content = comment.text.toString())
+				Log.d("내용",postCommentRequest.toString())
+				CommentService(this).tryPostComment(postCommentRequest)
+
+				//이부분 댓글 조회 이후 수정
 				commentList.add(CommentData("kari",comment.text.toString(),sdfMini.format(System.currentTimeMillis())))
 				commentAdapter.notifyDataSetChanged()
-				comment.setText("")
-				binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+
 			}else{
 				commentDialogFunction()
 			}
@@ -187,5 +198,15 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 
 		commentDialog.show()
+	}
+
+	override fun onPostCommentSuccess(response: PostCommentResponse) {
+		binding.daybookWriteComment.setText("")
+		binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+	}
+
+	override fun onPostCommentFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"댓글 작성 실패",Toast.LENGTH_SHORT).show()
 	}
 }
