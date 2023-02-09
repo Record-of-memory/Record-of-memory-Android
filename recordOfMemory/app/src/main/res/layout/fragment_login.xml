@@ -96,7 +96,8 @@
                 android:fontFamily="@font/noto_sans_regular"
                 android:paddingTop="10dp"
                 android:paddingBottom="0dp"
-                android:paddingStart="12dp"/>
+                android:paddingStart="12dp"
+                android:inputType="textPassword"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

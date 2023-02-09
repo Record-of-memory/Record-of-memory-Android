@@ -136,7 +136,8 @@
             android:background="@android:color/transparent"
             android:textSize="11dp"
             android:fontFamily="@font/noto_sans_regular"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:maxLength="20"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
