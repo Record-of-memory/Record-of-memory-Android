@@ -233,6 +233,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:overScrollMode="never"
                 android:nestedScrollingEnabled="false"
+                app:reverseLayout="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/daybook_daybook"

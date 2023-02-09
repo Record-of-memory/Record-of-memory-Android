@@ -197,7 +197,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onPostCommentSuccess(response: PostCommentResponse) {
 		binding.daybookWriteComment.setText("")
-		//binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+		binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
 	}
 
 	override fun onPostCommentFailure(message: String) {
