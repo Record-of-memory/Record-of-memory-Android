@@ -16,7 +16,7 @@ import kotlin.collections.ArrayList
 
 class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.Adapter<CommentAdapter.ViewHolder>(){
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
-	private val sdfFull=SimpleDateFormat("yyyy-MM-dd")
+	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentAdapter.ViewHolder {
 		val binding:ItemCommentBinding=ItemCommentBinding.inflate(LayoutInflater.from(parent.context),parent,false)

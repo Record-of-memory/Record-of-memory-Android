@@ -1,6 +1,7 @@
 package com.recordOfMemory.src.daybook.retrofit
 import android.util.Log
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
 import retrofit2.Call
@@ -10,7 +11,7 @@ import retrofit2.create
 
 class DaybookService(val daybookInterface: DaybookInterface){
 	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk2Nzg5NCwiZXhwIjoxNjc1OTcxNDk0fQ.q6RiphbVCL6MXgT3uUbBhOj9CRKQ7J40oW8dPNLt6ifFfScbKF4fMMJr-BINV_KajAMmj9-x6dRW19-TsIJwQg"
+		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk3NjM2NywiZXhwIjoxNjc1OTc5OTY3fQ.a_JmP4aX7xGoF2nZJFAhlyAY46QEbE_Hndm_fCmZjJRXm-DwJEtxEzVV5blu7xPpLhMg25EaIghAOjhsRXt5_A"
 	private val daybookRetrofitInterface:DaybookRetrofitInterface=ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
 
 	fun tryDeleteDaybook(params: PatchDaybookRequest){
@@ -27,6 +28,25 @@ class DaybookService(val daybookInterface: DaybookInterface){
 
 				override fun onFailure(call: Call<PatchDaybookResponse>, t: Throwable) {
 					daybookInterface.onDeleteDaybookFailure(t.message?:"통신오류")
+				}
+
+			})
+	}
+
+	fun tryGetDaybook(daybookId:Int){
+		daybookRetrofitInterface.getDaybook(Authorization = "Bearer $auth",recordId=daybookId)
+			.enqueue(object :Callback<GetDaybookResponse>{
+				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
+					if(response.code()==200){
+						daybookInterface.onGetDaybookSuccess(response.body() as GetDaybookResponse)
+					}else{
+						Log.d("fail","fail to get Daybook")
+						daybookInterface.onGetDaybookFailure("fail")
+					}
+				}
+
+				override fun onFailure(call: Call<GetDaybookResponse>, t: Throwable) {
+					daybookInterface.onGetDaybookFailure(t.message?:"통신 오류")
 				}
 
 			})

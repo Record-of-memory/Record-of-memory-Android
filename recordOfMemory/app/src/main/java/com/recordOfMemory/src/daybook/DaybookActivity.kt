@@ -41,58 +41,52 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	private lateinit var commentAdapter :CommentAdapter
 	lateinit var item : GetDiary2Response
 	private var imageUri:String=""
+	private var daybookImageUrl=""
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
+	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+	private val sdfFull2 = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
+	private var daybookId:Int =0 // 일기리스트에서 아이디 받아오면 굳이 필요 없는 변수일수도?
 
 	private lateinit var userComment:Comment
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
-		} else {
-			intent.getSerializableExtra("item") as GetDiary2Response
-		}
-		println(item)
-		binding.daybookWriteTime.text = item.date
-		binding.daybookTitle.text = item.title
-		binding.daybookContent.text = item.content
-		binding.daybookWriter.text = item.writer
-
-		if(!item.imgUrl.isNullOrEmpty()){
-			Glide.with(this).load(item.imgUrl)
-				.into(binding.daybookImage)
-		}
-
-		imageUri= intent.getStringExtra("imageUri").toString()
-		if(!imageUri.isNullOrEmpty()){
-			val img= Uri.parse(imageUri)
-			binding.daybookImage.setImageURI(img)
-		}
+		DaybookService(this).tryGetDaybook(13) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(13) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		MyPageService(this).tryGetUsers()
+		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
+//		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
+//		} else {
+//			intent.getSerializableExtra("item") as GetDiary2Response
+//		}
+//		println(item)
+//
+//		imageUri= intent.getStringExtra("imageUri").toString()  //여기는 데모영상 찍을 때, 일기 작성 후 데이터 연결을 위한 곳... 이젠 필요 없을 듯?
+//		if(!imageUri.isNullOrEmpty()){
+//			val img= Uri.parse(imageUri)
+//			binding.daybookImage.setImageURI(img)
+//		}
 
 
 		binding.daybookIvBack.setOnClickListener {
 			finish()
 		}
 
-
 		binding.daybookImage.setOnClickListener { //이미지 클릭
 			imageDialogFunction()
 		}
 
-		CommentService(this).tryGetComments()
-		MyPageService(this).tryGetUsers()
 
 		binding.daybookBtnSubmit.setOnClickListener {
 			var comment=binding.daybookWriteComment
 			if(!comment.text.toString().isNullOrEmpty()){
-				//일기 정보 불러와서 id 수정
 				val commentText=comment.text.toString()
-				val postCommentRequest=PostCommentRequest( recordId = 3, content = commentText)
+				val postCommentRequest=PostCommentRequest(recordId = daybookId, content = commentText)
 				Log.d("내용",postCommentRequest.toString())
 				CommentService(this).tryPostComment(postCommentRequest)
 
-				//이부분 댓글 조회 이후 수정
 				// 현재 기기를 사용하는 유저의 정보를 백엔드에서 가져와서 세팅
 				userComment.content=commentText
 				userComment.createdAt=sdfMini.format(System.currentTimeMillis())
@@ -142,7 +136,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_delete).setOnClickListener {
 			// 삭제
-			val patchDaybookRequest=PatchDaybookRequest(recordId = 12) 
+			val patchDaybookRequest=PatchDaybookRequest(recordId = daybookId)
 			DaybookService(this).tryDeleteDaybook(patchDaybookRequest)
 			miniDialog.dismiss()
 		}
@@ -155,13 +149,15 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		imgDialog.setContentView(R.layout.dialog_image)
 
 		//이미지 세팅하기
-		if(!item.imgUrl.isNullOrEmpty()){
-			Glide.with(this).load(item.imgUrl)
+		if(!daybookImageUrl.isNullOrEmpty()){
+			Glide.with(this).load(daybookImageUrl)
 				.into(imgDialog.findViewById(R.id.big_image))
 		}
-		if(!imageUri.isNullOrEmpty()){
-			imgDialog.findViewById<ImageView>(R.id.big_image).setImageURI(Uri.parse(imageUri))
-		}
+
+		//이거는 아마 더이상 필요 없을 것 같은 코드 (데모영상용)
+//		if(!imageUri.isNullOrEmpty()){
+//			imgDialog.findViewById<ImageView>(R.id.big_image).setImageURI(Uri.parse(imageUri))
+//		}
 
 		imgDialog.findViewById<ImageView>(R.id.big_image_close).setOnClickListener {
 			imgDialog.dismiss()
@@ -222,13 +218,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		Toast.makeText(this,"댓글 로딩 실패",Toast.LENGTH_SHORT).show()
 	}
 
-	override fun onPostSignOutSuccess(response: PostSignOutResponse) {
-		//사용 안함
-	}
+	override fun onPostSignOutSuccess(response: PostSignOutResponse) {}
 
-	override fun onPostSignOutFailure(message: String) {
-		//사용 안함
-	}
+	override fun onPostSignOutFailure(message: String) {}
 
 	override fun onGetUsersSuccess(response: GetUsersResponse) {
 		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
@@ -246,5 +238,38 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onDeleteDaybookFailure(message: String) {
 		Log.d("실패","$message")
 		Toast.makeText(this,"일기를 삭제할 수 없습니다.",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onGetDaybookSuccess(response: GetDaybookResponse) {
+		val item=response.information
+
+		daybookId=item.id
+		binding.daybookDiaryTitle.text=item.diary
+		binding.daybookWriteTime.text=item.date  ///////이부분 형식 바꾸기
+
+		if(item.date.contains("T")){
+			val date= sdfFull.parse(item.date.split("T")[0])
+			binding.daybookWriteTime.text= sdfFull2.format(date)
+		}else{
+			binding.daybookWriteTime.text=item.date
+		}
+
+		binding.daybookTitle.text=item.title
+		binding.daybookContent.text = item.content
+		binding.daybookWriter.text = item.user
+		binding.daybookHeartNumber.text=item.likeCnt.toString()
+		binding.daybookCommentNumber.text=item.cmtCnt.toString()
+
+		if(!item.imgUrl.isNullOrEmpty()){
+			daybookImageUrl=item.imgUrl
+			Glide.with(this).load(item.imgUrl)
+				.into(binding.daybookImage)
+		}
+	}
+
+	override fun onGetDaybookFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"일기를 가져올 수 없습니다.",Toast.LENGTH_SHORT).show()
+		finish() //다시 일기리스트로 돌아감
 	}
 }

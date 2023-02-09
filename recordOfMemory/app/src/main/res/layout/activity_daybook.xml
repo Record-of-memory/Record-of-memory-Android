@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="나의 첫 다이어리" />
+        android:text="" />
 
     <ImageView
         android:id="@+id/daybook_iv_more"
@@ -53,7 +53,7 @@
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/daybook_diary_title"
-        android:text="2022.11.24. (목)" />
+        android:text="" />
 
     <ImageView
         android:id="@+id/daybook_click_heart_icon"
@@ -105,7 +105,7 @@
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="핑크뮬리가 예뻤던 날" />
+                    android:text="" />
 
                 <ImageView
                     android:id="@+id/daybook_writer_icon"
@@ -127,7 +127,7 @@
                     android:textSize="11sp"
                     app:layout_constraintStart_toEndOf="@id/daybook_writer_icon"
                     app:layout_constraintTop_toBottomOf="@id/daybook_title"
-                    android:text="나나" />
+                    android:text="" />
 
                 <TextView
                     android:id="@+id/daybook_content"
@@ -140,7 +140,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/daybook_writer"
-                    android:text="하남 갈 일이 있어서 가족들이랑 하남 갔다가 짱 예쁜 핑크뮬리 보고왔다. 심지어 날씨도 엄청 좋은거야 적당한 햇빛과 적당한 바람까지 완벽한 날씨였다. 생각보다 사람이 많이 없어서 예쁜 사진도 엄청 많이 찍고 왔다. 하남 대표 맛집(?) 존맛탱 칼국수까지 완벽!"
+                    android:text=""
                      />
 
                 <!--                가로 길이는 일기 내용의 width로 유지, height는 최대 280dp(짧아도 됨)
