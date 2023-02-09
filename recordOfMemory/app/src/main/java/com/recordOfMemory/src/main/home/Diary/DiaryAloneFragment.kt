@@ -59,6 +59,7 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         val transaction: FragmentTransaction = fm.beginTransaction()
 
         //백엔드로부터 user 정보 받아서 diary_tv_title 변경하기
+
         //load() //유저에 해당하는 다이어리 데이터
         DiaryService(this).tryGetDiaries()
 
