@@ -2,6 +2,7 @@ package com.recordOfMemory.src.daybook
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,8 +10,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
@@ -22,32 +23,84 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityDaybookWritingBinding
+import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
+import com.recordOfMemory.src.daybook.retrofit.DaybookService
+import com.recordOfMemory.src.daybook.retrofit.models.DaybookToWriting
+import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
+import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
+
 class DaybookWritingActivity :
-	BaseActivity<ActivityDaybookWritingBinding>(ActivityDaybookWritingBinding::inflate) {
+	BaseActivity<ActivityDaybookWritingBinding>(ActivityDaybookWritingBinding::inflate),
+DaybookInterface{
 
 	val CAMERA_PERMISSION = arrayOf(android.Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
 	val STORAGE_PERMISSION = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	val STORAGE_PERMISSION_REQUEST = 200
 
+	// 이미지 관련 변수
+	lateinit var imgUrl : MultipartBody.Part
 
 	private val sdfFull = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
-	private val sdfMini = SimpleDateFormat("yyyy.MM.dd", Locale.KOREA) //날짜 포맷
+	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
+
+	private var screenType:String=""
+	private var recordId:Int=0;
+	private lateinit var imageUri:Uri
+	private lateinit var item : GetDiary2Response
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		binding.daybookWritingWriteTime.text =
-			sdfFull.format(System.currentTimeMillis()) //오늘 날짜로 기본 세팅
+		screenType= intent.getStringExtra("screen_type").toString() //creat냐 update냐에 따라 전달받은게 다름
+		if(screenType=="update"){ //수정시에, recordId, date(string), title, content
+			val itemGet = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+				intent.getSerializableExtra("item", DaybookToWriting::class.java)!!
+			} else {
+				intent.getSerializableExtra("item") as DaybookToWriting
+			}
+			//println(item)
+			recordId=itemGet.recordId
+			binding.daybookWritingDiaryTitle.text=itemGet.diaryTitle
+			binding.daybookWritingWriteTime.text = itemGet.date
+			binding.daybookWritingTitle.setText(itemGet.title)
+			binding.daybookWritingContent.setText(itemGet.content)
+			if(!itemGet.imgUrl.isNullOrEmpty()){ //이미지가 존재하면 추가해두기
+				Glide.with(this).load(itemGet.imgUrl).into(binding.daybookWritingImage)
+				binding.daybookWritingFr.visibility=View.VISIBLE
+			}
+
+//			var imageUri=intent.getStringExtra("imageUri")
+//			if(!imageUri.isNullOrEmpty()){
+//				val img= Uri.parse(imageUri)
+//				binding.daybookWritingImage.setImageURI(img)
+//				binding.daybookWritingFr.visibility=View.VISIBLE
+//			}
+
+		}else{// create :  새로 일기를 쓸 때
+
+			//넘어오면서 다이어리 이름 세팅해주세요.<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+			binding.daybookWritingWriteTime.text =
+				sdfFull.format(System.currentTimeMillis()) //오늘 날짜로 기본 세팅
+		}
+
 
 		binding.daybookWritingClickCalendarIcon.setOnClickListener { //날짜 수정
 			changeDate()
@@ -56,9 +109,42 @@ class DaybookWritingActivity :
 		binding.daybookWritingIvComplete.setOnClickListener { //완료
 			//제목 있는지 체크
 			if (checkTitle()) {
-				// 데이터 저장하고 일기 화면으로 돌아가기
-				Toast.makeText(this,"제목 입력함",Toast.LENGTH_SHORT).show()
+				//				val title=binding.daybookWritingTitle.text //일기 타이틀 (다이어리 타이틀 나중에 추가하자)
+//				val content=binding.daybookWritingContent.text
+//				val date = binding.daybookWritingWriteTime.text
+//				val writer:String = if(screenType=="create"){
+//					"카리"
+//				}else item.writer
+//
+//				var itemSend= GetDiary2Response(itemId = "99", title = "$title", content = "$content", date = "$date",writer = writer,
+//					imgUrl = "")
+//				intent.putExtra("item",itemSend)
+//
+//				if(binding.daybookWritingFr.visibility==View.VISIBLE){
+//					intent.putExtra("imageUri",imageUri.toString())
+//				}
+
+				//데이터 통신 끝나고 일기 화면으로 돌아갈 때.
+				if(screenType=="update"){
+					// 데이터 저장하고 일기 화면으로 돌아가기
+					val intent=Intent(this,DaybookActivity::class.java)
+					intent.putExtra("recordId",recordId.toString())
+					setResult(RESULT_OK,intent)
+					finish()
+					startActivity(intent)
+				}
 			}
+
+			val jsonObject = JSONObject(
+				"{" +
+						"\"diaryId\":\"${52}\"," +
+						"\"date\":\"${LocalDateTime.now()}\"," +
+						"\"title\":\"${binding.daybookWritingTitle.text}\"," +
+						"\"content\":\"${binding.daybookWritingContent.text}\"" +
+						"}").toString()
+			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
+			showLoadingDialog(this)
+			DaybookService(this).tryPostRecord(writeRecordReq = jsonBody, imgUrl = imgUrl)
 		}
 
 		binding.daybookWritingIvBack.setOnClickListener {  // 뒤로가기
@@ -66,12 +152,15 @@ class DaybookWritingActivity :
 			onBackPressed()
 		}
 
+		binding.daybookWritingAlbum.isEnabled = binding.daybookWritingFr.visibility==View.GONE
 		binding.daybookWritingAlbum.setOnClickListener { //사진 추가
-			// 앨범 or 사진 선택 (dialog) 임시
-			chooseCameraOrAlbumDialogFunction()
+			if(binding.daybookWritingFr.visibility==View.GONE){ //이미 추가된 사진이 없을 때만 사진 추가
+				chooseCameraOrAlbumDialogFunction()
+			}
 		}
 		binding.daybookWritingDeleteBtn.setOnClickListener { //사진 삭제 (그냥 화면에서만 없애자)
 			binding.daybookWritingFr.visibility=View.GONE
+			binding.daybookWritingAlbum.isEnabled=true
 		}
 	}
 
@@ -158,12 +247,33 @@ class DaybookWritingActivity :
 	private val galleryLauncher: ActivityResultLauncher<Intent> =
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
 			if (it.resultCode == RESULT_OK && it.data!=null){
-				val contentURI= it.data!!.data
+				val contentURI= it.data!!.data!!
 				try{
 //					val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,contentURI )  //아직까진 굴러감
 //					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
 					binding.daybookWritingImage.setImageURI(contentURI)
+
+					val filePath = getFilePath(contentURI)
+
+					// Get the image file
+					val file = filePath.let { it1 -> File(it1) }
+					println("content uri $contentURI")
+					println("file Path $filePath")
+					println("file $file")
+					val requestFile =
+						file?.asRequestBody("image/*".toMediaTypeOrNull())
+
+					imgUrl = MultipartBody.Part.createFormData("img", file!!.name, requestFile!!)
+					println("imgUrl ${imgUrl.body}")
+					// 우리 프로젝트에서는 이미지 파일이 없으면 null로 넘겨주기로 약속했기 때문에 이미지 경로가 없으면 null처리 해준다.
+
 					binding.daybookWritingFr.visibility= View.VISIBLE
+					binding.daybookWritingAlbum.isEnabled=false
+
+//					if (contentURI != null) {
+//						imageUri=contentURI
+//					}
+					//imageBitmap=selectedImageBitmap
 				}catch (e:IOException){
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to load image from gallery", Toast.LENGTH_SHORT).show()
@@ -171,13 +281,58 @@ class DaybookWritingActivity :
 			}
 		}
 
+//	private fun getImageUri(inContext: Context?, inImage: Bitmap?): Uri {
+//		val bytes = ByteArrayOutputStream()
+//		inImage?.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+//		val path = MediaStore.Images.Media.insertImage(inContext?.getContentResolver(), inImage, "Title" + " - " + Calendar.getInstance().getTime(), null)
+//		return Uri.parse(path)
+//	}
+
 	private val cameraLauncher: ActivityResultLauncher<Intent> =
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
 			if (it.resultCode == RESULT_OK && it.data!=null){
 				try {
+					val img = it!!.data!!.extras?.get("data") as Bitmap
+
+					val contentValues = ContentValues().apply {
+						put(MediaStore.Images.Media.DISPLAY_NAME, "IMG - ${Calendar.getInstance().time}")
+						put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+						put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+						put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+					}
+
+					val contentURI = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+					if (contentURI != null) {
+						try {
+							contentResolver.openOutputStream(contentURI).use { outputStream ->
+								img.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+							}
+
+							val filePath = getFilePath(contentURI)
+							println("filePath: $filePath")
+
+							// do something with the file path here
+
+							// Get the image file
+							val file = filePath?.let { it1 -> File(it1) }
+							println("file Path $filePath")
+							println("file $file")
+							val requestFile =
+								file?.asRequestBody("image/*".toMediaTypeOrNull())
+
+							imgUrl = MultipartBody.Part.createFormData("img", file!!.name, requestFile!!)
+						} catch (e: Exception) {
+							e.printStackTrace()
+						}
+					}
+
 					val thumbNail: Bitmap = it!!.data!!.extras?.get("data") as Bitmap
 					binding.daybookWritingImage.setImageBitmap(thumbNail) // 이미지 연결
 					binding.daybookWritingFr.visibility= View.VISIBLE
+					binding.daybookWritingAlbum.isEnabled=false
+//					imageUri=getImageUri(this,thumbNail)
+					
 				} catch (e: IOException) {
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to take photo from Camera", Toast.LENGTH_SHORT).show()
@@ -199,7 +354,7 @@ class DaybookWritingActivity :
 	override fun onRequestPermissionsResult(
 		requestCode: Int,
 		permissions: Array<out String>,
-		grantResults: IntArray
+		grantResults: IntArray,
 	) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -268,5 +423,45 @@ class DaybookWritingActivity :
 			}
 		}
 		return super.dispatchTouchEvent(event)
+	}
+
+	override fun onPostRecordSuccess(response: BaseResponse) {
+		dismissLoadingDialog()
+		finish()
+	}
+
+	override fun onPostRecordFailure(response: String) {
+		dismissLoadingDialog()
+		println(response)
+		showCustomToast(response)
+	}
+
+	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onDeleteDaybookFailure(message: String) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onGetDaybookSuccess(response: GetDaybookResponse) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onGetDaybookFailure(message: String) {
+		TODO("Not yet implemented")
+	}
+
+	private fun getFilePath(contentUri: Uri): String {
+		val cursor = contentResolver.query(contentUri, arrayOf(MediaStore.Images.Media.DATA), null, null, null)
+
+		cursor?.use {
+			if (it.moveToFirst()) {
+				val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+				return it.getString(columnIndex)
+			}
+		}
+
+		return ""
 	}
 }

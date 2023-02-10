@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<layout xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <data>-->
+<!--        <variable-->
+<!--            name="model"-->
+<!--            type="com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel" />-->
+<!--    </data>-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_diary2_grid_out_box"
+        android:layout_marginBottom="10dp">
+        <LinearLayout
+            android:id="@+id/item_diary2_grid_out_linear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icn_user"/>
+            <TextView
+                android:id="@+id/item_diary2_grid_out_tv_writer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="유저"
+                android:fontFamily="@font/noto_sans_semi_bold"
+                android:textSize="11sp"
+                android:layout_marginStart="6dp"
+                android:includeFontPadding="false"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_diary2_grid_out_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/item_diary2_grid_out_linear"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="26dp"
+            android:layout_marginBottom="20dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--</layout>-->

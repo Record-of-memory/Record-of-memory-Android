@@ -11,7 +11,7 @@
         <!--        <item name="android:windowTranslucentStatus">true</item>-->
         <!--        <item name="android:windowTranslucentNavigation">true</item>-->
         <item name="android:statusBarColor">@color/transparent</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/green0</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>
 

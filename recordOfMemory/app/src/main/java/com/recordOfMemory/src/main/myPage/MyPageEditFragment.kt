@@ -11,42 +11,58 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageEditBinding
-import com.recordOfMemory.src.main.MainActivity
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditService
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
+import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
+import com.recordOfMemory.src.splash.SplashActivity
 import java.io.IOException
 
 
-class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit) {
+class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface {
 
-	val CAMERA_PERMISSION = arrayOf(android.Manifest.permission.CAMERA)
+	val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
-	val STORAGE_PERMISSION = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+	val STORAGE_PERMISSION = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	val STORAGE_PERMISSION_REQUEST = 200
+
+	private var changeImg=false;
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		binding.mypageEditBack.setOnClickListener { //뒤로가기 - 다른 방법이 있는지 확인할 것
-			requireActivity().supportFragmentManager.beginTransaction()
-				.replace(R.id.main_frm, MyPageFragment())
-				.commitAllowingStateLoss()
+			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+			transaction
+				.replace(R.id.main_frm,MyPageFragment())
+				.addToBackStack(null)
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 		binding.mypageEditChangePassword.setOnClickListener { //비밀번호 변경
-			requireActivity().supportFragmentManager.beginTransaction()
+			transaction
 				.replace(R.id.main_frm, MyPageEditPasswordFragment())
-				.commitAllowingStateLoss()
+				.addToBackStack(null)
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 		binding.mypageEditDeleteAccount.setOnClickListener { //계정 탈퇴하기
@@ -59,13 +75,17 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		}
 
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
-			// 이름과 이미지 저장하기
-			checkName()
+			if(!(checkName() && changeImg)){ //이름과 이미지 중에 바뀐 것이 있으면
+				//저장하고
+			}
 			
-			//context?.hideKeyboard(view) //넘어가기 전에 키보드 내리기
-			(context as MainActivity).supportFragmentManager.beginTransaction()
+			// 마이페이지로 넘어가기
+			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+			transaction
 				.replace(R.id.main_frm, MyPageFragment())
-				.commitAllowingStateLoss()
+				.addToBackStack(null) //주석으로 하면, mypage돌아갔을 때 뒤로가기 시 바로 끝
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 
@@ -121,9 +141,9 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		}
 	}
 
-	private fun showDialogToGetPermission(requestCode: Int) { // dialog 수정할 것
+	private fun showDialogToGetPermission(requestCode: Int) {
 		val accessDialog = Dialog(requireContext())
-		accessDialog.setContentView(R.layout.dialog_custom)
+		accessDialog.setContentView(R.layout.dialog_custom4)
 		accessDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 		var titleText=""
@@ -161,6 +181,7 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 //					val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,contentURI )  //아직까진 굴러감
 //					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
 					binding.mypageEditPersonImg.setImageURI(contentURI)
+					changeImg=true// 이미지가 새것인지 체크
 				}catch (e: IOException){
 					e.printStackTrace()
 					Toast.makeText(context, "Failed to load image from gallery", Toast.LENGTH_SHORT).show()
@@ -174,6 +195,7 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 				try {
 					val thumbNail: Bitmap = it!!.data!!.extras?.get("data") as Bitmap
 					binding.mypageEditPersonImg.setImageBitmap(thumbNail) // 이미지 연결
+					changeImg=true // 이미지가 새것인지 체크
 				} catch (e: IOException) {
 					e.printStackTrace()
 					Toast.makeText(context, "Failed to take photo from Camera", Toast.LENGTH_SHORT).show()
@@ -203,9 +225,11 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		}
 
 		deleteAccountDialog.findViewById<TextView>(R.id.mypage_btn_delete).setOnClickListener {
-			//탈퇴하기
-			Toast.makeText(context, "탈퇴하기", Toast.LENGTH_SHORT).show()
 			deleteAccountDialog.dismiss()
+
+			// 탈퇴(백엔드)
+			// TODO: 여기 로그아웃 해야하나?
+			MyPageEditService(this).tryDeleteUsers()
 		}
 
 		deleteAccountDialog.show()
@@ -213,14 +237,25 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 
 	private fun checkName():Boolean{
 		val userNewName=binding.mypageEditBoxName.text.toString()
-		if(userNewName.isEmpty()){
-			return false
+		return if(userNewName.isEmpty()){
+			false
 		}else{
 			Toast.makeText(context,"$userNewName",Toast.LENGTH_SHORT).show()
 			//데이터 저장하기
 
-			return true
+			true
 		}
+	}
+
+	override fun onDeleteUsersSuccess(response: DeleteUsersResponse) {
+		Log.d("성공","${response.information.message}")
+		//화면은 스플래시 화면으로
+		startActivity(Intent(context, SplashActivity::class.java))
+	}
+
+	override fun onDeleteUsersFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(context,"로그아웃 실패",Toast.LENGTH_SHORT).show()
 	}
 
 }
