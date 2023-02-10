@@ -66,7 +66,10 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
 
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
         val data = response.information
-        val diaryAdapter = DiaryAdapter(data)
+        val userName = data[0].nickname
+        binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+        val filterData = data.filter { it.diaryType=="ALONE" }
+        val diaryAdapter = DiaryAdapter(filterData as ArrayList<ResultDiaries>)
         binding.diaryRv.adapter = diaryAdapter
         diaryAdapter.notifyDataSetChanged()
         val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)

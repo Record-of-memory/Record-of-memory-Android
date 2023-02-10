@@ -1,12 +1,18 @@
 package com.recordOfMemory.src.main.home.Diary
 
 import android.app.Dialog
+import android.content.Context
+import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.isInvisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
@@ -15,15 +21,17 @@ import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.src.main.home.Diary.DiaryEmptyFragment
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together), DiaryFragmentInterface  {
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.diaryBtnTogether.isSelected = true
-
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
+        binding.diaryBtnTogether.isSelected = true
 
         DiaryService(this).tryGetDiaries()
 
@@ -65,12 +73,32 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
     }
 
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
-//        val data = response.information
-//        val diaryAdapter = DiaryAdapter(data)
-//        binding.diaryRv.adapter = diaryAdapter
-//        diaryAdapter.notifyDataSetChanged()
-//        val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
-//        binding.diaryRv.layoutManager = manager
+        val data = response.information
+        val userName = data[0].nickname
+        binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+        val filterData = data.filter { it.diaryType=="WITH" }
+        if (!filterData.isEmpty()) {
+            val diaryAdapter = DiaryAdapter(filterData as ArrayList<ResultDiaries>)
+            binding.diaryRv.adapter = diaryAdapter
+            diaryAdapter.notifyDataSetChanged()
+            val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
+            binding.diaryRv.layoutManager = manager
+        } else{
+//            binding.diaryIvNone.visibility = View.VISIBLE;
+//            binding.diaryRv.visibility = View.INVISIBLE;
+//            binding.diaryTvNone.visibility = View.VISIBLE;
+                //changeEmpty()
+//            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+//            val fragment1 = DiaryEmptyFragment()
+//            transaction.replace(R.id.diary_fl, fragment1)
+//            transaction.commitAllowingStateLoss()
+//            val fm = requireActivity().supportFragmentManager
+//            val transaction: FragmentTransaction = fm.beginTransaction()
+//            transaction
+//                .replace(R.id.diary_fl, DiaryEmptyFragment())
+//                .addToBackStack(null)
+//                .commit()
+        }
     }
 
     override fun onGetDiariesFailure(message: String) {
@@ -84,5 +112,9 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
     override fun onPostDiariesFailure(message: String) {
         showCustomToast("오류 : $message")
     }
+
+//    fun changeEmpty(view: View){
+//        binding.diaryIvNone.isInvisible
+//    }
 
 }
