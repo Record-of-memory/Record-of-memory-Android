@@ -15,8 +15,7 @@ import com.recordOfMemory.databinding.FragmentDiary2InviteMemberBinding
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.member.invite.recycler.Diary2InviteMemberRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteResponse
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUserEmailRequest
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 
@@ -115,13 +114,15 @@ class Diary2InviteMemberFragment:BaseFragment<FragmentDiary2InviteMemberBinding>
         TODO("Not yet implemented")
     }
 
-    override fun onGetUserEmailSuccess(response: GetUserResponse) {
+    override fun onGetUserEmailSuccess(response: GetUsersResponse) {
         Log.e("here", "SUCCESS")
 
 //        dismissLoadingDialog()
-        val itemList = ArrayList<GetUserResponse>()
-        itemList.add(response)
-        val diary2RecyclerViewAdapter = Diary2InviteMemberRecyclerViewAdapter(this, itemList)
+//        val itemList = ArrayList<GetUsersResponse>()
+//        itemList.add(response)
+//        println(itemList)
+        binding.diary2InviteEmpty.isGone = true
+        val diary2RecyclerViewAdapter = Diary2InviteMemberRecyclerViewAdapter(this, response.information)
         binding.diary2InviteMemberRecyclerView.adapter = diary2RecyclerViewAdapter
 
 
@@ -129,6 +130,6 @@ class Diary2InviteMemberFragment:BaseFragment<FragmentDiary2InviteMemberBinding>
     }
 
     override fun onGetUSerEmailFailure(message: String) {
-        TODO("Not yet implemented")
+        binding.diary2InviteEmpty.isVisible = true
     }
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 
 class Diary2InviteMemberRecyclerViewHolder(val context: Context, itemView: View)
     : RecyclerView.ViewHolder(itemView) {

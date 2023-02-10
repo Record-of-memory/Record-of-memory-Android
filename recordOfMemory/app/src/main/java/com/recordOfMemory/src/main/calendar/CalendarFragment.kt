@@ -41,7 +41,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
             println(item)
             startActivity(
                 Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item))
+                .putExtra("item", item as java.io.Serializable))
         }
     }
 

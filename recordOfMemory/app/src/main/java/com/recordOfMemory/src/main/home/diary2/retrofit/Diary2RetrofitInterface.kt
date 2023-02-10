@@ -3,9 +3,7 @@ package com.recordOfMemory.src.main.home.diary2.retrofit
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteResponse
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUserEmailRequest
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,14 +23,7 @@ interface Diary2RetrofitInterface {
     fun getUserEmail(
         @Header("Authorization") Authorization: String,
         @Query("email") email: String
-    ) : Call<GetUserResponse>
-
-    @Multipart
-    @POST("/api/records")
-    fun postRecord(
-        @Header("Authorization") Authorization: String,
-        @Part imgUrl: MultipartBody.Part, @Part("file") name: RequestBody
-    ): Call<BaseResponse>
+    ) : Call<GetUsersResponse>
 
     @GET("/api/records/{diaryId}")
     fun getRecords(

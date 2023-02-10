@@ -1,7 +1,9 @@
 package com.recordOfMemory.src.main.home.diary2.search
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -28,7 +30,7 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item))
+                .putExtra("item",  item as java.io.Serializable))
         }
     }
 
@@ -57,8 +59,11 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        var itemList = ArrayList<GetRecordResponse>()
         var keyword = ""
+        val listItemList = arguments?.parcelableArrayList<GetRecordResponse>("itemList")
+
+        println(listItemList)
+
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
@@ -72,26 +77,26 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
             transaction.isAddToBackStackAllowed
         }
 
-        itemList.add(
-            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
-                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
-        )
-
-        itemList.add(
-            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
-                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
-        )
-
-        itemList.add(
-            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
-                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
-        )
+//        itemList.add(
+//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
+//        )
+//
+//        itemList.add(
+//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
+//        )
+//
+//        itemList.add(
+//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
+//        )
         val items = itemListAdapterToList()
         val diary2LayoutManager = LinearLayoutManager(context)
-        val diary2RecyclerViewAdapter = Diary2SearchRecyclerViewAdapter(this, items, itemList)
+        val diary2RecyclerViewAdapter = Diary2SearchRecyclerViewAdapter(this, items, listItemList!!)
         binding.diary2SearchRecyclerView.apply {
             layoutManager = diary2LayoutManager
         }
@@ -110,53 +115,6 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
             override fun afterTextChanged(s: Editable?) {
             }
         })
-
-//        binding.homeButtonTryGetJwt.setOnClickListener {
-//            showLoadingDialog(requireContext())
-//            HomeService(this).tryGetUsers()
-//        }
-//
-//        binding.homeBtnTryPostHttpMethod.setOnClickListener {
-//            val email = binding.homeEtId.text.toString()
-//            val password = binding.homeEtPw.text.toString()
-//            val postRequest = PostSignUpRequest(email = email, password = password,
-//                    confirmPassword = password, nickname = "test", phoneNumber = "010-0000-0000")
-//            showLoadingDialog(requireContext())
-//            HomeService(this).tryPostSignUp(postRequest)
-//        }
-//    }
-//
-//    override fun onGetUserSuccess(response: UserResponse) {
-//        dismissLoadingDialog()
-//        for (User in response.result) {
-//            Log.d("HomeFragment", User.toString())
-//        }
-//        binding.homeButtonTryGetJwt.text = response.message
-//        showCustomToast("Get JWT 성공")
-//    }
-//
-//    override fun onGetUserFailure(message: String) {
-//        dismissLoadingDialog()
-//        showCustomToast("오류 : $message")
-//    }
-//
-//    override fun onPostSignUpSuccess(response: SignUpResponse) {
-//        dismissLoadingDialog()
-//        binding.homeBtnTryPostHttpMethod.text = response.message
-//        response.message?.let { showCustomToast(it) }
-//    }
-//
-//    override fun onPostSignUpFailure(message: String) {
-//        dismissLoadingDialog()
-//        showCustomToast("오류 : $message")
-    }
-
-    override fun onGetRecordsSuccess(response: GetRecordsResponse) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onGetRecordsFailure(message: String) {
-        TODO("Not yet implemented")
     }
 
     override fun onGetItemSize(itemSize: Int) {
@@ -166,6 +124,15 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
         }
         else {
             binding.diary2SearchEmpty.isVisible = true
+        }
+    }
+
+    fun <T : Parcelable> Bundle.parcelableArrayList(key: String): ArrayList<T>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            getParcelableArrayList(key)
+        } else {
+            @Suppress("DEPRECATION")
+            getParcelableArrayList(key)
         }
     }
 }

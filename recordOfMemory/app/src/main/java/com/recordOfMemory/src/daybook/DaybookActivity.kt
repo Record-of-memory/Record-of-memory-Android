@@ -19,7 +19,12 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookBinding
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.util.getDateTime
+import com.recordOfMemory.util.getDayOfWeek
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,7 +42,10 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			intent.getSerializableExtra("item") as GetRecordResponse
 		}
 		println(item)
-		binding.daybookWriteTime.text = item.date
+		val dateTime = getDateTime(item.date)
+		val date = dateTime.year.toString() + "." + dateTime.monthValue.toString() + "." + dateTime.dayOfMonth.toString() + "."
+		val dayOfWeek = getDayOfWeek(dateTime.dayOfWeek)
+		binding.daybookWriteTime.text = "$date ($dayOfWeek)"
 		binding.daybookTitle.text = item.title
 		binding.daybookContent.text = item.content
 		binding.daybookWriter.text = item.user

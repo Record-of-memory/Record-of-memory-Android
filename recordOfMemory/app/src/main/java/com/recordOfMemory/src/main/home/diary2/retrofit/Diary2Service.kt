@@ -5,9 +5,7 @@ import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteResponse
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUserEmailRequest
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +16,7 @@ class Diary2Service() {
     lateinit var diary2InviteInterface: Diary2InviteInterface
 //    val X_ACCESS_TOKEN = "Bearer " + ApplicationClass.X_ACCESS_TOKEN
 
-    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjc1OTQ0Mzk0LCJleHAiOjE2NzU5NDc5OTR9.dwVfRRg_wIMh2PI-k3HNy6Lfhgah8yWbGZEVLojmKzBzNMWZEvnNcuVWY79oQg0v7creCGnjJQHL3_si0zN9eQ"
+    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjc2MDU0NDIyLCJleHAiOjE2NzYwNTgwMjJ9.oxrL9v_gT1jfiONkZaVjSjLFhKYW37ii_uUi7QrAsbajgSxYSUDu_9o7FDJktlhy9__JXaZ1vZv5I_RTUJm4Hg"
 
 //    constructor(diary2Interface: Diary2Interface) : this() {
 //    }
@@ -45,8 +43,6 @@ class Diary2Service() {
         this.diary2Interface = diary2Interface
     }
     constructor(diary2InviteInterface: Diary2InviteInterface) : this() {
-        Log.e("here", "initial")
-
         this.diary2InviteInterface = diary2InviteInterface
     }
 
@@ -70,16 +66,14 @@ class Diary2Service() {
     fun tryGetUserEmail(email: String) {
         val diary2RetrofitInterface = ApplicationClass.sRetrofit.create(Diary2RetrofitInterface::class.java)
         diary2RetrofitInterface.getUserEmail(Authorization = X_ACCESS_TOKEN, email = email).enqueue(object :
-            Callback<GetUserResponse> {
-            override fun onResponse(
-                call: Call<GetUserResponse>,
-                response: Response<GetUserResponse>
+            Callback<GetUsersResponse> {
+            override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>
             ) {
                 Log.e("here", "here")
-                diary2InviteInterface.onGetUserEmailSuccess(response.body() as GetUserResponse)
+                diary2InviteInterface.onGetUserEmailSuccess(response.body() as GetUsersResponse)
             }
 
-            override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<GetUsersResponse>, t: Throwable) {
                 diary2InviteInterface.onGetUSerEmailFailure(t.message ?: "통신 오류")
             }
         })

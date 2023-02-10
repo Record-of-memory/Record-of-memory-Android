@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.util.getDateTime
+import com.recordOfMemory.util.getDayOfWeek
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
     : RecyclerView.ViewHolder(itemView) {
@@ -25,7 +29,11 @@ class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
         itemTitle.text = item.title
         itemContent.text = item.content
         itemWriter.text = item.user
-        itemDate.text = item.date
+        val dateTime = getDateTime(item.date)
+        val date = dateTime.year.toString() + "." + dateTime.monthValue.toString() + "." + dateTime.dayOfMonth.toString() + "."
+        val dayOfWeek = getDayOfWeek(dateTime.dayOfWeek)
+        itemDate.text = "$date ($dayOfWeek)"
+
     }
 
 }

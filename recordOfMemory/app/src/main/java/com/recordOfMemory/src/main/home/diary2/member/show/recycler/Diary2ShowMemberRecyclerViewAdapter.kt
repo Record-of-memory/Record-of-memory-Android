@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 
 class Diary2ShowMemberRecyclerViewAdapter(val itemList: ArrayList<GetUserResponse>)
     : RecyclerView.Adapter<Diary2ShowMemberRecyclerViewHolder>() {

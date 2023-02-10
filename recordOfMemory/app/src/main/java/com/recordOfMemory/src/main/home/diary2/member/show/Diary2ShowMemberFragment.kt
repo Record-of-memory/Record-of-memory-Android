@@ -11,6 +11,7 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2ShowMemberBinding
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.member.show.recycler.Diary2ShowMemberRecyclerViewAdapter
 
 class Diary2ShowMemberFragment:

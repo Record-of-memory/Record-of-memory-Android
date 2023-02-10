@@ -46,7 +46,7 @@ Diary2Interface{
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item))
+                .putExtra("item", item as java.io.Serializable))
         }
     }
 
@@ -75,6 +75,12 @@ Diary2Interface{
 //        }
 //    }
 
+    override fun onResume() {
+        super.onResume()
+
+        showLoadingDialog(requireContext())
+        Diary2Service(this).tryGetRecords("52")
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        val items = itemListAdapterToList()
 
@@ -83,11 +89,6 @@ Diary2Interface{
 
 //        val jsonObject = JSONObject("{\"userId\":\"${id}\",\"category\":\"${category}\",\"title\":\"${title}\",\"contents\":\"${contents}\",\"hashTags\":${jsonArray}}").toString()
 //        val jsonBody = RequestBody.create(parse("application/json"),jsonObject)
-
-        showLoadingDialog(requireContext())
-        Diary2Service(this).tryGetRecords("1")
-
-
 
 //        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
 //        imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
@@ -116,8 +117,13 @@ Diary2Interface{
 //        val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN)
 
         binding.diary2IvSearch.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("itemList", listItemList)
+            val diary2SearchFragment = Diary2SearchFragment()
+            diary2SearchFragment.arguments = bundle
+
             transaction
-                .replace(R.id.main_frm, Diary2SearchFragment())
+                .replace(R.id.main_frm, diary2SearchFragment)
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed

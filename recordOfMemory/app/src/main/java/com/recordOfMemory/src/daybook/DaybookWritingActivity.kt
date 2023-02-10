@@ -2,6 +2,7 @@ package com.recordOfMemory.src.daybook
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,11 +10,12 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -22,23 +24,38 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityDaybookWritingBinding
+import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
+import com.recordOfMemory.src.daybook.retrofit.DaybookService
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 class DaybookWritingActivity :
-	BaseActivity<ActivityDaybookWritingBinding>(ActivityDaybookWritingBinding::inflate) {
+	BaseActivity<ActivityDaybookWritingBinding>(ActivityDaybookWritingBinding::inflate),
+DaybookInterface{
 
 	val CAMERA_PERMISSION = arrayOf(android.Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
 	val STORAGE_PERMISSION = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	val STORAGE_PERMISSION_REQUEST = 200
 
+	// 이미지 관련 변수
+	lateinit var imgUrl : MultipartBody.Part
 
 	private val sdfFull = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
@@ -72,6 +89,16 @@ class DaybookWritingActivity :
 
 			}
 
+			val jsonObject = JSONObject(
+				"{" +
+						"\"diaryId\":\"${52}\"," +
+						"\"date\":\"${LocalDateTime.now()}\"," +
+						"\"title\":\"${binding.daybookWritingTitle.text}\"," +
+						"\"content\":\"${binding.daybookWritingContent.text}\"" +
+						"}").toString()
+			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
+			showLoadingDialog(this)
+			DaybookService(this).tryPostRecord(writeRecordReq = jsonBody, imgUrl = imgUrl)
 		}
 
 		binding.daybookWritingIvBack.setOnClickListener {  // 뒤로가기
@@ -171,11 +198,27 @@ class DaybookWritingActivity :
 	private val galleryLauncher: ActivityResultLauncher<Intent> =
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
 			if (it.resultCode == RESULT_OK && it.data!=null){
-				val contentURI= it.data!!.data
+				val contentURI= it.data!!.data!!
 				try{
 //					val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,contentURI )  //아직까진 굴러감
 //					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
 					binding.daybookWritingImage.setImageURI(contentURI)
+
+					val filePath = getFilePath(contentURI)
+
+					// Get the image file
+					val file = filePath.let { it1 -> File(it1) }
+					println("content uri $contentURI")
+					println("file Path $filePath")
+					println("file $file")
+					val requestFile =
+						file?.asRequestBody("image/*".toMediaTypeOrNull())
+
+					imgUrl = MultipartBody.Part.createFormData("img", file!!.name, requestFile!!)
+					println("imgUrl ${imgUrl.body}")
+					// 우리 프로젝트에서는 이미지 파일이 없으면 null로 넘겨주기로 약속했기 때문에 이미지 경로가 없으면 null처리 해준다.
+
+
 					binding.daybookWritingFr.visibility= View.VISIBLE
 				}catch (e:IOException){
 					e.printStackTrace()
@@ -188,6 +231,41 @@ class DaybookWritingActivity :
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
 			if (it.resultCode == RESULT_OK && it.data!=null){
 				try {
+					val img = it!!.data!!.extras?.get("data") as Bitmap
+
+					val contentValues = ContentValues().apply {
+						put(MediaStore.Images.Media.DISPLAY_NAME, "IMG - ${Calendar.getInstance().time}")
+						put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+						put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+						put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+					}
+
+					val contentURI = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+					if (contentURI != null) {
+						try {
+							contentResolver.openOutputStream(contentURI).use { outputStream ->
+								img.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+							}
+
+							val filePath = getFilePath(contentURI)
+							println("filePath: $filePath")
+
+							// do something with the file path here
+
+							// Get the image file
+							val file = filePath?.let { it1 -> File(it1) }
+							println("file Path $filePath")
+							println("file $file")
+							val requestFile =
+								file?.asRequestBody("image/*".toMediaTypeOrNull())
+
+							imgUrl = MultipartBody.Part.createFormData("img", file!!.name, requestFile!!)
+						} catch (e: Exception) {
+							e.printStackTrace()
+						}
+					}
+
 					val thumbNail: Bitmap = it!!.data!!.extras?.get("data") as Bitmap
 					binding.daybookWritingImage.setImageBitmap(thumbNail) // 이미지 연결
 					binding.daybookWritingFr.visibility= View.VISIBLE
@@ -281,5 +359,29 @@ class DaybookWritingActivity :
 			}
 		}
 		return super.dispatchTouchEvent(event)
+	}
+
+	override fun onPostRecordSuccess(response: BaseResponse) {
+		dismissLoadingDialog()
+		finish()
+	}
+
+	override fun onPostRecordFailure(response: String) {
+		dismissLoadingDialog()
+		println(response)
+		showCustomToast(response)
+	}
+
+	private fun getFilePath(contentUri: Uri): String {
+		val cursor = contentResolver.query(contentUri, arrayOf(MediaStore.Images.Media.DATA), null, null, null)
+
+		cursor?.use {
+			if (it.moveToFirst()) {
+				val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+				return it.getString(columnIndex)
+			}
+		}
+
+		return ""
 	}
 }
