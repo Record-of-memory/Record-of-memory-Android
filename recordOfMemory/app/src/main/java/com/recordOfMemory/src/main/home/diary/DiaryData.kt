@@ -1,5 +1,6 @@
-package com.recordOfMemory.src.main.home.diary
+package com.recordOfMemory.src.main.home.Diary
 
 data class DiaryData (
-    val title : String
+    val title : String,
+    val diaryType : String
 )
