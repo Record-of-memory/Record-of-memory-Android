@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
@@ -24,14 +25,15 @@ import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRespons
 import com.recordOfMemory.src.main.home.Diary.DiaryEmptyFragment
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together), DiaryFragmentInterface  {
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
         binding.diaryBtnTogether.isSelected = true
+
+        binding.diaryRv.visibility=View.INVISIBLE
+        binding.diaryIvNone.visibility=View.INVISIBLE
+        binding.diaryTvNone.visibility=View.INVISIBLE
 
         DiaryService(this).tryGetDiaries()
 
@@ -45,6 +47,8 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
         binding.iconDiaryAdd.setOnClickListener { //새 다이어리 추가 버튼 누를시
             addNewDiaryFunction()
+            binding.diaryTvNone.visibility=View.INVISIBLE
+            binding.diaryIvNone.visibility=View.INVISIBLE
         }
     }
 
@@ -67,8 +71,8 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
                 var newItem = PostDiariesRequest(name = newItemName, diaryType= "WITH")
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()
+                DiaryService(this).tryGetDiaries()
             }
-            DiaryService(this).tryGetDiaries()
         }
     }
 
@@ -78,12 +82,15 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
         val filterData = data.filter { it.diaryType=="WITH" }
         if (!filterData.isEmpty()) {
+            binding.diaryRv.visibility=View.VISIBLE
             val diaryAdapter = DiaryAdapter(filterData as ArrayList<ResultDiaries>)
             binding.diaryRv.adapter = diaryAdapter
             diaryAdapter.notifyDataSetChanged()
             val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
             binding.diaryRv.layoutManager = manager
         } else{
+            binding.diaryTvNone.visibility=View.VISIBLE
+            binding.diaryIvNone.visibility=View.VISIBLE
 //            binding.diaryIvNone.visibility = View.VISIBLE;
 //            binding.diaryRv.visibility = View.INVISIBLE;
 //            binding.diaryTvNone.visibility = View.VISIBLE;

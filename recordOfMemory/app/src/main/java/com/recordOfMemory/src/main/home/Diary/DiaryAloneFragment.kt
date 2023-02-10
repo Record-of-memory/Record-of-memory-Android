@@ -19,11 +19,13 @@ import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRespons
 class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone), DiaryFragmentInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.diaryBtnAlone.isSelected = true
-
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
+        binding.diaryBtnAlone.isSelected = true
+
+        binding.diaryRv.visibility=View.INVISIBLE
+        binding.diaryIvNone.visibility=View.INVISIBLE
+        binding.diaryTvNone.visibility=View.INVISIBLE
 
         DiaryService(this).tryGetDiaries()
 
@@ -37,6 +39,8 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
 
         binding.iconDiaryAdd.setOnClickListener {
             addNewDiaryFunction()
+            binding.diaryTvNone.visibility=View.INVISIBLE
+            binding.diaryIvNone.visibility=View.INVISIBLE
         }
     }
 
@@ -59,21 +63,27 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
                 var newItem = PostDiariesRequest(name = newItemName, diaryType= "ALONE")
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()
+                DiaryService(this).tryGetDiaries()
             }
-            DiaryService(this).tryGetDiaries()
         }
     }
 
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
         val data = response.information
-        val userName = data[0].nickname
+        val userName = data[0].nickname //다이어리가 하나도 없을 경우엔?
         binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
         val filterData = data.filter { it.diaryType=="ALONE" }
-        val diaryAdapter = DiaryAdapter(filterData as ArrayList<ResultDiaries>)
-        binding.diaryRv.adapter = diaryAdapter
-        diaryAdapter.notifyDataSetChanged()
-        val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
-        binding.diaryRv.layoutManager = manager
+        if (!filterData.isEmpty()) {
+            binding.diaryRv.visibility=View.VISIBLE
+            val diaryAdapter = DiaryAdapter(filterData as ArrayList<ResultDiaries>)
+            binding.diaryRv.adapter = diaryAdapter
+            diaryAdapter.notifyDataSetChanged()
+            val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
+            binding.diaryRv.layoutManager = manager
+        } else{
+            binding.diaryTvNone.visibility=View.VISIBLE
+            binding.diaryIvNone.visibility=View.VISIBLE
+        }
     }
 
     override fun onGetDiariesFailure(message: String) {
