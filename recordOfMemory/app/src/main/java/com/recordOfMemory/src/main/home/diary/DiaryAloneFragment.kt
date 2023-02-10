@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
 import android.graphics.Color
@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetUsersResponse
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 
 class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone), DiaryFragmentInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,9 +1,9 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetUsersResponse
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET

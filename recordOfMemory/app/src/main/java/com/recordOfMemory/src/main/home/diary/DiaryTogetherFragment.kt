@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
 import android.content.Context
@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
-import com.recordOfMemory.src.main.home.Diary.DiaryEmptyFragment
-import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.src.main.home.diary.DiaryEmptyFragment
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together), DiaryFragmentInterface  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
 import android.content.Context
 import android.os.Bundle

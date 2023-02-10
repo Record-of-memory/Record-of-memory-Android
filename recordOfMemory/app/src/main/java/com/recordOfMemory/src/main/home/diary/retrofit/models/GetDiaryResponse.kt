@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary.retrofit.models
+package com.recordOfMemory.src.main.home.diary.retrofit.models
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
