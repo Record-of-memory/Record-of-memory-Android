@@ -14,6 +14,7 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
 
@@ -28,6 +29,7 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         binding.diaryIvNone.visibility=View.INVISIBLE
         binding.diaryTvNone.visibility=View.INVISIBLE
 
+        DiaryService(this).tryGetUsers()
         DiaryService(this).tryGetDiaries()
 
         binding.diaryBtnTogether.setOnClickListener { //같이쓰는 으로 전환
@@ -100,6 +102,15 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
     }
 
     override fun onPostDiariesFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
+
+    override fun onGetUsersSuccess(response: GetUsersResponse) {
+        val nickname = response.information.nickname
+        binding.diaryTvTitle.text=nickname+"님의 기억을 기록할 다이어리를 골라보세요!"
+    }
+
+    override fun onGetUsersFailure(message: String) {
         showCustomToast("오류 : $message")
     }
 

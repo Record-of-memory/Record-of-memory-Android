@@ -24,6 +24,7 @@ import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
 import com.recordOfMemory.src.main.home.Diary.DiaryEmptyFragment
+import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetUsersResponse
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together), DiaryFragmentInterface  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,6 +36,9 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         binding.diaryRv.visibility=View.INVISIBLE
         binding.diaryIvNone.visibility=View.INVISIBLE
         binding.diaryTvNone.visibility=View.INVISIBLE
+
+
+        DiaryService(this).tryGetUsers()
 
         DiaryService(this).tryGetDiaries()
 
@@ -80,10 +84,13 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         }
     }
 
+
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
         val data = response.information
-        val userName = data[0].nickname
-        binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+//        val userName = data[0].nickname
+//        binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+        //binding.diaryTvTitle.text=nickname+"님의 기억을 기록할 다이어리를 골라보세요!"
+
         val filterData = data.filter { it.diaryType=="WITH" }
         if (!filterData.isEmpty()) {
             binding.diaryRv.visibility=View.VISIBLE
@@ -110,8 +117,13 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         showCustomToast("오류 : $message")
     }
 
-//    fun changeEmpty(view: View){
-//        binding.diaryIvNone.isInvisible
-//    }
+    override fun onGetUsersSuccess(response: GetUsersResponse) {
+        val nickname = response.information.nickname
+        binding.diaryTvTitle.text=nickname+"님의 기억을 기록할 다이어리를 골라보세요!"
+    }
+
+    override fun onGetUsersFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
 
 }

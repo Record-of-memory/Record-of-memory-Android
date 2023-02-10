@@ -2,6 +2,7 @@ package com.recordOfMemory.src.main.home.Diary
 
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.Diary.retrofit.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.src.main.home.Diary.retrofit.models.PostDiariesResponse
 import retrofit2.Call
@@ -9,7 +10,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
-    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNjc2MDM1MDA2LCJleHAiOjE2NzYwMzg2MDZ9.kW35dty0C_wkhtAz883F4RDQX9t4P6c2Q-86tXR2YMRzYLBO3JfGmT8u0THZe6MiFvRFsAPAxE_dtcS-KI1lvw"
+    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNjc2MDM4MTYxLCJleHAiOjE2NzYwNDE3NjF9.1Uu0p_BL7T8jheaFzWf_3-P9JQdiSFZVYjJfeFS4-YiDTfYcmQ0e-rhvnJ3sfhdd18NUN25ZVHswSEGBGqtYBA"
     //val X_ACCESS_TOKEN = "Bearer " + ApplicationClass.X_ACCESS_TOKEN
 
     fun  tryGetDiaries() {
@@ -45,5 +46,24 @@ class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
             }
         })
     }
+
+    fun tryGetUsers(){
+        val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
+        diaryRetrofitInterface.getUsers(Authorization = X_ACCESS_TOKEN).enqueue(object : Callback<GetUsersResponse>{
+            override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>) {
+                if(response.code()==200){
+                    diaryFragmentInterface.onGetUsersSuccess(response.body() as GetUsersResponse)
+                }else{
+                    diaryFragmentInterface.onGetUsersFailure("fail")
+                }
+            }
+
+            override fun onFailure(call: Call<GetUsersResponse>, t: Throwable) {
+                diaryFragmentInterface.onGetUsersFailure(t.message ?: "통신 오류")
+            }
+        })
+    }
+
+
 
 }
