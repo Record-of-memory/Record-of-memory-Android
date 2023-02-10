@@ -17,7 +17,7 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.daybook.DaybookWritingActivity
-import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.Diary.DiaryTogetherFragment
 import com.recordOfMemory.src.main.home.diary2.member.invite.Diary2InviteMemberFragment
 import com.recordOfMemory.src.main.home.diary2.member.show.Diary2ShowMemberFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
@@ -45,7 +45,9 @@ Diary2Interface{
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item as java.io.Serializable))
+                .putExtra("item", item as java.io.Serializable)
+                .putExtra("screen_type","read")
+            )
         }
     }
 

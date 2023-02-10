@@ -5,8 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
@@ -17,73 +17,70 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityDaybookBinding
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
-import com.recordOfMemory.util.getDateTime
-import com.recordOfMemory.util.getDayOfWeek
+import com.recordOfMemory.src.daybook.retrofit.CommentInterface
+import com.recordOfMemory.src.daybook.retrofit.CommentService
+import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
+import com.recordOfMemory.src.daybook.retrofit.DaybookService
+import com.recordOfMemory.src.daybook.retrofit.models.*
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
+import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 import java.util.*
-import kotlin.collections.ArrayList
 
-class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate) {
-	private var commentList = ArrayList<CommentData>()
-	lateinit var item : GetRecordResponse
-	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
+class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
+	MyPageInterface, DaybookInterface {
+	private var commentList = ArrayList<Comment>()
+	private lateinit var commentAdapter :CommentAdapter
+	private var imageUri:String=""
+	private var daybookImageUrl=""
+	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
+	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+	private val sdfFull2 = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
+	private var daybookId:Int =0 // 일기리스트에서 아이디 받아오면 굳이 필요 없는 변수일수도?
+
+	private lateinit var userComment:Comment
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			intent.getSerializableExtra("item", GetRecordResponse::class.java)!!
-		} else {
-			intent.getSerializableExtra("item") as GetRecordResponse
-		}
-		println(item)
-		val dateTime = getDateTime(item.date)
-		val date = dateTime.year.toString() + "." + dateTime.monthValue.toString() + "." + dateTime.dayOfMonth.toString() + "."
-		val dayOfWeek = getDayOfWeek(dateTime.dayOfWeek)
-		binding.daybookWriteTime.text = "$date ($dayOfWeek)"
-		binding.daybookTitle.text = item.title
-		binding.daybookContent.text = item.content
-		binding.daybookWriter.text = item.user
 
-		Glide.with(this).load(item.imgUrl)
-			.into(binding.daybookImage)
+		DaybookService(this).tryGetDaybook(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		MyPageService(this).tryGetUsers()
+		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
+//		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
+//		} else {
+//			intent.getSerializableExtra("item") as GetDiary2Response
+//		}
+//		println(item)
 
 		binding.daybookIvBack.setOnClickListener {
 			finish()
 		}
 
-
 		binding.daybookImage.setOnClickListener { //이미지 클릭
 			imageDialogFunction()
 		}
 
-		commentList.apply {
-			add(CommentData("나나","정말 예쁜 사진이네~","22.11.23"))
-			add(CommentData("짱구","노는게 제일 좋아. 친구들 모여라","22.11.22"))
-			add(CommentData("뽀로로","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
-			add(CommentData("따라쟁이","맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래. 맞아 앞으로 댓글 많이 쓸게! 근데 쓸 말이 없으면 귀찮의니까 안 쓸래","22.11.23"))
-			add(CommentData("둘리","호잇~!","22.11.20"))
-			add(CommentData("뽀삐","나도 곰인형 갖고 싶어","22.11.04"))
-		}
-
-		val commentAdapter = CommentAdapter(commentList)
-		binding.daybookCommentRV.adapter=commentAdapter
-
-
 		binding.daybookBtnSubmit.setOnClickListener {
 			var comment=binding.daybookWriteComment
 			if(!comment.text.toString().isNullOrEmpty()){
-				//댓글 업데이트 - 사용자의 이름을 알고있어야 함
-				//백엔드에 정보 보내기
-				commentList.add(CommentData("유저",comment.text.toString(),sdfMini.format(System.currentTimeMillis())))
-				commentAdapter.notifyDataSetChanged()
-				comment.setText("")
-				binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+				val commentText=comment.text.toString()
+				val postCommentRequest=PostCommentRequest(recordId = daybookId, content = commentText)
+				Log.d("내용",postCommentRequest.toString())
+				CommentService(this).tryPostComment(postCommentRequest)
+
+				// 현재 기기를 사용하는 유저의 정보를 백엔드에서 가져와서 세팅
+				userComment.content=commentText
+				userComment.createdAt=sdfMini.format(System.currentTimeMillis())
+				commentList.add(0,userComment)
+				commentAdapter.notifyItemInserted(0)
 			}else{
 				commentDialogFunction()
 			}
@@ -98,16 +95,13 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			binding.daybookClickHeartIcon.isSelected = !binding.daybookClickHeartIcon.isSelected
 		}
 	}
-//
-//	private fun changeHeartStatus(){
-//		if(binding.daybookClickHeartIcon.isSelected){
-//			binding.daybookClickHeartIcon.isSelected=false
-//		}else{
-//			binding.daybookClickHeartIcon.isSelected= true
-//		}
-//		Toast.makeText(this,"${binding.daybookClickHeartIcon.isSelected}",Toast.LENGTH_SHORT).show()
-//		Log.e("list isChecked", binding.daybookClickHeartIcon.isSelected.toString())
-//	}
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if(resultCode== RESULT_OK){
+			daybookId= data?.getStringExtra("recordId")!!.toInt()
+		}
+	}
 
 	private fun miniDialogFunction(){
 		val miniDialog = Dialog(this)
@@ -118,23 +112,28 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_edit).setOnClickListener {
 			// 수정
 			// 원래 일기의 내용을 같이 넘겨줘야할 것 같다.
-
+			// recordId 넘겨줘야 함
 			val intent=Intent(this,DaybookWritingActivity::class.java)
 			intent.putExtra("screen_type","update")
-			intent.putExtra("diary_title",binding.daybookDiaryTitle.text)
-			intent.putExtra("daybook_title",binding.daybookTitle.text)
-			intent.putExtra("content",binding.daybookContent.text)
-			intent.putExtra("date",binding.daybookWriteTime.text)
 
-			// TODO: 이미지도 보내기
-			startActivity(intent)
+			var itemSend=DaybookToWriting(
+				recordId = daybookId,
+				diaryTitle = binding.daybookDiaryTitle.text.toString(),
+				date = binding.daybookWriteTime.text.toString(),
+				title=binding.daybookTitle.text.toString(),
+				content = binding.daybookContent.text.toString(),
+				imgUrl = daybookImageUrl)
+
+			intent.putExtra("item",itemSend)
+			startActivityForResult(intent,10)
 			miniDialog.dismiss()
 
 		}
 
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_delete).setOnClickListener {
 			// 삭제
-			Toast.makeText(this,"일기 삭제",Toast.LENGTH_SHORT).show()
+			val patchDaybookRequest=PatchDaybookRequest(recordId = daybookId)
+			DaybookService(this).tryDeleteDaybook(patchDaybookRequest)
 			miniDialog.dismiss()
 		}
 
@@ -146,9 +145,11 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		imgDialog.setContentView(R.layout.dialog_image)
 
 		//이미지 세팅하기
+		if(!daybookImageUrl.isNullOrEmpty()){
+			Glide.with(this).load(daybookImageUrl)
+				.into(imgDialog.findViewById(R.id.big_image))
+		}
 
-		Glide.with(this).load(item.imgUrl)
-			.into(imgDialog.findViewById(R.id.big_image))
 		imgDialog.findViewById<ImageView>(R.id.big_image_close).setOnClickListener {
 			imgDialog.dismiss()
 		}
@@ -173,7 +174,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		return super.dispatchTouchEvent(event)
 	}
 
-
 	private fun commentDialogFunction() {
 		val commentDialog = Dialog(this)
 		commentDialog.setContentView(R.layout.dialog_custom2)
@@ -184,5 +184,89 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 
 		commentDialog.show()
+	}
+
+	override fun onPostCommentSuccess(response: PostCommentResponse) {
+		binding.daybookWriteComment.setText("")
+		binding.daybookScrollView.scrollTo(0,binding.daybookScrollLine.bottom) //스크롤을 밑으로
+	}
+
+	override fun onPostCommentFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"댓글 작성 실패",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onGetCommentsSuccess(response: GetCommentsResponse) {
+		commentList=response.information.data
+		commentAdapter = CommentAdapter(commentList)
+		binding.daybookCommentRV.adapter=commentAdapter
+
+	}
+
+	override fun onGetCommentsFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"댓글 로딩 실패",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onPostSignOutSuccess(response: PostSignOutResponse) {}
+
+	override fun onPostSignOutFailure(message: String) {}
+
+	override fun onGetUsersSuccess(response: GetUsersResponse) {
+		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
+	}
+
+	override fun onGetUsersFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"유저 정보를 가져올 수 없습니다",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onPostRecordSuccess(response: BaseResponse) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onPostRecordFailure(response: String) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {
+		finish()
+	}
+
+	override fun onDeleteDaybookFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"일기를 삭제할 수 없습니다.",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onGetDaybookSuccess(response: GetDaybookResponse) {
+		val item=response.information
+
+		daybookId=item.id
+		binding.daybookDiaryTitle.text=item.diary
+
+		if(item.date.contains("T")){
+			val date= sdfFull.parse(item.date.split("T")[0])
+			binding.daybookWriteTime.text= sdfFull2.format(date)
+		}else{
+			binding.daybookWriteTime.text=item.date
+		}
+
+		binding.daybookTitle.text=item.title
+		binding.daybookContent.text = item.content
+		binding.daybookWriter.text = item.user
+		binding.daybookHeartNumber.text=item.likeCnt.toString()
+		binding.daybookCommentNumber.text=item.cmtCnt.toString()
+
+		if(!item.imgUrl.isNullOrEmpty()){
+			daybookImageUrl=item.imgUrl
+			Glide.with(this).load(item.imgUrl)
+				.into(binding.daybookImage)
+		}
+	}
+
+	override fun onGetDaybookFailure(message: String) {
+		Log.d("실패","$message")
+		Toast.makeText(this,"일기를 가져올 수 없습니다.",Toast.LENGTH_SHORT).show()
+		finish() //다시 일기리스트로 돌아감
 	}
 }

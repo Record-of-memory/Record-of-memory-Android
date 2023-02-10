@@ -29,7 +29,8 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item",  item as java.io.Serializable))
+                .putExtra("item",  item as java.io.Serializable)
+                .putExtra("screen_type","read"))
         }
     }
 

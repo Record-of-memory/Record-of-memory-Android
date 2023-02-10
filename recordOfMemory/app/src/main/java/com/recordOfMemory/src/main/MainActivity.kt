@@ -12,7 +12,7 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityMainBinding
 import com.recordOfMemory.src.main.calendar.CalendarFragment
-import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.Diary.DiaryTogetherFragment
 import com.recordOfMemory.src.main.myPage.MyPageFragment
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment1
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment2
