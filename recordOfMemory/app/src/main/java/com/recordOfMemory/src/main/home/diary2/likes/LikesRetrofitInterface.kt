@@ -1,13 +1,16 @@
 package com.recordOfMemory.src.main.home.diary2.likes
 
-import com.recordOfMemory.src.main.home.models.PostSignUpRequest
-import com.recordOfMemory.src.main.home.models.SignUpResponse
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface LikesRetrofitInterface {
     @POST("/api/likes")
     fun postlikes(@Header("Authorization") Authorization: String, @Body params: PostLikesRequest): Call<LikesResponse>
+
+    @DELETE("/api/likes/{diaryId}")
+    fun deletelikes(@Header("Authorization") Authorization: String, @Path("diaryId") diaryId : String): Call<LikesResponse>
+
+    @GET("api/likes/{diaryId}")
+    fun checklikes(@Header("Authorization") Authorization: String, @Path("diaryId") diaryId : String): Call<CheckLikesResponse>
+
 }

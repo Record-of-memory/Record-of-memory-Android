@@ -91,20 +91,6 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         } else{
             binding.diaryTvNone.visibility=View.VISIBLE
             binding.diaryIvNone.visibility=View.VISIBLE
-//            binding.diaryIvNone.visibility = View.VISIBLE;
-//            binding.diaryRv.visibility = View.INVISIBLE;
-//            binding.diaryTvNone.visibility = View.VISIBLE;
-                //changeEmpty()
-//            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-//            val fragment1 = DiaryEmptyFragment()
-//            transaction.replace(R.id.diary_fl, fragment1)
-//            transaction.commitAllowingStateLoss()
-//            val fm = requireActivity().supportFragmentManager
-//            val transaction: FragmentTransaction = fm.beginTransaction()
-//            transaction
-//                .replace(R.id.diary_fl, DiaryEmptyFragment())
-//                .addToBackStack(null)
-//                .commit()
         }
     }
 
