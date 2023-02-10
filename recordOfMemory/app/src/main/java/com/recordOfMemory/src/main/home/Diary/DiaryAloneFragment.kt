@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
@@ -59,19 +60,23 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
 
         confirm.setOnClickListener() {
             val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
-            if (0 < newItemName.length && newItemName.length < 10){ //10자 이상하면 버튼이 회색으로 변하게하기
+            if (0 < newItemName.length && newItemName.length < 10){
                 var newItem = PostDiariesRequest(name = newItemName, diaryType= "ALONE")
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()
                 DiaryService(this).tryGetDiaries()
+            } else{
+                val alarm = mDialogView.findViewById<TextView>(R.id.pop_tv_alarm)
+                alarm.text = "10자 이내로 설정해주세요"
             }
         }
     }
 
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
         val data = response.information
-        val userName = data[0].nickname //다이어리가 하나도 없을 경우엔?
-        binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+        //val userName = data[0].nickname -> 로그인 후 받은 닉네임 정보로
+        //binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+
         val filterData = data.filter { it.diaryType=="ALONE" }
         if (!filterData.isEmpty()) {
             binding.diaryRv.visibility=View.VISIBLE

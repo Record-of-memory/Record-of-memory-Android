@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -72,6 +73,9 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()
                 DiaryService(this).tryGetDiaries()
+            } else{
+                val alarm = mDialogView.findViewById<TextView>(R.id.pop_tv_alarm)
+                alarm.text = "10자 이내로 설정해주세요"
             }
         }
     }
