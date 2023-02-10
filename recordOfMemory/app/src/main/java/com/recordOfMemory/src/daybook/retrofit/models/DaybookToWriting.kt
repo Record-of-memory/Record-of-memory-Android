@@ -1,0 +1,12 @@
+package com.recordOfMemory.src.daybook.retrofit.models
+
+import java.io.Serializable
+
+data class DaybookToWriting(
+	val recordId:Int,
+	val diaryTitle:String,
+	val date:String,
+	val title:String,
+	val content:String,
+	val imgUrl:String
+): Serializable

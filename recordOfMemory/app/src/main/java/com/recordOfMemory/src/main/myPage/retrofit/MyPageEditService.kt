@@ -14,7 +14,7 @@ import java.io.IOException
 
 class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
 	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NTk3OTMyNiwiZXhwIjoxNjc1OTgyOTI2fQ.3rX1Q4XPvw7FC-I6idDNc6h-0_fTDO5fjoV2zGKiVzjLsUMaTJA4nYBQ8UhUZ-rdnfyhdxUICc7UfMlYwBo5kQ"
+		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NjA0ODM3OCwiZXhwIjoxNjc2MDUxOTc4fQ.myqr8mXMUKNUcPPNNhRYZcYmVKk89q98mHgAYN2S7abrV5ZNhn3lTSuTtN_gj61aRuUm-9pdVFuHS_N1M0yBAg"
 	private val myPageEditRetrofitInterface: MyPageEditRetrofitInterface = ApplicationClass.sRetrofit.create(MyPageEditRetrofitInterface::class.java)
 
 	fun tryDeleteUsers(){

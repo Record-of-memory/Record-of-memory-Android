@@ -52,8 +52,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		DaybookService(this).tryGetDaybook(13) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
-		CommentService(this).tryGetComments(13) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		DaybookService(this).tryGetDaybook(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
 		MyPageService(this).tryGetUsers()
 		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
 //		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -62,13 +62,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 //			intent.getSerializableExtra("item") as GetDiary2Response
 //		}
 //		println(item)
-//
-//		imageUri= intent.getStringExtra("imageUri").toString()  //여기는 데모영상 찍을 때, 일기 작성 후 데이터 연결을 위한 곳... 이젠 필요 없을 듯?
-//		if(!imageUri.isNullOrEmpty()){
-//			val img= Uri.parse(imageUri)
-//			binding.daybookImage.setImageURI(img)
-//		}
-
 
 		binding.daybookIvBack.setOnClickListener {
 			finish()
@@ -77,7 +70,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		binding.daybookImage.setOnClickListener { //이미지 클릭
 			imageDialogFunction()
 		}
-
 
 		binding.daybookBtnSubmit.setOnClickListener {
 			var comment=binding.daybookWriteComment
@@ -107,6 +99,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 	}
 
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if(resultCode== RESULT_OK){
+			daybookId= data?.getStringExtra("recordId")!!.toInt()
+		}
+	}
 
 	private fun miniDialogFunction(){
 		val miniDialog = Dialog(this)
@@ -117,18 +115,20 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_edit).setOnClickListener {
 			// 수정
 			// 원래 일기의 내용을 같이 넘겨줘야할 것 같다.
-
+			// recordId 넘겨줘야 함
 			val intent=Intent(this,DaybookWritingActivity::class.java)
 			intent.putExtra("screen_type","update")
 
-			var itemSend= GetDiary2Response(itemId = "99", title = item.title, content = item.content, date = item.date,writer = item.writer,
-				imgUrl = item.imgUrl)
+			var itemSend=DaybookToWriting(
+				recordId = daybookId,
+				diaryTitle = binding.daybookDiaryTitle.text.toString(),
+				date = binding.daybookWriteTime.text.toString(),
+				title=binding.daybookTitle.text.toString(),
+				content = binding.daybookContent.text.toString(),
+				imgUrl = daybookImageUrl)
 
 			intent.putExtra("item",itemSend)
-			if(!imageUri.isNullOrEmpty()){
-				intent.putExtra("imageUri",imageUri)
-			}
-			startActivity(intent)
+			startActivityForResult(intent,10)
 			miniDialog.dismiss()
 
 		}
@@ -153,11 +153,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				.into(imgDialog.findViewById(R.id.big_image))
 		}
 
-		//이거는 아마 더이상 필요 없을 것 같은 코드 (데모영상용)
-//		if(!imageUri.isNullOrEmpty()){
-//			imgDialog.findViewById<ImageView>(R.id.big_image).setImageURI(Uri.parse(imageUri))
-//		}
-
 		imgDialog.findViewById<ImageView>(R.id.big_image_close).setOnClickListener {
 			imgDialog.dismiss()
 		}
@@ -181,7 +176,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 		return super.dispatchTouchEvent(event)
 	}
-
 
 	private fun commentDialogFunction() {
 		val commentDialog = Dialog(this)

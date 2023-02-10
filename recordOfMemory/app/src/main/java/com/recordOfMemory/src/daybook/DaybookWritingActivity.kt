@@ -7,6 +7,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
@@ -17,6 +18,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -30,7 +32,12 @@ import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityDaybookWritingBinding
+import com.recordOfMemory.src.daybook.retrofit.models.DaybookToWriting
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -47,42 +54,45 @@ class DaybookWritingActivity :
 	val STORAGE_PERMISSION = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	val STORAGE_PERMISSION_REQUEST = 200
 
-
 	private val sdfFull = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 
+	private var screenType:String=""
+	private var recordId:Int=0;
 	private lateinit var imageUri:Uri
 	private lateinit var item : GetDiary2Response
-	private lateinit var writer:String
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		val screenType=intent.getStringExtra("screen_type")
-		if(screenType=="update"){
-			item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-				intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
+		screenType= intent.getStringExtra("screen_type").toString() //creat냐 update냐에 따라 전달받은게 다름
+		if(screenType=="update"){ //수정시에, recordId, date(string), title, content
+			val itemGet = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+				intent.getSerializableExtra("item", DaybookToWriting::class.java)!!
 			} else {
-				intent.getSerializableExtra("item") as GetDiary2Response
+				intent.getSerializableExtra("item") as DaybookToWriting
 			}
-			println(item)
-			binding.daybookWritingWriteTime.text = item.date
-			binding.daybookWritingTitle.setText(item.title)
-			binding.daybookWritingContent.setText(item.content)
-			writer = item.writer
-			if(!item.imgUrl.isNullOrEmpty()){ //이미지가 존재하면 추가해두기
-				Glide.with(this).load(item.imgUrl).into(binding.daybookWritingImage)
+			//println(item)
+			recordId=itemGet.recordId
+			binding.daybookWritingDiaryTitle.text=itemGet.diaryTitle
+			binding.daybookWritingWriteTime.text = itemGet.date
+			binding.daybookWritingTitle.setText(itemGet.title)
+			binding.daybookWritingContent.setText(itemGet.content)
+			if(!itemGet.imgUrl.isNullOrEmpty()){ //이미지가 존재하면 추가해두기
+				Glide.with(this).load(itemGet.imgUrl).into(binding.daybookWritingImage)
 				binding.daybookWritingFr.visibility=View.VISIBLE
 			}
 
-			var imageUri=intent.getStringExtra("imageUri")
-			if(!imageUri.isNullOrEmpty()){
-				val img= Uri.parse(imageUri)
-				binding.daybookWritingImage.setImageURI(img)
-				binding.daybookWritingFr.visibility=View.VISIBLE
-			}
+//			var imageUri=intent.getStringExtra("imageUri")
+//			if(!imageUri.isNullOrEmpty()){
+//				val img= Uri.parse(imageUri)
+//				binding.daybookWritingImage.setImageURI(img)
+//				binding.daybookWritingFr.visibility=View.VISIBLE
+//			}
 
-		}else{
+		}else{// create :  새로 일기를 쓸 때
+
+			//넘어오면서 다이어리 이름 세팅해주세요.<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			binding.daybookWritingWriteTime.text =
 				sdfFull.format(System.currentTimeMillis()) //오늘 날짜로 기본 세팅
 		}
@@ -95,26 +105,30 @@ class DaybookWritingActivity :
 		binding.daybookWritingIvComplete.setOnClickListener { //완료
 			//제목 있는지 체크
 			if (checkTitle()) {
-				// 데이터 저장하고 일기 화면으로 돌아가기
-				val intent=Intent(this,DaybookActivity::class.java)
+				//				val title=binding.daybookWritingTitle.text //일기 타이틀 (다이어리 타이틀 나중에 추가하자)
+//				val content=binding.daybookWritingContent.text
+//				val date = binding.daybookWritingWriteTime.text
+//				val writer:String = if(screenType=="create"){
+//					"카리"
+//				}else item.writer
+//
+//				var itemSend= GetDiary2Response(itemId = "99", title = "$title", content = "$content", date = "$date",writer = writer,
+//					imgUrl = "")
+//				intent.putExtra("item",itemSend)
+//
+//				if(binding.daybookWritingFr.visibility==View.VISIBLE){
+//					intent.putExtra("imageUri",imageUri.toString())
+//				}
 
-				val title=binding.daybookWritingTitle.text //일기 타이틀 (다이어리 타이틀 나중에 추가하자)
-				val content=binding.daybookWritingContent.text
-				val date = binding.daybookWritingWriteTime.text
-				val writer:String = if(screenType=="create"){
-					"카리"
-				}else item.writer
-
-				var itemSend= GetDiary2Response(itemId = "99", title = "$title", content = "$content", date = "$date",writer = writer,
-					imgUrl = "")
-				intent.putExtra("item",itemSend)
-
-				if(binding.daybookWritingFr.visibility==View.VISIBLE){
-					intent.putExtra("imageUri",imageUri.toString())
+				//데이터 통신 끝나고 일기 화면으로 돌아갈 때.
+				if(screenType=="update"){
+					// 데이터 저장하고 일기 화면으로 돌아가기
+					val intent=Intent(this,DaybookActivity::class.java)
+					intent.putExtra("recordId",recordId.toString())
+					setResult(RESULT_OK,intent)
+					finish()
+					startActivity(intent)
 				}
-
-				finish()
-				startActivity(intent)
 			}
 
 		}
@@ -256,7 +270,7 @@ class DaybookWritingActivity :
 					binding.daybookWritingFr.visibility= View.VISIBLE
 					binding.daybookWritingAlbum.isEnabled=false
 					imageUri=getImageUri(this,thumbNail)
-
+					
 				} catch (e: IOException) {
 					e.printStackTrace()
 					Toast.makeText(this, "Failed to take photo from Camera", Toast.LENGTH_SHORT).show()
