@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.recordOfMemory.R
-import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
@@ -21,8 +20,8 @@ import com.recordOfMemory.src.daybook.DaybookWritingActivity
 import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
 import com.recordOfMemory.src.main.home.diary2.member.invite.Diary2InviteMemberFragment
 import com.recordOfMemory.src.main.home.diary2.member.show.Diary2ShowMemberFragment
-import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
+import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Interface

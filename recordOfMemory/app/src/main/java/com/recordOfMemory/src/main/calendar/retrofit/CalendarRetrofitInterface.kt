@@ -1,5 +1,6 @@
 package com.recordOfMemory.src.main.calendar.retrofit
 
+import com.recordOfMemory.config.BaseResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -9,6 +10,6 @@ interface CalendarRetrofitInterface {
     @GET("/api/records/date")
     fun getRecordsDate(
         @Header("Authorization") Authorization: String,
-        
+
     ): Call<BaseResponse>
 }

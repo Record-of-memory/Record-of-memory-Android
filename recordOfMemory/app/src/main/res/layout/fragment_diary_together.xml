@@ -25,7 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="55dp"
-        android:fontFamily="@font/noto_sans"
+        android:fontFamily="@font/noto_sans_bold"
         android:gravity="center_vertical"
         android:text="@string/diary_tv_title"
         android:textColor="#27544C"

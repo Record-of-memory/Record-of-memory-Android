@@ -31,7 +31,7 @@
             android:id="@+id/next_btn"
             android:layout_width="60dp"
             android:layout_height="24dp"
-            android:background="@drawable/box_small_next_button"
+            android:background="@drawable/box_small_next_button_selector"
             android:text="@string/next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -136,7 +136,8 @@
             android:background="@android:color/transparent"
             android:textSize="11dp"
             android:fontFamily="@font/noto_sans_regular"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:maxLength="20"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

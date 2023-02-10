@@ -19,7 +19,6 @@ import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.search.retrofit.Diary2SearchInterface
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.home.diary2.search.recycler.Diary2SearchRecyclerViewAdapter
 
 class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentDiary2SearchBinding::bind, R.layout.fragment_diary2_search),

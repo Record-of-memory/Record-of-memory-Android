@@ -68,6 +68,7 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
                 filteredList = results.values as ArrayList<GetRecordResponse>
+
                 println(filteredList)
                 notifyDataSetChanged()
             }
