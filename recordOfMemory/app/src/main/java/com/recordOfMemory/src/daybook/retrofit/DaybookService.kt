@@ -8,11 +8,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
+import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass.Companion.X_ACCESS_TOKEN
+import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
 import retrofit2.create
+import java.io.IOException
 
 class DaybookService(val daybookInterface: DaybookInterface) {
 	val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
@@ -25,9 +28,20 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 				override fun onResponse(call: Call<PatchDaybookResponse>, response: Response<PatchDaybookResponse>, ) {
 					if(response.code()==200){
 						daybookInterface.onDeleteDaybookSuccess(response.body() as PatchDaybookResponse)
+					}else if(response.code()==401){
+						daybookInterface.onDeleteDaybookFailure("refreshToken")
 					}else{
-						Log.d("fail","fail to delete Daybook")
-						daybookInterface.onDeleteDaybookFailure("fail")
+						// error body 가져오는 코드 필요함
+						val gson = GsonBuilder().create()
+						try {
+							val error = gson.fromJson(
+								response.errorBody()!!.string(),
+								ErrorResponse::class.java)
+							daybookInterface.onDeleteDaybookFailure(error.information.message.split(": ")[1].split("\"")[0])
+						} catch (e: IOException) {
+							daybookInterface.onDeleteDaybookFailure(e.message ?: "통신 오류")
+						}
+
 					}
 				}
 
@@ -44,9 +58,19 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
 					if(response.code()==200){
 						daybookInterface.onGetDaybookSuccess(response.body() as GetDaybookResponse)
+					}else if(response.code()==401){
+						daybookInterface.onGetDaybookFailure("refreshToken")
 					}else{
-						Log.d("fail","fail to get Daybook")
-						daybookInterface.onGetDaybookFailure("fail")
+						val gson = GsonBuilder().create()
+						try {
+							val error = gson.fromJson(
+								response.errorBody()!!.string(),
+								ErrorResponse::class.java)
+							daybookInterface.onGetDaybookFailure(error.information.message.split(": ")[1].split("\"")[0])
+						} catch (e: IOException) {
+							daybookInterface.onGetDaybookFailure(e.message ?: "통신 오류")
+						}
+
 					}
 				}
 

@@ -1,13 +1,16 @@
 package com.recordOfMemory.src.main.myPage.retrofit
 
 import android.util.Log
+import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseResponse
+import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostChangePasswordRequest
 
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class MyPageEditPasswordService(val myPageEditPasswordInterface: MyPageEditPasswordInterface) {
 
@@ -22,9 +25,19 @@ class MyPageEditPasswordService(val myPageEditPasswordInterface: MyPageEditPassw
 			override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
 				if(response.code()==200) {
 					myPageEditPasswordInterface.onPostChangePasswordSuccess(response.body() as BaseResponse)
+				}else if(response.code()==401){
+					myPageEditPasswordInterface.onPostChangePasswordFailure("refreshToken")
 				}else{
-					Log.d("fail","fail to change password")
-					myPageEditPasswordInterface.onPostChangePasswordFailure("fail")
+					// error body 가져오는 코드 필요함
+					val gson = GsonBuilder().create()
+					try {
+						val error = gson.fromJson(
+							response.errorBody()!!.string(),
+							ErrorResponse::class.java)
+						myPageEditPasswordInterface.onPostChangePasswordFailure(error.information.message.split(": ")[1].split("\"")[0])
+					} catch (e: IOException) {
+						myPageEditPasswordInterface.onPostChangePasswordFailure(e.message ?: "통신 오류")
+					}
 				}
 			}
 

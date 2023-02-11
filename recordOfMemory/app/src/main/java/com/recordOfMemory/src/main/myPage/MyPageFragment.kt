@@ -15,21 +15,34 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageBinding
+import com.recordOfMemory.src.daybook.retrofit.CommentService
+import com.recordOfMemory.src.daybook.retrofit.DaybookService
+import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
+import com.recordOfMemory.src.daybook.retrofit.models.PostCommentRequest
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
+import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
+import com.recordOfMemory.src.main.signUp.models.TokenResponse
+import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
+import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
 
 class MyPageFragment :
-    BaseFragment<FragmentMyPageBinding>(FragmentMyPageBinding::bind, R.layout.fragment_my_page),MyPageInterface {
+    BaseFragment<FragmentMyPageBinding>(FragmentMyPageBinding::bind, R.layout.fragment_my_page),MyPageInterface,
+    GetRefreshTokenInterface {
+
+    var statusCode = 1101
+    var request : Any = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // 마이페이지 정보 조회
+        statusCode=1103
         MyPageService(this).tryGetUsers()
 
         val fm = requireActivity().supportFragmentManager
@@ -69,7 +82,9 @@ class MyPageFragment :
 
             // 로그아웃
             val refreshToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, null).toString()
+            statusCode=1105
             val postSignOutRequest=PostSignOutRequest(refreshToken = refreshToken)
+            request=postSignOutRequest
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
 
@@ -83,16 +98,18 @@ class MyPageFragment :
     }
 
     override fun onPostSignOutFailure(message: String) {
-        Log.d("실패","$message")
-        Toast.makeText(context,"로그아웃 실패",Toast.LENGTH_SHORT).show()
+        if(message == "refreshToken") {
+            val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+        }
+        // 토큰 갱신 문제가 아닐 경우
+        else {
+            Log.d("실패",message)
+            Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onGetUsersSuccess(response: GetUsersResponse) {
-        Log.d("응답이 비었나",response.information.toString())
-
-        //MyPageEditFragment에서 좌측 상단의 뒤로가기 버튼 누르면, binding쪽에서 문제 발생. java.lang.NullPointerException 왜 생기는거지...
-        //40번째 줄에 addToBackStack(null)을 주석처리하면 문제 없이 binding이 잘 되는데,
-        //이러면 MyPageEditFragment에서 핸드폰 자체의 뒤로가기 기능을 썼을 때, MyPageFragment가 안나오고 앱 종료 된다.....
         binding.mypageBoxName.text=response.information.nickname
         binding.mypageBoxAccount.text=response.information.email
         if(response.information.imageUrl.isNullOrEmpty()){
@@ -104,7 +121,30 @@ class MyPageFragment :
     }
 
     override fun onGetUsersFailure(message: String) {
-        Log.d("실패","$message")
-        Toast.makeText(context,"정보 가져오기 실패",Toast.LENGTH_SHORT).show()
+        if(message == "refreshToken") {
+            val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+        }
+        // 토큰 갱신 문제가 아닐 경우
+        else {
+            Log.d("실패",message)
+            Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onPostRefreshSuccess(response: TokenResponse) {
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+        editor.apply()
+
+        when(statusCode) {
+            1103 -> MyPageService(this).tryGetUsers()
+            1105 -> MyPageService(this).tryPostSignOut(request as PostSignOutRequest)
+        }
+    }
+
+    override fun onPostRefreshFailure(message: String) {
+        TODO("Not yet implemented")
     }
 }

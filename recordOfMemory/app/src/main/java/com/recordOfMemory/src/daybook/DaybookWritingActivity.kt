@@ -26,14 +26,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityDaybookWritingBinding
+import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
-import com.recordOfMemory.src.daybook.retrofit.models.DaybookToWriting
-import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
-import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
+import com.recordOfMemory.src.daybook.retrofit.models.*
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
+import com.recordOfMemory.src.main.signUp.models.TokenResponse
+import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -48,7 +51,7 @@ import java.util.*
 
 class DaybookWritingActivity :
 	BaseActivity<ActivityDaybookWritingBinding>(ActivityDaybookWritingBinding::inflate),
-DaybookInterface{
+DaybookInterface {
 
 	val CAMERA_PERMISSION = arrayOf(android.Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
@@ -64,7 +67,6 @@ DaybookInterface{
 	private var screenType:String=""
 	private var recordId:Int=0;
 	private lateinit var imageUri:Uri
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
@@ -126,11 +128,14 @@ DaybookInterface{
 				//데이터 통신 끝나고 일기 화면으로 돌아갈 때.
 				if(screenType=="update"){
 					// 데이터 저장하고 일기 화면으로 돌아가기
-					val intent=Intent(this,DaybookActivity::class.java)
+					//val intent=Intent(this,DaybookActivity::class.java)
+					val intent=Intent()
 					intent.putExtra("recordId",recordId.toString())
 					setResult(RESULT_OK,intent)
 					finish()
-					startActivity(intent)
+					//startActivity(intent)
+				}else{ //다이어리 리스트로 돌아감.
+
 				}
 			}
 
@@ -167,7 +172,10 @@ DaybookInterface{
 		if(binding.daybookWritingTitle.text.toString().isNotEmpty() || binding.daybookWritingContent.text.toString().isNotEmpty()){
 			backPressedDialogFunction()
 		}else{
-			super.onBackPressed()
+			//super.onBackPressed()
+			val intent=Intent(this,DaybookActivity::class.java)
+			intent.putExtra("recordId",recordId.toString())
+			startActivity(intent)
 		}
 	}
 
@@ -463,4 +471,6 @@ DaybookInterface{
 
 		return ""
 	}
+
+
 }
