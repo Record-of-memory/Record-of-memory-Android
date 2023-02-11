@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -25,6 +26,7 @@ import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
@@ -47,19 +49,20 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
-
-		DaybookService(this).tryGetDaybook(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
-		CommentService(this).tryGetComments(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
-		MyPageService(this).tryGetUsers()
 		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
-//		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
+//		daybookId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//			intent.getSerializableExtra("recordId", GetRecordResponse::class.java)!!
 //		} else {
-//			intent.getSerializableExtra("item") as GetDiary2Response
+//			intent.getSerializableExtra("item") as GetRecordResponse
 //		}
 //		println(item)
-
+		if(daybookId==0){
+			daybookId=intent.getStringExtra("recordId")!!.toInt()
+			Log.d("아이디",daybookId.toString())
+		}
+		DaybookService(this).tryGetDaybook(daybookId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(daybookId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		MyPageService(this).tryGetUsers()
 		binding.daybookIvBack.setOnClickListener {
 			finish()
 		}
@@ -98,7 +101,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if(resultCode== RESULT_OK){
+		if(requestCode== 10){
+			Toast.makeText(this,data?.getStringExtra("recordId"),Toast.LENGTH_SHORT).show()
 			daybookId= data?.getStringExtra("recordId")!!.toInt()
 		}
 	}
@@ -126,6 +130,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 			intent.putExtra("item",itemSend)
 			startActivityForResult(intent,10)
+			//startActivity(intent)
+			//finish()
 			miniDialog.dismiss()
 
 		}
@@ -257,10 +263,13 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		binding.daybookHeartNumber.text=item.likeCnt.toString()
 		binding.daybookCommentNumber.text=item.cmtCnt.toString()
 
-		if(!item.imgUrl.isNullOrEmpty()){
+		if(item.imgUrl.isNotEmpty()){
+			Log.d("하하","이미지 있지롱")
 			daybookImageUrl=item.imgUrl
 			Glide.with(this).load(item.imgUrl)
 				.into(binding.daybookImage)
+		}else{
+			Log.d("하하","이미지 없지롱")
 		}
 	}
 

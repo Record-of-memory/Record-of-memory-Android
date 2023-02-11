@@ -8,17 +8,19 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
+import com.recordOfMemory.config.ApplicationClass.Companion.X_ACCESS_TOKEN
 import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
 import retrofit2.create
 
 class DaybookService(val daybookInterface: DaybookInterface) {
-    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjc2MDU0NDIyLCJleHAiOjE2NzYwNTgwMjJ9.oxrL9v_gT1jfiONkZaVjSjLFhKYW37ii_uUi7QrAsbajgSxYSUDu_9o7FDJktlhy9__JXaZ1vZv5I_RTUJm4Hg"
+	val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+	val X_ACCESS_TOKEN = "Bearer $token"
 	private val daybookRetrofitInterface:DaybookRetrofitInterface=ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
 
 	fun tryDeleteDaybook(params: PatchDaybookRequest){
-		daybookRetrofitInterface.deleteDaybook(Authorization = "Bearer $X_ACCESS_TOKEN",params=params)
+		daybookRetrofitInterface.deleteDaybook(Authorization = X_ACCESS_TOKEN,params=params)
 			.enqueue(object : Callback<PatchDaybookResponse>{
 				override fun onResponse(call: Call<PatchDaybookResponse>, response: Response<PatchDaybookResponse>, ) {
 					if(response.code()==200){
@@ -37,7 +39,7 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 	}
 
 	fun tryGetDaybook(daybookId:Int){
-		daybookRetrofitInterface.getDaybook(Authorization = "Bearer $X_ACCESS_TOKEN",recordId=daybookId)
+		daybookRetrofitInterface.getDaybook(Authorization = X_ACCESS_TOKEN,recordId=daybookId)
 			.enqueue(object :Callback<GetDaybookResponse>{
 				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
 					if(response.code()==200){

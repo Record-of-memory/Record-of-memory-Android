@@ -10,12 +10,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CommentService(val commentInterface: CommentInterface) {
-	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NjA0ODM3OCwiZXhwIjoxNjc2MDUxOTc4fQ.myqr8mXMUKNUcPPNNhRYZcYmVKk89q98mHgAYN2S7abrV5ZNhn3lTSuTtN_gj61aRuUm-9pdVFuHS_N1M0yBAg"
+	val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+	val X_ACCESS_TOKEN = "Bearer $token"
 	private val commentRetrofitInterface:CommentRetrofitInterface=ApplicationClass.sRetrofit.create(CommentRetrofitInterface::class.java)
 
 	fun tryGetComments(daybookId:Int){
-		commentRetrofitInterface.getComments(Authorization = "Bearer $auth", id=daybookId)
+		commentRetrofitInterface.getComments(Authorization = X_ACCESS_TOKEN, id=daybookId)
 			.enqueue(object :Callback<GetCommentsResponse>{
 				override fun onResponse(call: Call<GetCommentsResponse>, response: Response<GetCommentsResponse>, ) {
 					if(response.code()==200){
@@ -35,7 +35,7 @@ class CommentService(val commentInterface: CommentInterface) {
 
 
 	fun tryPostComment(params:PostCommentRequest){
-		commentRetrofitInterface.postComment(Authorization = "Bearer $auth",params=params)
+		commentRetrofitInterface.postComment(Authorization = X_ACCESS_TOKEN,params=params)
 			.enqueue(object :Callback<PostCommentResponse>{
 			override fun onResponse(call: Call<PostCommentResponse>, response: Response<PostCommentResponse>) {
 				if(response.code()==200){

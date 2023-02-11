@@ -55,8 +55,8 @@ Diary2Interface, GetRefreshTokenInterface{
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item as java.io.Serializable)
-                .putExtra("screen_type","read")
+                .putExtra("recordId", item.id.toString())
+                .putExtra("screen_type","read") //아마 이 코드는 필요 없을 듯...
             )
         }
     }
