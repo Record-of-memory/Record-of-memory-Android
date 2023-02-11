@@ -87,6 +87,7 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:hint="이름을 입력해주세요"
+                android:textColorHint="@color/brownGray"
                 android:paddingStart="60dp"
                 android:singleLine="true"
                 android:nextFocusDown="@id/mypage_edit_complete_btn"

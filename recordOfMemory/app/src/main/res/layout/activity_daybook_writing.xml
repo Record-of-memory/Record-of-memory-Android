@@ -113,6 +113,7 @@
                 android:fontFamily="@font/noto_sans_regular"
                 android:gravity="top"
                 android:hint="기록하고 싶은 오늘의 기록은 어떤 기록인가요?\n자유롭게 작성해주세요 :)"
+                android:textColorHint="@color/brownGray"
                 android:paddingTop="45dp"
                 android:textColor="@color/black"
                 android:textSize="11sp"
