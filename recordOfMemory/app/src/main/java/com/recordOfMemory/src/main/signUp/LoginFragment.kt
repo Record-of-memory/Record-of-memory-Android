@@ -71,9 +71,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
 //
 //    override fun onPostRefreshFailure(message: String) {}
 
-    override fun onPostChangePasswordSuccess(response: BaseResponse) {}
-
-    override fun onPostChangePasswordFailure(message: String) {}
 
     override fun onGetUserEmailCheckSuccess(response: UserEmailCheckResponse) {}
 

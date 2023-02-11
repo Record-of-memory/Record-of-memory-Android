@@ -12,7 +12,7 @@ import retrofit2.Response
 import java.io.IOException
 
 class MyPageService(val myPageInterface: MyPageInterface) {
-	    val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+	val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
     val X_ACCESS_TOKEN = "Bearer $token"
 
 	private val myPageRetrofitInterface: MyPageRetrofitInterface = ApplicationClass.sRetrofit.create(MyPageRetrofitInterface::class.java)
@@ -34,7 +34,7 @@ class MyPageService(val myPageInterface: MyPageInterface) {
 	}
 
 	fun tryGetUsers(){
-		myPageRetrofitInterface.getUsers(X_ACCESS_TOKEN).enqueue(object : Callback<GetUsersResponse> {
+		myPageRetrofitInterface.getUsers(Authorization =X_ACCESS_TOKEN).enqueue(object : Callback<GetUsersResponse> {
 			override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>) {
 				if(response.code()==200){
 					Log.d("인터페이스",myPageInterface.toString())

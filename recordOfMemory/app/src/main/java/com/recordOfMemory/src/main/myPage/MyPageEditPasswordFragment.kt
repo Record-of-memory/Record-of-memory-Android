@@ -1,18 +1,27 @@
 package com.recordOfMemory.src.main.myPage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentMyPageEditPasswordBinding
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditPasswordInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditPasswordService
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostChangePasswordRequest
 import java.util.regex.Pattern
 
 
-class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBinding>(FragmentMyPageEditPasswordBinding::bind,
-	R.layout.fragment_my_page_edit_password) {
+class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBinding>(FragmentMyPageEditPasswordBinding::bind,
+	R.layout.fragment_my_page_edit_password),MyPageEditPasswordInterface {
+	lateinit var myPageEditFragment: MyPageEditFragment
+	constructor(myPageEditFragment: MyPageEditFragment):this() {
+		this.myPageEditFragment = myPageEditFragment
+	}
 
 	private var prevPassword:String?=null
 	private var newPassword1:String?=null
@@ -26,7 +35,7 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 		binding.passwordBack.setOnClickListener { //뒤로 가기
 			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 			transaction
-				.replace(R.id.main_frm,MyPageEditFragment())
+				.replace(R.id.main_frm,myPageEditFragment)
 				.addToBackStack(null)
 				.commit()
 			transaction.isAddToBackStackAllowed
@@ -36,15 +45,9 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 			//데이터 처리
 			if(checkValidation()){
 				//백으로 보내서 체크 후에 화면 전환
+				val postChangePasswordRequest=PostChangePasswordRequest(oldPassword = prevPassword.toString(), newPassword = newPassword2.toString())
+				MyPageEditPasswordService(this).tryPostChangePassword(postChangePasswordRequest)
 
-
-				//화면 전환
-				fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-				transaction
-					.replace(R.id.main_frm, MyPageEditFragment()) //수정 화면으로 가게
-					.addToBackStack(null)
-					.commitAllowingStateLoss()
-				transaction.isAddToBackStackAllowed
 			}
 		}
 
@@ -95,6 +98,23 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 			return true
 		}
 		return false
+	}
+
+	override fun onPostChangePasswordSuccess(response: BaseResponse) {
+		Log.d("성공","${response.information.message}")
+		//화면 전환
+		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
+		fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+		transaction
+			.replace(R.id.main_frm, myPageEditFragment) //수정 화면으로 가게
+			.addToBackStack(null)
+			.commitAllowingStateLoss()
+		transaction.isAddToBackStackAllowed
+	}
+
+	override fun onPostChangePasswordFailure(message: String) {
+		Log.d("성공",message)
 	}
 
 }

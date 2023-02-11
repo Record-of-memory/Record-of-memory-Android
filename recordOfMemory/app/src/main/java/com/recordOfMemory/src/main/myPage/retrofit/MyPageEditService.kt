@@ -13,12 +13,12 @@ import retrofit2.Response
 import java.io.IOException
 
 class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
-	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NjA0ODM3OCwiZXhwIjoxNjc2MDUxOTc4fQ.myqr8mXMUKNUcPPNNhRYZcYmVKk89q98mHgAYN2S7abrV5ZNhn3lTSuTtN_gj61aRuUm-9pdVFuHS_N1M0yBAg"
+	val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+	val X_ACCESS_TOKEN = "Bearer $token"
 	private val myPageEditRetrofitInterface: MyPageEditRetrofitInterface = ApplicationClass.sRetrofit.create(MyPageEditRetrofitInterface::class.java)
 
 	fun tryDeleteUsers(){
-		myPageEditRetrofitInterface.deleteUsers("Bearer $auth").enqueue(object : Callback<DeleteUsersResponse> {
+		myPageEditRetrofitInterface.deleteUsers(Authorization = X_ACCESS_TOKEN).enqueue(object : Callback<DeleteUsersResponse> {
 			override fun onResponse(call: Call<DeleteUsersResponse>, response: Response<DeleteUsersResponse>) {
 				if(response.isSuccessful){
 					myPageEditInterface.onDeleteUsersSuccess(response.body() as DeleteUsersResponse)

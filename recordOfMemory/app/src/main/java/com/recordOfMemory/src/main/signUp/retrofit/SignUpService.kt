@@ -83,19 +83,7 @@ class SignUpService() {
         })
     }
 
-    fun tryPostChangePassword(postChangePasswordRequest: PostChangePasswordRequest){
-        val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
-        signUpRetrofitInterface.postChangePassword(postChangePasswordRequest).enqueue(object :
-            Callback<BaseResponse> {
-            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                signUpFragmentInterface.onPostChangePasswordSuccess(response.body() as BaseResponse)
-            }
 
-            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                signUpFragmentInterface.onPostChangePasswordFailure(t.message ?: "통신 오류")
-            }
-        })
-    }
     fun tryGetUserEmailCheck(email : String){
         val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
         signUpRetrofitInterface.getUserEmailCheck(email, ACCESS_TOKEN).enqueue(object : Callback<UserEmailCheckResponse>{

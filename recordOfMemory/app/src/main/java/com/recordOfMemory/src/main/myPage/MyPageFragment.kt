@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageBinding
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
@@ -67,7 +68,8 @@ class MyPageFragment :
             logoutDialog.dismiss()
 
             // 로그아웃
-            val postSignOutRequest=PostSignOutRequest(refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NzcxNTkxNjF9.ExSfPwle9LtcEh5e4CQIv89Y3hDlwq-_Wib7qIogO1ZeirM9sOze7-eM9REAdCWzwyeJhE8FUlZ2oaZ52Egnng")
+            val refreshToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, null).toString()
+            val postSignOutRequest=PostSignOutRequest(refreshToken = refreshToken)
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
 

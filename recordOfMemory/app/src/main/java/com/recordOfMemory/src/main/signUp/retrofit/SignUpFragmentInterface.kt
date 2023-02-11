@@ -12,9 +12,9 @@ interface SignUpFragmentInterface {
 
     fun onPostSignInFailure(message: String)
 
-    fun onPostChangePasswordSuccess(response: BaseResponse)
-
-    fun onPostChangePasswordFailure(message: String)
+//    fun onPostChangePasswordSuccess(response: BaseResponse)
+//
+//    fun onPostChangePasswordFailure(message: String)
 
     fun onGetUserEmailCheckSuccess(response: UserEmailCheckResponse)
 

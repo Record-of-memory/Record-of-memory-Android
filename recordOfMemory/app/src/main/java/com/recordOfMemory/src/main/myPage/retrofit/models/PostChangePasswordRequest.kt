@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.signUp.models
+package com.recordOfMemory.src.main.myPage.retrofit.models
 
 import com.google.gson.annotations.SerializedName
 

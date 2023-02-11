@@ -18,9 +18,6 @@ interface SignUpRetrofitInterface {
     @POST("/auth/refresh")
     fun postRefresh(@Body params : PostRefreshRequest) : Call<TokenResponse>
 
-    //비밀번호 변경
-    @POST("/api/users/me/password")
-    fun postChangePassword(@Body params : PostChangePasswordRequest) : Call<BaseResponse>
 
     @GET("/api/users")
     fun getUserEmailCheck(
