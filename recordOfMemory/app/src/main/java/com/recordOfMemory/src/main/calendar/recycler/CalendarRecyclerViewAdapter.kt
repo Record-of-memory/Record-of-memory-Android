@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/home/diary2/search/recycler/Diary2SearchRecyclerViewAdapter.kt
+package com.recordOfMemory.src.main.home.diary2.search.recycler
+========
 package com.recordOfMemory.src.main.calendar.recycler
+>>>>>>>> dev:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/calendar/recycler/CalendarRecyclerViewAdapter.kt
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,11 +10,18 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.calendar.CalendarFragment
+<<<<<<<< HEAD:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/home/diary2/search/recycler/Diary2SearchRecyclerViewAdapter.kt
+import com.recordOfMemory.src.main.home.diary2.Diary2Interface
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
+========
+import com.recordOfMemory.src.main.calendar.CalendarFragment
+import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+>>>>>>>> dev:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/calendar/recycler/CalendarRecyclerViewAdapter.kt
 
-class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetDiary2Response>)
+class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetRecordResponse>)
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable {
     lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder
     private var unFilteredList = itemList
@@ -44,14 +55,14 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
                 val charString = constraint.toString()
                 if(charString == "") {
                     val filterResults = FilterResults()
-                    filterResults.values = ArrayList<GetDiary2Response>()
+                    filterResults.values = ArrayList<GetRecordResponse>()
                     return filterResults
                 }
                 else {
                     filteredList = if (charString.isEmpty()) {
                         unFilteredList
                     } else {
-                        val filteringList = ArrayList<GetDiary2Response>()
+                        val filteringList = ArrayList<GetRecordResponse>()
                         for (item in unFilteredList) {
                             if (item.date.contains(charString)) {
                                 filteringList.add(item)
@@ -67,7 +78,8 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
             }
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
-                filteredList = results.values as ArrayList<GetDiary2Response>
+                filteredList = results.values as ArrayList<GetRecordResponse>
+
                 println(filteredList)
                 notifyDataSetChanged()
             }

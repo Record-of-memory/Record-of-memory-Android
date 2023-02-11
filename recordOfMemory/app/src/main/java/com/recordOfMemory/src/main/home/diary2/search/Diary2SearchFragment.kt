@@ -1,7 +1,9 @@
 package com.recordOfMemory.src.main.home.diary2.search
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -15,26 +17,25 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2SearchBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.Diary2Interface
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.search.retrofit.Diary2SearchInterface
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 import com.recordOfMemory.src.main.home.diary2.search.recycler.Diary2SearchRecyclerViewAdapter
 
 class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentDiary2SearchBinding::bind, R.layout.fragment_diary2_search),
-    Diary2Interface {
+    Diary2SearchInterface {
     inner class itemListAdapterToList {
         // 일기 open function
-        fun getItemId(item: GetDiary2Response) {
+        fun getItemId(item: GetRecordResponse) {
 //            openItem(item)
             println(item)
-            var intent=Intent(activity, DaybookActivity::class.java)
-            intent.putExtra("item",item)
-            intent.putExtra("screen_type","read")
-            startActivity(intent)
+            startActivity(Intent(activity, DaybookActivity::class.java)
+                .putExtra("item",  item as java.io.Serializable)
+                .putExtra("screen_type","read"))
         }
     }
 
     // 일기 open
-    fun openItem(item: GetDiary2Response) {
+    fun openItem(item: GetRecordResponse) {
 //        startActivity(Intent(activity, DaybookActivity(item)::class.java))
 
 //        val fm = requireActivity().supportFragmentManager
@@ -58,8 +59,11 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        var itemList = ArrayList<GetDiary2Response>()
         var keyword = ""
+        val listItemList = arguments?.parcelableArrayList<GetRecordResponse>("itemList")
+
+        println(listItemList)
+
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
@@ -73,23 +77,26 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
             transaction.isAddToBackStackAllowed
         }
 
-        itemList.add(
-            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
-        )
-
-        itemList.add(
-            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
-        )
-
-        itemList.add(
-            GetDiary2Response(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ")
-        )
+//        itemList.add(
+//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
+//        )
+//
+//        itemList.add(
+//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
+//        )
+//
+//        itemList.add(
+//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
+//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
+//        )
         val items = itemListAdapterToList()
         val diary2LayoutManager = LinearLayoutManager(context)
-        val diary2RecyclerViewAdapter = Diary2SearchRecyclerViewAdapter(this, items, itemList)
+        val diary2RecyclerViewAdapter = Diary2SearchRecyclerViewAdapter(this, items, listItemList!!)
         binding.diary2SearchRecyclerView.apply {
             layoutManager = diary2LayoutManager
         }
@@ -108,45 +115,6 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
             override fun afterTextChanged(s: Editable?) {
             }
         })
-
-//        binding.homeButtonTryGetJwt.setOnClickListener {
-//            showLoadingDialog(requireContext())
-//            HomeService(this).tryGetUsers()
-//        }
-//
-//        binding.homeBtnTryPostHttpMethod.setOnClickListener {
-//            val email = binding.homeEtId.text.toString()
-//            val password = binding.homeEtPw.text.toString()
-//            val postRequest = PostSignUpRequest(email = email, password = password,
-//                    confirmPassword = password, nickname = "test", phoneNumber = "010-0000-0000")
-//            showLoadingDialog(requireContext())
-//            HomeService(this).tryPostSignUp(postRequest)
-//        }
-//    }
-//
-//    override fun onGetUserSuccess(response: UserResponse) {
-//        dismissLoadingDialog()
-//        for (User in response.result) {
-//            Log.d("HomeFragment", User.toString())
-//        }
-//        binding.homeButtonTryGetJwt.text = response.message
-//        showCustomToast("Get JWT 성공")
-//    }
-//
-//    override fun onGetUserFailure(message: String) {
-//        dismissLoadingDialog()
-//        showCustomToast("오류 : $message")
-//    }
-//
-//    override fun onPostSignUpSuccess(response: SignUpResponse) {
-//        dismissLoadingDialog()
-//        binding.homeBtnTryPostHttpMethod.text = response.message
-//        response.message?.let { showCustomToast(it) }
-//    }
-//
-//    override fun onPostSignUpFailure(message: String) {
-//        dismissLoadingDialog()
-//        showCustomToast("오류 : $message")
     }
 
     override fun onGetItemSize(itemSize: Int) {
@@ -156,6 +124,15 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
         }
         else {
             binding.diary2SearchEmpty.isVisible = true
+        }
+    }
+
+    fun <T : Parcelable> Bundle.parcelableArrayList(key: String): ArrayList<T>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            getParcelableArrayList(key)
+        } else {
+            @Suppress("DEPRECATION")
+            getParcelableArrayList(key)
         }
     }
 }

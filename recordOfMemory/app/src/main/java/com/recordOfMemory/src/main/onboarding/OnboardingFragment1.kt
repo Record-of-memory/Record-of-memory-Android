@@ -1,6 +1,5 @@
 package com.recordOfMemory.src.main.onboarding
 
-import android.R
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.recordOfMemory.databinding.FragmentOnboarding1Binding
 import com.recordOfMemory.src.main.MainActivity
-
 
 class OnboardingFragment1 : Fragment() {
     private lateinit var viewBinding: FragmentOnboarding1Binding

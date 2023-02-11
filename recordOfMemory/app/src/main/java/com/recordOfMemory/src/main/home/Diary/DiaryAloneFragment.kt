@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
 import android.graphics.Color
@@ -7,47 +7,37 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
+import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
+import com.recordOfMemory.src.main.home.diary.DiaryAdapter
+import com.recordOfMemory.src.main.home.diary.DiaryFragmentInterface
+import com.recordOfMemory.src.main.home.diary.ResultDiaries
+import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.config.BaseResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 
-class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone) {
-    lateinit var diaryAdapter: DiaryAdapter
-    val datas = mutableListOf<DiaryData>()
-
+class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone),
+    DiaryFragmentInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        diaryAdapter = DiaryAdapter(datas as ArrayList<DiaryData>)
-        binding.diaryRv.adapter = diaryAdapter
-
-
-        datas.apply {
-            add(DiaryData(title = "나의 첫 다이어리"))
-            add(DiaryData(title = "비밀일기"))
-            add(DiaryData(title = "보라돌이와 함께"))
-            add(DiaryData(title = "나의 첫 다이어리"))
-            add(DiaryData(title = "비밀일기"))
-            add(DiaryData(title = "보라돌이와 함께"))
-            add(DiaryData(title = "나의 첫 다이어리"))
-            add(DiaryData(title = "비밀일기"))
-            add(DiaryData(title = "보라돌이와 함께"))
-        }
-
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
-
-        diaryAdapter.datas = datas
-        diaryAdapter.notifyDataSetChanged()
-
-        val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
-        binding.diaryRv.layoutManager = manager
-
         binding.diaryBtnAlone.isSelected = true
-        binding.diaryBtnTogether.setOnClickListener {
+
+        binding.diaryRv.visibility=View.INVISIBLE
+        binding.diaryIvNone.visibility=View.INVISIBLE
+        binding.diaryTvNone.visibility=View.INVISIBLE
+
+        DiaryService(this).tryGetUsers("SECOND")
+        DiaryService(this).tryGetDiaries()
+
+        binding.diaryBtnTogether.setOnClickListener { //같이쓰는 으로 전환
             transaction
                 .replace(R.id.main_frm, DiaryTogetherFragment())
                 .addToBackStack(null)
@@ -56,39 +46,78 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         }
 
         binding.iconDiaryAdd.setOnClickListener {
-
-            val mDialogView = Dialog(requireContext())
-            mDialogView.setContentView(R.layout.fragment_pop_diary)
-            mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            mDialogView.show()
-            mDialogView.setCancelable(false)
-
-            val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
-            noButton.setOnClickListener {
-                mDialogView.dismiss()
-            }
-
-            val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
-            confirm.setOnClickListener() {
-                val newItem = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
-                if (newItem.length == 0) {
-                    Toast
-                        .makeText(requireContext(), "다이어리 제목을 한 글자 이상 입력해주세요", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    var contact = DiaryData(title = newItem)
-                    datas.add(contact)
-                    diaryAdapter.notifyDataSetChanged()
-                    mDialogView.dismiss() //다이어리 생성 후에도 모달창 사라짐
-                    Toast
-                        .makeText(requireContext(), "새 다이어리가 생성되었습니다", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-
-            }
-
+            addNewDiaryFunction()
+            binding.diaryTvNone.visibility=View.INVISIBLE
+            binding.diaryIvNone.visibility=View.INVISIBLE
         }
+    }
+
+    private fun addNewDiaryFunction(){
+        val mDialogView = Dialog(requireContext())
+        mDialogView.setContentView(R.layout.fragment_pop_diary)
+        mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        mDialogView.show()
+
+        val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
+        noButton.setOnClickListener {
+            mDialogView.dismiss()
+        }
+
+        val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
+
+        confirm.setOnClickListener() {
+            val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
+            if (0 < newItemName.length && newItemName.length < 10){
+                var newItem = PostDiariesRequest(name = newItemName, diaryType= "ALONE")
+                DiaryService(this).tryPostDiaries(newItem)
+                mDialogView.dismiss()
+                DiaryService(this).tryGetDiaries()
+            } else{
+                val alarm = mDialogView.findViewById<TextView>(R.id.pop_tv_alarm)
+                alarm.text = "10자 이내로 설정해주세요"
+            }
+        }
+    }
+
+    override fun onGetDiariesSuccess(response: GetDiariesResponse) {
+        val data = response.information
+        //val userName = data[0].nickname -> 로그인 후 받은 닉네임 정보로
+        //binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
+
+        val filterData = data.filter { it.diaryType=="ALONE" }
+        if (!filterData.isEmpty()) {
+            binding.diaryRv.visibility=View.VISIBLE
+            val diaryAdapter = DiaryAdapter(filterData as ArrayList<ResultDiaries>)
+            binding.diaryRv.adapter = diaryAdapter
+            diaryAdapter.notifyDataSetChanged()
+            val manager = GridLayoutManager(activity, 3, GridLayoutManager.VERTICAL, false)
+            binding.diaryRv.layoutManager = manager
+        } else{
+            binding.diaryTvNone.visibility=View.VISIBLE
+            binding.diaryIvNone.visibility=View.VISIBLE
+        }
+    }
+
+    override fun onGetDiariesFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
+
+    override fun onPostDiariesSuccess(response: BaseResponse) {
+        showCustomToast("성공")
+    }
+
+    override fun onPostDiariesFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
+
+    override fun onGetUsersSuccess(response: GetUsersResponse) {
+        val nickname = response.information.nickname
+        binding.diaryTvTitle.text=nickname+"님의 기억을 기록할 다이어리를 골라보세요!"
+    }
+
+    override fun onGetUsersFailure(message: String) {
+        showCustomToast("오류 : $message")
+    }
 
 }
 

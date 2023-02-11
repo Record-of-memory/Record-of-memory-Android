@@ -27,6 +27,7 @@
                 android:src="@drawable/ex_img"
                 android:background="@drawable/diary2_box_item_grid_img"/>
         </LinearLayout>
+
         <TextView
             android:layout_gravity="center"
             android:gravity="center"
@@ -40,4 +41,3 @@
             android:text="이름 자리"
             android:includeFontPadding="false"/>
     </LinearLayout>
-<!--</layout>-->

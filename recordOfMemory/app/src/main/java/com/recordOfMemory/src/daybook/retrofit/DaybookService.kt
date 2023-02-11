@@ -1,21 +1,24 @@
 package com.recordOfMemory.src.daybook.retrofit
-import android.util.Log
+
 import com.recordOfMemory.config.ApplicationClass
-import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
-import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
-import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
+import com.recordOfMemory.config.BaseResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.util.Log
+import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
+import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
+import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
 import retrofit2.create
 
-class DaybookService(val daybookInterface: DaybookInterface){
-	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NjA0ODM3OCwiZXhwIjoxNjc2MDUxOTc4fQ.myqr8mXMUKNUcPPNNhRYZcYmVKk89q98mHgAYN2S7abrV5ZNhn3lTSuTtN_gj61aRuUm-9pdVFuHS_N1M0yBAg"
+class DaybookService(val daybookInterface: DaybookInterface) {
+    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjc2MDU0NDIyLCJleHAiOjE2NzYwNTgwMjJ9.oxrL9v_gT1jfiONkZaVjSjLFhKYW37ii_uUi7QrAsbajgSxYSUDu_9o7FDJktlhy9__JXaZ1vZv5I_RTUJm4Hg"
 	private val daybookRetrofitInterface:DaybookRetrofitInterface=ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
 
 	fun tryDeleteDaybook(params: PatchDaybookRequest){
-		daybookRetrofitInterface.deleteDaybook(Authorization = "Bearer $auth",params=params)
+		daybookRetrofitInterface.deleteDaybook(Authorization = "Bearer $X_ACCESS_TOKEN",params=params)
 			.enqueue(object : Callback<PatchDaybookResponse>{
 				override fun onResponse(call: Call<PatchDaybookResponse>, response: Response<PatchDaybookResponse>, ) {
 					if(response.code()==200){
@@ -34,7 +37,7 @@ class DaybookService(val daybookInterface: DaybookInterface){
 	}
 
 	fun tryGetDaybook(daybookId:Int){
-		daybookRetrofitInterface.getDaybook(Authorization = "Bearer $auth",recordId=daybookId)
+		daybookRetrofitInterface.getDaybook(Authorization = "Bearer $X_ACCESS_TOKEN",recordId=daybookId)
 			.enqueue(object :Callback<GetDaybookResponse>{
 				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
 					if(response.code()==200){
@@ -51,4 +54,24 @@ class DaybookService(val daybookInterface: DaybookInterface){
 
 			})
 	}
+    fun tryPostRecord(imgUrl : MultipartBody.Part, writeRecordReq : RequestBody) {
+        println("imgUrl: ${imgUrl.body}")
+        println("writeRecordReq $writeRecordReq")
+
+        val daybookRetrofitInterface = ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
+        daybookRetrofitInterface.postRecord(Authorization = X_ACCESS_TOKEN, img = imgUrl, writeRecordReq = writeRecordReq)
+            .enqueue(object :
+            Callback<BaseResponse> {
+            override fun onResponse(
+                call: Call<BaseResponse>,
+                response: Response<BaseResponse>
+            ) {
+                daybookInterface.onPostRecordSuccess(response.body() as BaseResponse)
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                daybookInterface.onPostRecordFailure(t.message ?: "통신 오류")
+            }
+        })
+    }
 }

@@ -5,8 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -16,30 +14,28 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityDaybookBinding
 import com.recordOfMemory.src.daybook.retrofit.CommentInterface
 import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
-import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
 	MyPageInterface, DaybookInterface {
 	private var commentList = ArrayList<Comment>()
 	private lateinit var commentAdapter :CommentAdapter
-	lateinit var item : GetDiary2Response
 	private var imageUri:String=""
 	private var daybookImageUrl=""
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
@@ -51,6 +47,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
 
 		DaybookService(this).tryGetDaybook(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
 		CommentService(this).tryGetComments(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
@@ -222,6 +219,14 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onGetUsersFailure(message: String) {
 		Log.d("실패","$message")
 		Toast.makeText(this,"유저 정보를 가져올 수 없습니다",Toast.LENGTH_SHORT).show()
+	}
+
+	override fun onPostRecordSuccess(response: BaseResponse) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onPostRecordFailure(response: String) {
+		TODO("Not yet implemented")
 	}
 
 	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {

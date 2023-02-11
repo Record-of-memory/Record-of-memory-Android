@@ -2,7 +2,7 @@ package com.recordOfMemory.src.main.home
 
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.src.main.home.models.PostSignUpRequest
-import com.recordOfMemory.src.main.home.models.SignUpResponse
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.models.UserResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,12 +25,12 @@ class HomeService(val homeFragmentInterface: HomeFragmentInterface) {
 
     fun tryPostSignUp(postSignUpRequest: PostSignUpRequest){
         val homeRetrofitInterface = ApplicationClass.sRetrofit.create(HomeRetrofitInterface::class.java)
-        homeRetrofitInterface.postSignUp(postSignUpRequest).enqueue(object : Callback<SignUpResponse>{
-            override fun onResponse(call: Call<SignUpResponse>, response: Response<SignUpResponse>) {
-                homeFragmentInterface.onPostSignUpSuccess(response.body() as SignUpResponse)
+        homeRetrofitInterface.postSignUp(postSignUpRequest).enqueue(object : Callback<BaseResponse>{
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                homeFragmentInterface.onPostSignUpSuccess(response.body() as BaseResponse)
             }
 
-            override fun onFailure(call: Call<SignUpResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 homeFragmentInterface.onPostSignUpFailure(t.message ?: "통신 오류")
             }
         })
