@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.Diary
+package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
 import android.graphics.Color
@@ -13,12 +13,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
+import com.recordOfMemory.src.main.home.diary.DiaryAdapter
+import com.recordOfMemory.src.main.home.diary.DiaryFragmentInterface
+import com.recordOfMemory.src.main.home.diary.ResultDiaries
+import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
 import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 
-class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone), DiaryFragmentInterface {
+class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone),
+    DiaryFragmentInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val fm = requireActivity().supportFragmentManager
@@ -29,7 +34,7 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         binding.diaryIvNone.visibility=View.INVISIBLE
         binding.diaryTvNone.visibility=View.INVISIBLE
 
-        DiaryService(this).tryGetUsers()
+        DiaryService(this).tryGetUsers("SECOND")
         DiaryService(this).tryGetDiaries()
 
         binding.diaryBtnTogether.setOnClickListener { //같이쓰는 으로 전환
@@ -97,7 +102,7 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         showCustomToast("오류 : $message")
     }
 
-    override fun onPostDiariesSuccess(response: PostDiariesResponse) {
+    override fun onPostDiariesSuccess(response: BaseResponse) {
         showCustomToast("성공")
     }
 

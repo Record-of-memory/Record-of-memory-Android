@@ -1,7 +1,7 @@
 package com.recordOfMemory.src.main.myPage.retrofit
 
 import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
-import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import retrofit2.Call

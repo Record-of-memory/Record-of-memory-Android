@@ -64,7 +64,6 @@ DaybookInterface{
 	private var screenType:String=""
 	private var recordId:Int=0;
 	private lateinit var imageUri:Uri
-	private lateinit var item : GetDiary2Response
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

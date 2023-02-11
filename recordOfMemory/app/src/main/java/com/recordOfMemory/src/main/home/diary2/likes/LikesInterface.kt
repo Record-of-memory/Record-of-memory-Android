@@ -1,6 +1,6 @@
 package com.recordOfMemory.src.main.home.diary2.likes
 
-import com.recordOfMemory.src.main.home.models.SignUpResponse
+import com.recordOfMemory.config.BaseResponse
 
 interface LikesInterface {
     fun onPostLikesSuccess(response: LikesResponse)

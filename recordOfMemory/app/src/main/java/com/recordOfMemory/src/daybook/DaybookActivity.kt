@@ -24,10 +24,10 @@ import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
-import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import java.text.SimpleDateFormat
 import java.util.*

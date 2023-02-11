@@ -7,7 +7,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LikesService(val likesInterface: LikesInterface) {
-    val X_ACCESS_TOKEN = "Bearer " + ApplicationClass.X_ACCESS_TOKEN
+        val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+    val X_ACCESS_TOKEN = "Bearer $token"
 
     fun tryPostLikes(postLikesRequest: PostLikesRequest){
         val likesRetrofitInterface = ApplicationClass.sRetrofit.create(LikesRetrofitInterface::class.java)

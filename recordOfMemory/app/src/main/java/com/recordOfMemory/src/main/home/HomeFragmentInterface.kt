@@ -1,6 +1,6 @@
 package com.recordOfMemory.src.main.home
 
-import com.recordOfMemory.src.main.home.models.SignUpResponse
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.models.UserResponse
 
 interface HomeFragmentInterface {
@@ -9,7 +9,7 @@ interface HomeFragmentInterface {
 
     fun onGetUserFailure(message: String)
 
-    fun onPostSignUpSuccess(response: SignUpResponse)
+    fun onPostSignUpSuccess(response: BaseResponse)
 
     fun onPostSignUpFailure(message: String)
 }
