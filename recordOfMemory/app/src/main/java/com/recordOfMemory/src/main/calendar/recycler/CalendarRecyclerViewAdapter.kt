@@ -1,8 +1,6 @@
-<<<<<<<< HEAD:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/home/diary2/search/recycler/Diary2SearchRecyclerViewAdapter.kt
-package com.recordOfMemory.src.main.home.diary2.search.recycler
-========
+
 package com.recordOfMemory.src.main.calendar.recycler
->>>>>>>> dev:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/calendar/recycler/CalendarRecyclerViewAdapter.kt
+
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,16 +8,11 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
-<<<<<<<< HEAD:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/home/diary2/search/recycler/Diary2SearchRecyclerViewAdapter.kt
-import com.recordOfMemory.src.main.home.diary2.Diary2Interface
-import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetDiary2Response
-import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
-========
+
 import com.recordOfMemory.src.main.calendar.CalendarFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
->>>>>>>> dev:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/calendar/recycler/CalendarRecyclerViewAdapter.kt
+
 
 class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetRecordResponse>)
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable {
