@@ -3,7 +3,7 @@ package com.recordOfMemory.src.main.myPage.retrofit
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
-import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import retrofit2.Call
@@ -12,12 +12,13 @@ import retrofit2.Response
 import java.io.IOException
 
 class MyPageService(val myPageInterface: MyPageInterface) {
-	private val auth:String=
-		"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTY3NjA0ODM3OCwiZXhwIjoxNjc2MDUxOTc4fQ.myqr8mXMUKNUcPPNNhRYZcYmVKk89q98mHgAYN2S7abrV5ZNhn3lTSuTtN_gj61aRuUm-9pdVFuHS_N1M0yBAg"
+	    val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+    val X_ACCESS_TOKEN = "Bearer $token"
+
 	private val myPageRetrofitInterface: MyPageRetrofitInterface = ApplicationClass.sRetrofit.create(MyPageRetrofitInterface::class.java)
 
 	fun tryPostSignOut(params: PostSignOutRequest){
-		myPageRetrofitInterface.postSignOut(Authorization = "Bearer $auth", params = params).enqueue(object : Callback<PostSignOutResponse> {
+		myPageRetrofitInterface.postSignOut(Authorization = X_ACCESS_TOKEN, params = params).enqueue(object : Callback<PostSignOutResponse> {
 			override fun onResponse(call: Call<PostSignOutResponse>, response: Response<PostSignOutResponse>) {
 				if(response.code()==200){
 					myPageInterface.onPostSignOutSuccess(response.body() as PostSignOutResponse)
@@ -33,7 +34,7 @@ class MyPageService(val myPageInterface: MyPageInterface) {
 	}
 
 	fun tryGetUsers(){
-		myPageRetrofitInterface.getUsers("Bearer $auth").enqueue(object : Callback<GetUsersResponse> {
+		myPageRetrofitInterface.getUsers(X_ACCESS_TOKEN).enqueue(object : Callback<GetUsersResponse> {
 			override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>) {
 				if(response.code()==200){
 					Log.d("인터페이스",myPageInterface.toString())

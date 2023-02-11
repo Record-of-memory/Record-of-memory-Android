@@ -1,21 +1,18 @@
-package com.recordOfMemory.src.main.signUp
+package com.recordOfMemory.src.main.signUp.retrofit
 
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.signUp.models.*
 
 interface SignUpFragmentInterface {
-    fun onPostSignUpSuccess(response: SignUpResponse)
+    fun onPostSignUpSuccess(response: BaseResponse)
 
     fun onPostSignUpFailure(message: String)
 
-    fun onPostSignInSuccess(response: SignInResponse)
+    fun onPostSignInSuccess(response: TokenResponse)
 
     fun onPostSignInFailure(message: String)
 
-    fun onPostRefreshSuccess(response: RefreshResponse)
-
-    fun onPostRefreshFailure(message: String)
-
-    fun onPostChangePasswordSuccess(response: ChangePasswordResponse)
+    fun onPostChangePasswordSuccess(response: BaseResponse)
 
     fun onPostChangePasswordFailure(message: String)
 

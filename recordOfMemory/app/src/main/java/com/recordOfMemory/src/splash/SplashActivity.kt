@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivitySplashBinding
+import com.recordOfMemory.src.main.MainActivity
 import com.recordOfMemory.src.main.signUp.SignUpActivity
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate) {
@@ -13,6 +15,13 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         super.onCreate(savedInstanceState)
 
         Handler(Looper.getMainLooper()).postDelayed({
+            val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+
+            if (accessToken != null) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+
             startActivity(Intent(this, SignUpActivity::class.java))
             finish()
         }, 1500)

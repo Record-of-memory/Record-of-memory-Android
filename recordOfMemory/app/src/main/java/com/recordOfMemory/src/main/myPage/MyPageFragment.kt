@@ -17,7 +17,7 @@ import com.recordOfMemory.databinding.FragmentMyPageBinding
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
-import com.recordOfMemory.src.main.myPage.retrofit.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import com.recordOfMemory.src.splash.SplashActivity
@@ -34,9 +34,11 @@ class MyPageFragment :
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
 
+
+        // 마이페이지 인스턴스 1 -> 마이페이지에딧 인스턴스 1 -> 마이페이지 인스턴스 2
         binding.mypageEditBtn.setOnClickListener {
             transaction
-                .replace(R.id.main_frm, MyPageEditFragment())
+                .replace(R.id.main_frm, MyPageEditFragment(this))
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed

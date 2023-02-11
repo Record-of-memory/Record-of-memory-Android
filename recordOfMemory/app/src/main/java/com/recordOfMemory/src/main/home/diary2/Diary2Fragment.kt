@@ -13,11 +13,14 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.daybook.DaybookWritingActivity
-import com.recordOfMemory.src.main.home.Diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
+import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.main.home.diary2.member.invite.Diary2InviteMemberFragment
 import com.recordOfMemory.src.main.home.diary2.member.show.Diary2ShowMemberFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
@@ -28,15 +31,22 @@ import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Interface
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
+import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
+import com.recordOfMemory.src.main.signUp.models.TokenResponse
 
 class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2),
-Diary2Interface{
+Diary2Interface, GetRefreshTokenInterface{
     // true - list / false - grid
     var stateFlag = true
 
     var listItemList = ArrayList<GetRecordResponse>()
     var gridItemList = ArrayList<Diary2GridOutViewModel>()
     val items = itemListAdapterToList()
+    var request : Any = ""
+
+    // 토큰 갱신 시 수행해야 할 통신을 알려준다.
+    // 1000 -> tryGetRecords
+    var statusCode = 1000
 
 
     inner class itemListAdapterToList {
@@ -51,35 +61,12 @@ Diary2Interface{
         }
     }
 
-    // 일기 open
-//    fun openItem(item: GetDiary2Response) {
-//        println(item)
-//        startActivity(Intent(activity, DaybookActivity(item)::class.java))
-
-//        val fm = requireActivity().supportFragmentManager
-//        val transaction: FragmentTransaction = fm.beginTransaction()
-//
-//        val email = sSharedPreferences.getString("email", "")
-//        if(email == "NO") {
-//            transaction
-//                .replace(R.id.main_frm, LoginFragment())
-//                .addToBackStack(null)
-//                .commit()
-//            transaction.isAddToBackStackAllowed
-//        }
-//        else {
-//            transaction
-//                .replace(R.id.main_frm, itemFragment)
-//                .addToBackStack(null)
-//                .commit()
-//            transaction.isAddToBackStackAllowed
-//        }
-//    }
-
     override fun onResume() {
         super.onResume()
 
+        statusCode = 1000
         showLoadingDialog(requireContext())
+        request = "52"
         Diary2Service(this).tryGetRecords("52")
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,24 +74,6 @@ Diary2Interface{
 
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
-
-//        val jsonObject = JSONObject("{\"userId\":\"${id}\",\"category\":\"${category}\",\"title\":\"${title}\",\"contents\":\"${contents}\",\"hashTags\":${jsonArray}}").toString()
-//        val jsonBody = RequestBody.create(parse("application/json"),jsonObject)
-
-//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-//        imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
-//
-//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
-//
-//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
-//
-//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "content", date = "23.01.01",writer = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
-//
-//        itemList.add(GetRecordResponse(itemId = "1", title = "ss", content = "가가가가가가", date = "23.01.01",writer = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ"))
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -291,7 +260,37 @@ Diary2Interface{
         }
     }
 
+    // 토큰 갱신 필요 시 토큰 갱신으로 이동
     override fun onGetRecordsFailure(message: String) {
+        if(message == "refreshToken") {
+            val X_REFRESH_TOKEN =
+                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
+                    .toString()
+
+            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+
+        }
+        // 토큰 갱신 문제가 아닐 경우
+        else {
+            //TODO
+        }
+   }
+
+    // 통신 시도 -> 토큰이 유효 X -> 토큰 갱신 O -> 통신 재시도
+
+    override fun onPostRefreshSuccess(response: TokenResponse) {
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+        editor.apply()
+
+        when(statusCode) {
+            1000 -> Diary2Service(this).tryGetRecords(request as String)
+        }
+    }
+
+    // refreshToken 갱신 실패 로그인으로 이동한다.
+    override fun onPostRefreshFailure(message: String) {
         TODO("Not yet implemented")
     }
 }

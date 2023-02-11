@@ -34,7 +34,11 @@ import com.recordOfMemory.src.splash.SplashActivity
 import java.io.IOException
 
 
-class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface {
+class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface {
+	lateinit var myPageFragment: MyPageFragment
+	constructor(myPageFragment: MyPageFragment):this() {
+		this.myPageFragment = myPageFragment
+	}
 
 	val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
 	val CAMERA_PERMISSION_REQUEST = 100
@@ -51,7 +55,7 @@ class MyPageEditFragment: BaseFragment<FragmentMyPageEditBinding>(FragmentMyPage
 		binding.mypageEditBack.setOnClickListener { //뒤로가기 - 다른 방법이 있는지 확인할 것
 			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 			transaction
-				.replace(R.id.main_frm,MyPageFragment())
+				.replace(R.id.main_frm, myPageFragment)
 				.addToBackStack(null)
 				.commit()
 			transaction.isAddToBackStackAllowed

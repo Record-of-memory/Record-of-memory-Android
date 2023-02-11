@@ -12,7 +12,7 @@ import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityMainBinding
 import com.recordOfMemory.src.main.calendar.CalendarFragment
-import com.recordOfMemory.src.main.home.Diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
 import com.recordOfMemory.src.main.myPage.MyPageFragment
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment1
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment2
@@ -36,14 +36,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val transaction = supportFragmentManager.beginTransaction()
             .replace(binding.onboardingFrm.id, fragment1)
         transaction.commit()
-        //메인 레이아웃 보이게 하기
-//        supportFragmentManager.beginTransaction().replace(binding.mainFrm.id, HomeFragment()).commitAllowingStateLoss()
 
         //메인 레이아웃 보이게 하기
-//        supportFragmentManager.beginTransaction().replace(R.id.main_frm, Diary2Fragment()).commitAllowingStateLoss()
-
-        //메인 레이아웃 보이게 하기
-        supportFragmentManager.beginTransaction().replace(R.id.main_frm, DiaryTogetherFragment()).commitAllowingStateLoss()
+//        supportFragmentManager.beginTransaction().replace(R.id.main_frm, DiaryTogetherFragment()).commitAllowingStateLoss()
 
         binding.mainBtmNav.run {
             setOnItemSelectedListener { item ->

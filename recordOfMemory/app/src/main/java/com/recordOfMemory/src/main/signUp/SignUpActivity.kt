@@ -28,6 +28,7 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(ActivitySignUpBinding
     fun openNextActivity() {
         intent = Intent(this,MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     // fragment 바꾸는 메소드
