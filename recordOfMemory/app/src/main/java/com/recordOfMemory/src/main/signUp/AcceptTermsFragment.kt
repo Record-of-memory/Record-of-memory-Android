@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.recordOfMemory.databinding.FragmentAcceptTermsBinding
 
@@ -22,6 +24,12 @@ class AcceptTermsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         viewBinding = FragmentAcceptTermsBinding.inflate(inflater, container, false)
+
+        // 추가
+        var myWebView: WebView = viewBinding.webView
+        myWebView.webViewClient = WebViewClient()
+        myWebView.loadUrl("https://admirable-gaufre-ec0b4e.netlify.app/")
+
         return viewBinding.root
     }
 

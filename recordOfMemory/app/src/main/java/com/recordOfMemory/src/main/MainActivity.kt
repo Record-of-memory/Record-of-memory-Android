@@ -36,12 +36,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val myPageFragment = MyPageFragment()
 
         //온보딩 레이아웃 보이게 하기
-//        val transaction = supportFragmentManager.beginTransaction()
-//            .replace(binding.onboardingFrm.id, fragment1)
-//        transaction.commit()
+        val transaction = supportFragmentManager.beginTransaction()
+            .replace(binding.onboardingFrm.id, fragment1)
+        transaction.commit()
 
         //메인 레이아웃 보이게 하기
-        hideMainFragment(false)
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
             .commitAllowingStateLoss()
@@ -73,7 +72,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             selectedItemId = R.id.menu_main_btm_nav_home
         }
     }
-
 
     // 온보딩 fragment 바꾸는 메소드
     fun openFragmentOnOnboarding(int: Int){

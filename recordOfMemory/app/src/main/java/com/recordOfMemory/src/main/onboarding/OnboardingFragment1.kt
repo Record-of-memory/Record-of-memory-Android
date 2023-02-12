@@ -8,10 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentOnboarding1Binding
 import com.recordOfMemory.src.main.MainActivity
+import com.recordOfMemory.src.main.home.diary.DiaryFragmentInterface
+import com.recordOfMemory.src.main.home.diary.DiaryRetrofitInterface
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import retrofit2.Call
 
-class OnboardingFragment1 : Fragment() {
+class OnboardingFragment1 : Fragment(), DiaryFragmentInterface {
     private lateinit var viewBinding: FragmentOnboarding1Binding
 
     var mainActivity: MainActivity? = null
@@ -53,4 +60,18 @@ class OnboardingFragment1 : Fragment() {
             mainActivity!!.hideMainFragment(false)
         }
     }
+
+    override fun onGetDiariesSuccess(response: GetDiariesResponse) {}
+
+    override fun onGetDiariesFailure(message: String) {}
+
+    override fun onPostDiariesSuccess(response: BaseResponse) {}
+
+    override fun onPostDiariesFailure(message: String) {}
+
+    override fun onGetUsersSuccess(response: GetUsersResponse) {}
+
+    override fun onGetUsersFailure(message: String) {}
+
+
 }

@@ -1,10 +1,10 @@
 package com.recordOfMemory.src.main.home.diary
 
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
-import com.recordOfMemory.src.main.home.diary.retrofit.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesResponse
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,16 +32,16 @@ class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
 
     fun tryPostDiaries(params: PostDiariesRequest){
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
-        diaryRetrofitInterface.postDiaries(Authorization = X_ACCESS_TOKEN, params = params).enqueue(object : Callback<PostDiariesResponse>{
-            override fun onResponse(call: Call<PostDiariesResponse>, response: Response<PostDiariesResponse>) {
-                (response.body() as PostDiariesResponse?)?.let {
+        diaryRetrofitInterface.postDiaries(Authorization = X_ACCESS_TOKEN, params = params).enqueue(object : Callback<BaseResponse>{
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                (response.body() as BaseResponse?)?.let {
                     diaryFragmentInterface.onPostDiariesSuccess(
                         it
                     )
                 }
             }
 
-            override fun onFailure(call: Call<PostDiariesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 diaryFragmentInterface.onPostDiariesFailure(t.message ?: "통신 오류")
             }
         })

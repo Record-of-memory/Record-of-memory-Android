@@ -56,14 +56,13 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 			transaction
 				.replace(R.id.main_frm, myPageFragment)
-				.addToBackStack(null)
 				.commit()
 			transaction.isAddToBackStackAllowed
 		}
 
 		binding.mypageEditChangePassword.setOnClickListener { //비밀번호 변경
 			transaction
-				.replace(R.id.main_frm, MyPageEditPasswordFragment())
+				.replace(R.id.main_frm, MyPageEditPasswordFragment(this))
 				.addToBackStack(null)
 				.commit()
 			transaction.isAddToBackStackAllowed
@@ -86,10 +85,9 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 			// 마이페이지로 넘어가기
 			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 			transaction
-				.replace(R.id.main_frm, MyPageFragment())
-				.addToBackStack(null) //주석으로 하면, mypage돌아갔을 때 뒤로가기 시 바로 끝
+				.replace(R.id.main_frm, myPageFragment)
+//				.addToBackStack(null) //주석으로 하면, mypage돌아갔을 때 뒤로가기 시 바로 끝
 				.commit()
-			transaction.isAddToBackStackAllowed
 		}
 
 

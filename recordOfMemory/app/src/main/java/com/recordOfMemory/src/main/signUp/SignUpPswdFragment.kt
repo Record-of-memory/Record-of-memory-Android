@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.recordOfMemory.R
 import com.recordOfMemory.databinding.FragmentSignUpPswdBinding
 import java.util.regex.Pattern
 
@@ -59,7 +61,24 @@ class SignUpPswdFragment : Fragment() {
             if (checkPassword()) {
                 //이메일 형식도 올바르고, 확인 비밀번호와 일치할 때
                 if (checkSamePassword()) {
-                    signUpActivity!!.openFragmentSignUp(5)
+                    val email = arguments?.getString("email")
+
+                    val bundle = Bundle()
+                    bundle.putString("password", viewBinding.editPswd.text.toString())
+                    bundle.putString("email", email.toString())
+
+                    val signUpNicknameFragment = SignUpNicknameFragment()
+                    signUpNicknameFragment.arguments = bundle
+
+                    val fm = requireActivity().supportFragmentManager
+                    val transaction: FragmentTransaction = fm.beginTransaction()
+
+                    transaction
+                        .replace(R.id.sign_up_frm, signUpNicknameFragment)
+                        .addToBackStack(null)
+                        .commit()
+                    transaction.isAddToBackStackAllowed
+//                    signUpActivity!!.openFragmentSignUp(5)
                 }
                 else {
                     Toast.makeText(activity, "비밀번호가 다릅니다", Toast.LENGTH_SHORT).show()
