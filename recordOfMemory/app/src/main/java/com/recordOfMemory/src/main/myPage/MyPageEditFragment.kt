@@ -61,12 +61,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		binding.mypageEditBack.setOnClickListener { //뒤로가기 - 다른 방법이 있는지 확인할 것
-			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-			transaction
-				.replace(R.id.main_frm, myPageFragment)
-				.addToBackStack(null)
-				.commit()
-			transaction.isAddToBackStackAllowed
+			fm.popBackStack()
 		}
 
 		binding.mypageEditChangePassword.setOnClickListener { //비밀번호 변경

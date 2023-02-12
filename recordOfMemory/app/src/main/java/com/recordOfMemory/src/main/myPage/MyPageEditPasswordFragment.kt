@@ -39,15 +39,9 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val fm = requireActivity().supportFragmentManager
-		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		binding.passwordBack.setOnClickListener { //뒤로 가기
-			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-			transaction
-				.replace(R.id.main_frm,myPageEditFragment)
-				.addToBackStack(null)
-				.commit()
-			transaction.isAddToBackStackAllowed
+			fm.popBackStack()
 		}
 
 		binding.passwordCompleteBtn.setOnClickListener { //완료
@@ -119,7 +113,6 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 		fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 		transaction
 			.replace(R.id.main_frm, myPageEditFragment) //수정 화면으로 가게
-			.addToBackStack(null)
 			.commitAllowingStateLoss()
 		transaction.isAddToBackStackAllowed
 	}
