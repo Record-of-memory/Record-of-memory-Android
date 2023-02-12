@@ -3,6 +3,7 @@ package com.recordOfMemory.src.main.myPage.retrofit
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
@@ -22,9 +23,20 @@ class MyPageService(val myPageInterface: MyPageInterface) {
 			override fun onResponse(call: Call<PostSignOutResponse>, response: Response<PostSignOutResponse>) {
 				if(response.code()==200){
 					myPageInterface.onPostSignOutSuccess(response.body() as PostSignOutResponse)
+				}else if(response.code()==401){
+					myPageInterface.onGetUsersFailure("refreshToken")
 				}else{
-					Log.d("fail","fail to logout")
-					myPageInterface.onPostSignOutFailure("fail")
+					// error body 가져오는 코드 필요함
+					val gson = GsonBuilder().create()
+					try {
+						val error = gson.fromJson(
+							response.errorBody()!!.string(),
+							ErrorResponse::class.java)
+						myPageInterface.onPostSignOutFailure(error.information.message.split(": ")[1].split("\"")[0])
+					} catch (e: IOException) {
+						myPageInterface.onPostSignOutFailure(e.message ?: "통신 오류")
+					}
+
 				}
 			}
 			override fun onFailure(call: Call<PostSignOutResponse>, t: Throwable) {
@@ -34,16 +46,25 @@ class MyPageService(val myPageInterface: MyPageInterface) {
 	}
 
 	fun tryGetUsers(){
-		Log.e("error", "mypage")
-		myPageRetrofitInterface.getUsers(X_ACCESS_TOKEN).enqueue(object : Callback<GetUsersResponse> {
+		myPageRetrofitInterface.getUsers(Authorization =X_ACCESS_TOKEN).enqueue(object : Callback<GetUsersResponse> {
 			override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>) {
 				if(response.code()==200){
 					Log.d("인터페이스",myPageInterface.toString())
 					Log.d("응답",response.body().toString())
 					myPageInterface.onGetUsersSuccess(response.body() as GetUsersResponse)
+				}else if(response.code()==401){
+					myPageInterface.onGetUsersFailure("refreshToken")
 				}else{
-					Log.d("fail","fail to get Information")
-					myPageInterface.onGetUsersFailure("fail")
+					// error body 가져오는 코드 필요함
+					val gson = GsonBuilder().create()
+					try {
+						val error = gson.fromJson(
+							response.errorBody()!!.string(),
+							ErrorResponse::class.java)
+						myPageInterface.onGetUsersFailure(error.information.message.split(": ")[1].split("\"")[0])
+					} catch (e: IOException) {
+						myPageInterface.onGetUsersFailure(e.message ?: "통신 오류")
+					}
 				}
 			}
 

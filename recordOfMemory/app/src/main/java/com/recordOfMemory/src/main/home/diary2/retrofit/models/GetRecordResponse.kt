@@ -46,12 +46,12 @@ data class GetRecordResponse(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<GetMemberRecordResponse> {
-        override fun createFromParcel(parcel: Parcel): GetMemberRecordResponse {
-            return GetMemberRecordResponse(parcel)
+    companion object CREATOR : Parcelable.Creator<GetRecordResponse> {
+        override fun createFromParcel(parcel: Parcel): GetRecordResponse {
+            return GetRecordResponse(parcel)
         }
 
-        override fun newArray(size: Int): Array<GetMemberRecordResponse?> {
+        override fun newArray(size: Int): Array<GetRecordResponse?> {
             return arrayOfNulls(size)
         }
     }

@@ -1,30 +1,31 @@
 package com.recordOfMemory.src.main.myPage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentMyPageEditPasswordBinding
-import com.recordOfMemory.src.main.signUp.models.PostChangePasswordRequest
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditPasswordInterface
+import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditPasswordService
+import com.recordOfMemory.src.main.myPage.retrofit.models.PostChangePasswordRequest
+import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
-import com.recordOfMemory.src.main.signUp.models.UserEmailCheckNoTokenResponse
-import com.recordOfMemory.src.main.signUp.models.UserEmailCheckResponse
-import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
+import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import java.util.regex.Pattern
 
 
 class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBinding>(FragmentMyPageEditPasswordBinding::bind,
-	R.layout.fragment_my_page_edit_password), SignUpFragmentInterface {
-	lateinit var myPageFragment : MyPageFragment
-	lateinit var myPageEditFragment : MyPageEditFragment
-
-	constructor(myPageEditFragment: MyPageEditFragment) : this() {
-		this.myPageFragment = myPageEditFragment.myPageFragment
+	R.layout.fragment_my_page_edit_password),MyPageEditPasswordInterface ,
+	GetRefreshTokenInterface {
+	lateinit var myPageEditFragment: MyPageEditFragment
+	constructor(myPageEditFragment: MyPageEditFragment):this() {
 		this.myPageEditFragment = myPageEditFragment
 	}
 
@@ -32,22 +33,32 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 	private var newPassword1:String?=null
 	private var newPassword2:String?=null
 
+	var statusCode = 1301
+	var request : Any = ""
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		binding.passwordBack.setOnClickListener { //뒤로 가기
-			fm.popBackStack()
+			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+			transaction
+				.replace(R.id.main_frm,myPageEditFragment)
+				.addToBackStack(null)
+				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 		binding.passwordCompleteBtn.setOnClickListener { //완료
 			//데이터 처리
 			if(checkValidation()){
 				//백으로 보내서 체크 후에 화면 전환
-				val postChangePasswordRequest=PostChangePasswordRequest(prevPassword!!,newPassword1!!)
+				statusCode=1303
+				val postChangePasswordRequest=PostChangePasswordRequest(oldPassword = prevPassword.toString(), newPassword = newPassword2.toString())
+				request=postChangePasswordRequest
+				MyPageEditPasswordService(this).tryPostChangePassword(postChangePasswordRequest)
 
-				showLoadingDialog(requireContext())
-				SignUpService(this).tryPostChangePassword(postChangePasswordRequest)
 			}
 		}
 
@@ -100,43 +111,44 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 		return false
 	}
 
-	override fun onPostSignUpSuccess(response: BaseResponse) {}
-
-	override fun onPostSignUpFailure(message: String) {}
-
-	override fun onPostSignInSuccess(response: TokenResponse) {}
-
-	override fun onPostSignInWrong(message: String) {}
-
-	override fun onPostSignInFailure(message: String) {}
-
 	override fun onPostChangePasswordSuccess(response: BaseResponse) {
-		dismissLoadingDialog()
-		Toast.makeText(activity, "비밀번호가 변경되었습니다", Toast.LENGTH_SHORT).show()
+		Log.d("성공","${response.information.message}")
 		//화면 전환
 		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
 		fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+		transaction
+			.replace(R.id.main_frm, myPageEditFragment) //수정 화면으로 가게
+			.addToBackStack(null)
+			.commitAllowingStateLoss()
+		transaction.isAddToBackStackAllowed
 	}
 
 	override fun onPostChangePasswordFailure(message: String) {
-		dismissLoadingDialog()
-		if (message == "통신 오류") {
-			Toast.makeText(activity, "통신 오류", Toast.LENGTH_SHORT).show()
-		} else if (message == "비밀번호 다름"){
-			Toast.makeText(activity, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show()
+		if(message == "refreshToken") {
+			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+		}
+		// 토큰 갱신 문제가 아닐 경우
+		else {
+			Log.d("실패",message)
+			Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
 		}
 	}
 
-	override fun onGetUserEmailCheckExist(response: UserEmailCheckResponse) {}
+	override fun onPostRefreshSuccess(response: TokenResponse) {
+		val editor = ApplicationClass.sSharedPreferences.edit()
+		editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+		editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+		editor.apply()
 
-	override fun onGetUserEmailCheckNotExist(message: String) {}
+		when (statusCode) {
+			1303 -> MyPageEditPasswordService(this).tryPostChangePassword(request as PostChangePasswordRequest)
+		}
+	}
 
-	override fun onGetUserEmailCheckFailure(message: String) {}
-
-	override fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse) {}
-
-	override fun onGetUserEmailCheckNoTokenNotExist(message: String) {}
-
-	override fun onGetUserEmailCheckNoTokenFailure(message: String) {}
+	override fun onPostRefreshFailure(message: String) {
+		TODO("Not yet implemented")
+	}
 
 }

@@ -1,16 +1,20 @@
 package com.recordOfMemory.src.daybook.retrofit
 
 import android.util.Log
+import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.daybook.retrofit.models.GetCommentsResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PostCommentRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PostCommentResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class CommentService(val commentInterface: CommentInterface) {
-	val X_ACCESS_TOKEN = "Bearer ${ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)}"
+	val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+	val X_ACCESS_TOKEN = "Bearer $token"
 	private val commentRetrofitInterface:CommentRetrofitInterface=ApplicationClass.sRetrofit.create(CommentRetrofitInterface::class.java)
 
 	fun tryGetComments(daybookId:Int){
@@ -19,9 +23,20 @@ class CommentService(val commentInterface: CommentInterface) {
 				override fun onResponse(call: Call<GetCommentsResponse>, response: Response<GetCommentsResponse>, ) {
 					if(response.code()==200){
 						commentInterface.onGetCommentsSuccess(response.body() as GetCommentsResponse)
+					}else if(response.code()==401){
+						commentInterface.onGetCommentsFailure("refreshToken")
 					}else{
-						Log.d("fail","fail to read Comments")
-						commentInterface.onGetCommentsFailure("fail")
+						// error body 가져오는 코드 필요함
+						val gson = GsonBuilder().create()
+						try {
+							val error = gson.fromJson(
+								response.errorBody()!!.string(),
+								ErrorResponse::class.java)
+
+							commentInterface.onGetCommentsFailure(error.information.message.split(": ")[1].split("\"")[0])
+						} catch (e: IOException) {
+							commentInterface.onGetCommentsFailure(e.message ?: "통신 오류")
+						}
 					}
 				}
 
@@ -39,10 +54,19 @@ class CommentService(val commentInterface: CommentInterface) {
 			override fun onResponse(call: Call<PostCommentResponse>, response: Response<PostCommentResponse>) {
 				if(response.code()==200){
 					commentInterface.onPostCommentSuccess(response.body() as PostCommentResponse)
+				}else if(response.code()==401){
+					commentInterface.onPostCommentFailure("refreshToken")
 				}else{
-					//여기 수정하자
-					Log.d("fail","fail to write Comment")
-					commentInterface.onPostCommentFailure("fail")
+					// error body 가져오는 코드 필요함
+					val gson = GsonBuilder().create()
+					try {
+						val error = gson.fromJson(
+							response.errorBody()!!.string(),
+							ErrorResponse::class.java)
+						commentInterface.onPostCommentFailure(error.information.message.split(": ")[1].split("\"")[0])
+					} catch (e: IOException) {
+						commentInterface.onPostCommentFailure(e.message ?: "통신 오류")
+					}
 				}
 			}
 
@@ -51,4 +75,6 @@ class CommentService(val commentInterface: CommentInterface) {
 			}
 		})
 	}
+
+
 }

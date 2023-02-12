@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageEditBinding
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditInterface
@@ -30,11 +31,16 @@ import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditService
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
+import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
+import com.recordOfMemory.src.main.signUp.models.TokenResponse
+import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
+import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
 import java.io.IOException
 
 
-class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface {
+class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface,
+	GetRefreshTokenInterface {
 	lateinit var myPageFragment: MyPageFragment
 	constructor(myPageFragment: MyPageFragment):this() {
 		this.myPageFragment = myPageFragment
@@ -46,6 +52,8 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 	val STORAGE_PERMISSION_REQUEST = 200
 
 	private var changeImg=false;
+	var statusCode = 1201
+	var request : Any = ""
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -56,6 +64,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 			transaction
 				.replace(R.id.main_frm, myPageFragment)
+				.addToBackStack(null)
 				.commit()
 			transaction.isAddToBackStackAllowed
 		}
@@ -86,8 +95,9 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 			transaction
 				.replace(R.id.main_frm, myPageFragment)
-//				.addToBackStack(null) //주석으로 하면, mypage돌아갔을 때 뒤로가기 시 바로 끝
+				.addToBackStack(null) //주석으로 하면, mypage돌아갔을 때 뒤로가기 시 바로 끝
 				.commit()
+			transaction.isAddToBackStackAllowed
 		}
 
 
@@ -229,8 +239,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		deleteAccountDialog.findViewById<TextView>(R.id.mypage_btn_delete).setOnClickListener {
 			deleteAccountDialog.dismiss()
 
-			// 탈퇴(백엔드)
-			// TODO: 여기 로그아웃 해야하나?
+			statusCode=1203
 			MyPageEditService(this).tryDeleteUsers()
 		}
 
@@ -256,8 +265,30 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 	}
 
 	override fun onDeleteUsersFailure(message: String) {
-		Log.d("실패","$message")
-		Toast.makeText(context,"로그아웃 실패",Toast.LENGTH_SHORT).show()
+		if(message == "refreshToken") {
+			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+		}
+		// 토큰 갱신 문제가 아닐 경우
+		else {
+			Log.d("실패",message)
+			Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+		}
+	}
+
+	override fun onPostRefreshSuccess(response: TokenResponse) {
+		val editor = ApplicationClass.sSharedPreferences.edit()
+		editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+		editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+		editor.apply()
+
+		when(statusCode) {
+			1203 -> MyPageEditService(this).tryDeleteUsers()
+		}
+	}
+
+	override fun onPostRefreshFailure(message: String) {
+		TODO("Not yet implemented")
 	}
 
 }

@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class GetRecordsResponse(
     @SerializedName("check") val check : Boolean,
-    @SerializedName("information") val information: ArrayList<GetMemberRecordResponse>
+    @SerializedName("information") val information: ArrayList<GetRecordResponse>
 )
