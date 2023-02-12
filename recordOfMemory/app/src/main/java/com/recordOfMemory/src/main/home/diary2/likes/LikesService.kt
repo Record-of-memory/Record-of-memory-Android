@@ -29,9 +29,9 @@ class LikesService(val likesInterface: LikesInterface) {
         })
     }
 
-    fun tryDeleteLikes(diaryId: String){
+    fun tryDeleteLikes(recordId: String){
         val likesRetrofitInterface = ApplicationClass.sRetrofit.create(LikesRetrofitInterface::class.java)
-        likesRetrofitInterface.deletelikes(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object : Callback<LikesResponse> {
+        likesRetrofitInterface.deletelikes(Authorization = X_ACCESS_TOKEN, recordId = recordId).enqueue(object : Callback<LikesResponse> {
             override fun onResponse(call: Call<LikesResponse>, response: Response<LikesResponse>) {
                 if(response.isSuccessful){
                     likesInterface.onDeleteLikesSuccess(response.body() as LikesResponse)
@@ -47,9 +47,9 @@ class LikesService(val likesInterface: LikesInterface) {
         })
     }
 
-    fun tryCheckLikes(diaryId: String){
+    fun tryCheckLikes(recordId: String){
         val likesRetrofitInterface = ApplicationClass.sRetrofit.create(LikesRetrofitInterface::class.java)
-        likesRetrofitInterface.checklikes(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object : Callback<CheckLikesResponse> {
+        likesRetrofitInterface.checklikes(Authorization = X_ACCESS_TOKEN, recordId = recordId).enqueue(object : Callback<CheckLikesResponse> {
             override fun onResponse(call: Call<CheckLikesResponse>, response: Response<CheckLikesResponse>) {
                 if(response.isSuccessful){
                     likesInterface.onCheckLikesSuccess(response.body() as CheckLikesResponse)

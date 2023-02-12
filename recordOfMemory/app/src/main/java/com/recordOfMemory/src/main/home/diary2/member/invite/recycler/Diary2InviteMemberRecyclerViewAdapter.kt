@@ -30,10 +30,10 @@ class Diary2InviteMemberRecyclerViewAdapter(val diary2InviteInterface: Diary2Inv
     override fun onBindViewHolder(holder: Diary2InviteMemberRecyclerViewHolder, position: Int) {
         holder.bindWithView(item)
         holder.itemButton.setOnClickListener {
-            val postDiary2InviteRequest = PostDiary2InviteRequest(email = item.email, diaryId = "1")
-            holder.itemButton.isEnabled = false
-            holder.itemButton.text = "완료"
-            // http 통신 필요
+            if (holder.itemButton.isEnabled) {
+                diary2InviteInterface.onPostDiary2Invite(item.email)
+                holder.itemButton.text = "완료"
+            }
         }
     }
 
@@ -48,7 +48,7 @@ class Diary2InviteMemberRecyclerViewAdapter(val diary2InviteInterface: Diary2Inv
 //                val charString = constraint.toString()
 //                if(charString == "") {
 //                    val filterResults = FilterResults()
-//                    filterResults.values = ArrayList<GetRecordResponse>()
+//                    filterResults.values = ArrayList<GetMemberRecordResponse>()
 //                    return filterResults
 //                }
 //                else {

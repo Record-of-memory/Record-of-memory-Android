@@ -5,11 +5,12 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:paddingVertical="10dp">
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_diary2_show_member_iv_profile"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/icn_user"/>
+        android:src="@drawable/icn_user"
+        android:layout_gravity="center_horizontal|top" />
     <TextView
         android:id="@+id/item_diary2_show_member_tv_nickname"
         android:layout_width="wrap_content"

@@ -7,11 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 import com.recordOfMemory.util.getDateTime
 import com.recordOfMemory.util.getDayOfWeek
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
     : RecyclerView.ViewHolder(itemView) {
@@ -21,18 +19,31 @@ class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
     val itemContent = itemView.findViewById<TextView>(R.id.item_diary2_list_tv_content)
     val itemWriter = itemView.findViewById<TextView>(R.id.item_diary2_list_tv_writer)
     val itemDate = itemView.findViewById<TextView>(R.id.item_diary2_list_tv_date)
+    val itemLikes = itemView.findViewById<TextView>(R.id.item_diary2_list_tv_likes)
+    val itemComments = itemView.findViewById<TextView>(R.id.item_diary2_list_tv_comments)
+    val userImg = itemView.findViewById<ImageView>(R.id.item_diary2_list_iv_user_img)
 
-    fun bindWithView(item: GetRecordResponse) {
+
+    fun bindWithView(item: GetMemberRecordResponse) {
         Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)
         itemImg.clipToOutline = true
         itemTitle.text = item.title
         itemContent.text = item.content
-        itemWriter.text = item.user
+        itemWriter.text = item.user.nickname
+        itemLikes.text = item.likeCount
+        itemComments.text = item.commentCount
         val dateTime = getDateTime(item.date)
         val date = dateTime.year.toString() + "." + dateTime.monthValue.toString() + "." + dateTime.dayOfMonth.toString() + "."
         val dayOfWeek = getDayOfWeek(dateTime.dayOfWeek)
         itemDate.text = "$date ($dayOfWeek)"
+
+        if(item.user.imageUrl.isNullOrEmpty()){
+            userImg.setImageResource(R.drawable.icn_person)
+        }else{
+            Glide.with(itemView).load(item.user.imageUrl)
+                .into(userImg)
+        }
 
     }
 

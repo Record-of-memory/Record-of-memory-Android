@@ -17,15 +17,21 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiary2SearchBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUserResponse
 import com.recordOfMemory.src.main.home.diary2.search.retrofit.Diary2SearchInterface
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 import com.recordOfMemory.src.main.home.diary2.search.recycler.Diary2SearchRecyclerViewAdapter
 
-class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentDiary2SearchBinding::bind, R.layout.fragment_diary2_search),
+class Diary2SearchFragment() : BaseFragment<FragmentDiary2SearchBinding>(FragmentDiary2SearchBinding::bind, R.layout.fragment_diary2_search),
     Diary2SearchInterface {
+
+    private lateinit var diary2Fragment: Diary2Fragment
+    constructor(diary2Fragment: Diary2Fragment) : this() {
+        this.diary2Fragment = diary2Fragment
+    }
     inner class itemListAdapterToList {
         // 일기 open function
-        fun getItemId(item: GetRecordResponse) {
+        fun getItemId(item: GetMemberRecordResponse) {
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
@@ -35,7 +41,7 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
     }
 
     // 일기 open
-    fun openItem(item: GetRecordResponse) {
+    fun openItem(item: GetMemberRecordResponse) {
 //        startActivity(Intent(activity, DaybookActivity(item)::class.java))
 
 //        val fm = requireActivity().supportFragmentManager
@@ -60,7 +66,12 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         var keyword = ""
-        val listItemList = arguments?.parcelableArrayList<GetRecordResponse>("itemList")
+        val listItemList =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelableArrayList("itemList", GetMemberRecordResponse::class.java) as ArrayList<GetMemberRecordResponse>
+        } else {
+            arguments?.getSerializable("itemList") as ArrayList<GetMemberRecordResponse>
+        }
 
         println(listItemList)
 
@@ -71,26 +82,26 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
         binding.diary2SearchBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             transaction
-                .replace(R.id.main_frm, Diary2Fragment())
+                .replace(R.id.main_frm, diary2Fragment)
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed
         }
 
 //        itemList.add(
-//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            GetMemberRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
 //            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
 //                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
 //        )
 //
 //        itemList.add(
-//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            GetMemberRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
 //            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
 //                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
 //        )
 //
 //        itemList.add(
-//            GetRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
+//            GetMemberRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
 //            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
 //                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
 //        )
@@ -124,15 +135,6 @@ class Diary2SearchFragment : BaseFragment<FragmentDiary2SearchBinding>(FragmentD
         }
         else {
             binding.diary2SearchEmpty.isVisible = true
-        }
-    }
-
-    fun <T : Parcelable> Bundle.parcelableArrayList(key: String): ArrayList<T>? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getParcelableArrayList(key)
-        } else {
-            @Suppress("DEPRECATION")
-            getParcelableArrayList(key)
         }
     }
 }

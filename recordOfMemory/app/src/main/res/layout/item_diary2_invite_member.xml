@@ -7,10 +7,11 @@
     android:orientation="horizontal"
     android:gravity="center"
     android:paddingVertical="10dp">
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_diary2_invite_member_iv_profile"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_gravity="center_horizontal|top"
         android:src="@drawable/icn_user"/>
     <TextView
         android:id="@+id/item_diary2_invite_member_tv_nickname"

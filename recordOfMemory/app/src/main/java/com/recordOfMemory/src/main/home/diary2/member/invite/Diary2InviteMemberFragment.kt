@@ -1,7 +1,6 @@
 package com.recordOfMemory.src.main.home.diary2.member.invite
 
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.View
 import androidx.core.view.isGone
@@ -11,20 +10,28 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentDiary2InviteMemberBinding
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 import com.recordOfMemory.src.main.home.diary2.member.invite.recycler.Diary2InviteMemberRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
+import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 
-class Diary2InviteMemberFragment:BaseFragment<FragmentDiary2InviteMemberBinding>(FragmentDiary2InviteMemberBinding::bind, R.layout.fragment_diary2_invite_member),
+class Diary2InviteMemberFragment():BaseFragment<FragmentDiary2InviteMemberBinding>(FragmentDiary2InviteMemberBinding::bind, R.layout.fragment_diary2_invite_member),
     Diary2InviteInterface {
+    private lateinit var diary2Fragment: Diary2Fragment
+    constructor(diary2Fragment: Diary2Fragment) : this() {
+        this.diary2Fragment = diary2Fragment
+    }
+    var diaryId = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var keyword = ""
+
+        diaryId = arguments?.getString("diaryId").toString()
 
 //        var itemList = ArrayList<GetMemberResponse>()
 
@@ -61,7 +68,7 @@ class Diary2InviteMemberFragment:BaseFragment<FragmentDiary2InviteMemberBinding>
         binding.diary2InviteMemberIvBack.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             transaction
-                .replace(R.id.main_frm, Diary2Fragment())
+                .replace(R.id.main_frm, diary2Fragment)
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed
@@ -106,16 +113,20 @@ class Diary2InviteMemberFragment:BaseFragment<FragmentDiary2InviteMemberBinding>
         }
     }
 
-    override fun onPostDiary2InviteSuccess(response: PostDiary2InviteResponse) {
-        TODO("Not yet implemented")
+    override fun onPostDiary2Invite(email : String) {
+        val postDiary2InviteRequest = PostDiary2InviteRequest(email = email, diaryId = diaryId)
+        Diary2Service(this).tryPostDiaryInvite(postDiary2InviteRequest)
+    }
+
+    override fun onPostDiary2InviteSuccess(response: BaseResponse) {
+        showCustomToast(response.information.message)
     }
 
     override fun onPostDiary2InviteFailure(message: String) {
-        TODO("Not yet implemented")
+        showCustomToast("초대 실패")
     }
 
     override fun onGetUserEmailSuccess(response: GetUsersResponse) {
-        Log.e("here", "SUCCESS")
 
 //        dismissLoadingDialog()
 //        val itemList = ArrayList<GetUsersResponse>()
