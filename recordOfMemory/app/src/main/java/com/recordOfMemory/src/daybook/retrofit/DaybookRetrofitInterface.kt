@@ -18,7 +18,7 @@ interface DaybookRetrofitInterface {
     @POST("/api/records")
     fun postRecord(
         @Header("Authorization") Authorization: String,
-        @Part img: MultipartBody.Part,
+        @Part img: MultipartBody.Part?,
         @Part("writeRecordReq") writeRecordReq: RequestBody
     ): Call<BaseResponse>
 	//일기 삭제 API

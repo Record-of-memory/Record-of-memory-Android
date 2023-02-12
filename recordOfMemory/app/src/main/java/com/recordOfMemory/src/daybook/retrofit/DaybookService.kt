@@ -80,8 +80,10 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 
 			})
 	}
-    fun tryPostRecord(imgUrl : MultipartBody.Part, writeRecordReq : RequestBody) {
-        println("imgUrl: ${imgUrl.body}")
+    fun tryPostRecord(imgUrl : MultipartBody.Part?, writeRecordReq : RequestBody) {
+		if (imgUrl != null) {
+			println("imgUrl: ${imgUrl.body}")
+		}
         println("writeRecordReq $writeRecordReq")
 
         val daybookRetrofitInterface = ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
