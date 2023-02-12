@@ -1,5 +1,6 @@
 package com.recordOfMemory.src.main.myPage
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,7 @@ import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
+import com.recordOfMemory.src.splash.SplashActivity
 import java.util.regex.Pattern
 
 
@@ -140,8 +142,16 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 		}
 	}
 
-	override fun onPostRefreshFailure(message: String) {
-		TODO("Not yet implemented")
-	}
+    override fun onPostRefreshFailure(message: String) {
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(context, SplashActivity::class.java)
+		requireActivity().finishAffinity()
+		startActivity(intent)
+    }
 
 }

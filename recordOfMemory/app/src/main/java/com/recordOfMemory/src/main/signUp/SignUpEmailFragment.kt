@@ -8,9 +8,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -62,7 +64,8 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
 
         //뒤로가기 버튼 누르면
         viewBinding.backBtn.setOnClickListener {
-            signUpActivity!!.openFragmentSignUp(2)
+            requireActivity().supportFragmentManager.popBackStack()
+//            signUpActivity!!.openFragmentSignUp(2)
         }
         //다음 버튼 누르면
         viewBinding.nextBtn.setOnClickListener {
@@ -75,6 +78,32 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
             } else {
                 Toast.makeText(activity, "이메일 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        viewBinding.editEmail.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+                val editable = (v as EditText).text
+                val start = v.selectionStart
+                val end = v.selectionEnd
+                if (start == end) {
+                    if (start > 0) {
+                        editable.delete(start - 1, start)
+                    }
+                } else {
+                    editable.delete(start, end)
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (checkEmail()) {
+                    val email = viewBinding.editEmail.text.toString()
+                    Log.d("입력받은 이메일",email)
+                    SignUpService(this).tryGetUserEmailNoTokenCheck(email)
+
+//                signUpCheckDialogFunction()
+                } else {
+                    Toast.makeText(activity, "이메일 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
+                }
+            }
+            true
         }
     }
 

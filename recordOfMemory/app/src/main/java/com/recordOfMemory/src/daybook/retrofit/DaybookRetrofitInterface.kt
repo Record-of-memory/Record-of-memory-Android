@@ -14,13 +14,23 @@ import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
 import retrofit2.http.*
 
 interface DaybookRetrofitInterface {
-    @Multipart
-    @POST("/api/records")
-    fun postRecord(
-        @Header("Authorization") Authorization: String,
-        @Part img: MultipartBody.Part?,
-        @Part("writeRecordReq") writeRecordReq: RequestBody
-    ): Call<BaseResponse>
+	//일기 작성 API
+	@Multipart
+	@POST("/api/records")
+	fun postRecord(
+		@Header("Authorization") Authorization: String,
+		@Part img: MultipartBody.Part?,
+		@Part("writeRecordReq") writeRecordReq: RequestBody
+	): Call<BaseResponse>
+
+	//일기 수정 API
+	@Multipart
+	@PATCH("/api/records/edit")
+	fun patchRecord(
+		@Header("Authorization") Authorization: String,
+		@Part img: MultipartBody.Part?,
+		@Part("updateRecordReq") updateRecordReq: RequestBody
+	): Call<BaseResponse>
 	//일기 삭제 API
 	@PATCH("/api/records")
 	fun deleteDaybook(

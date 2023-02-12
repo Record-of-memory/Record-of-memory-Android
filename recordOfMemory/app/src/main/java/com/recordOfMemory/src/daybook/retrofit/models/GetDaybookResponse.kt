@@ -14,7 +14,7 @@ data class DaybookInformation(
 	@SerializedName("content") val content : String,
 	@SerializedName("user") val user : String,
 	@SerializedName("status") val status: String,
-	@SerializedName("imgUrl") val imgUrl : String,
+	@SerializedName("imgUrl") val imgUrl : String?,
 	@SerializedName("diary") val diary : String,
 	@SerializedName("likeCnt") val likeCnt :Int,
 	@SerializedName("cmtCnt") val cmtCnt : Int

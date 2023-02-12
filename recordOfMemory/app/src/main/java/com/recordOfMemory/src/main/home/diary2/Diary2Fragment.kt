@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -38,6 +39,7 @@ import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersRespons
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
+import com.recordOfMemory.src.splash.SplashActivity
 
 class Diary2Fragment : BaseFragment<FragmentDiary2Binding>(FragmentDiary2Binding::bind, R.layout.fragment_diary2),
 Diary2Interface, GetRefreshTokenInterface{
@@ -181,6 +183,12 @@ Diary2Interface, GetRefreshTokenInterface{
 //        mDialogView.window?.attributes = params
         mDialogView.show()
 
+        if(diaryType == "ALONE") {
+            mDialogView.findViewById<LinearLayout>(R.id.dialog_diary2_more_linear).background = requireContext().getDrawable(R.drawable.dialog_diary2_more_alone)
+            mDialogView.findViewById<TextView>(R.id.dialog_diary2_more_tv_invite_member).isGone = true
+            mDialogView.findViewById<TextView>(R.id.dialog_diary2_more_tv_show_member).isGone = true
+        }
+
         mDialogView.findViewById<TextView>(R.id.dialog_diary2_more_tv_invite_member).setOnClickListener {
             val bundle = Bundle()
             bundle.putString("diaryId", diaryId)
@@ -256,6 +264,7 @@ Diary2Interface, GetRefreshTokenInterface{
         // 토큰 갱신 문제가 아닐 경우
         else {
             //TODO
+            showCustomToast("다시 시도해주세요.")
         }
    }
 
@@ -296,7 +305,14 @@ Diary2Interface, GetRefreshTokenInterface{
             gridItemList.add(Diary2GridOutViewModel(tempList[0].user.nickname, tempList))
         }
         else {
-            gridItemList.add(Diary2GridOutViewModel(listItemList[0].user.nickname, listItemList))
+            if(listItemList.size > 0) {
+                gridItemList.add(
+                    Diary2GridOutViewModel(
+                        listItemList[0].user.nickname,
+                        listItemList
+                    )
+                )
+            }
         }
 
         // list
@@ -364,7 +380,15 @@ Diary2Interface, GetRefreshTokenInterface{
 
     // refreshToken 갱신 실패 로그인으로 이동한다.
     override fun onPostRefreshFailure(message: String) {
-        TODO("Not yet implemented")
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(context, SplashActivity::class.java)
+        requireActivity().finishAffinity()
+        startActivity(intent)
     }
     fun onGetLeaveSuccess() {
         val customDialog= Dialog(requireContext())
@@ -376,14 +400,7 @@ Diary2Interface, GetRefreshTokenInterface{
 
         val okBtn = customDialog.findViewById<TextView>(R.id.dialog2_btn_ok)
         okBtn.setOnClickListener {
-            val fm = requireActivity().supportFragmentManager
-            val transaction: FragmentTransaction = fm.beginTransaction()
-
-            transaction
-                .replace(R.id.main_frm, DiaryTogetherFragment())
-                .addToBackStack(null)
-                .commit()
-            transaction.isAddToBackStackAllowed
+            requireActivity().supportFragmentManager.popBackStack()
             customDialog.dismiss()
         }
         customDialog.show()

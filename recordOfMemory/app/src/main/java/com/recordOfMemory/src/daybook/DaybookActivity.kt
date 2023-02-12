@@ -26,6 +26,7 @@ import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
+import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
@@ -37,11 +38,12 @@ import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
+import com.recordOfMemory.src.splash.SplashActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
-	MyPageInterface, DaybookInterface , GetRefreshTokenInterface {
+	MyPageInterface, DaybookInterface , LikesInterface, GetRefreshTokenInterface {
 	private var commentList = ArrayList<Comment>()
 	private lateinit var commentAdapter :CommentAdapter
 	private var imageUri:String=""
@@ -65,11 +67,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 //			intent.getSerializableExtra("item") as GetRecordResponse
 //		}
 //		println(item)
-		if(recordId==0){
-			recordId=intent.getStringExtra("recordId")!!.toInt()
-			Log.d("아이디",recordId.toString())
-		}
+		recordId=intent.getStringExtra("recordId").toString().toInt()
 
+		showLoadingDialog(this)
 		statusCode=1003
 		DaybookService(this).tryGetDaybook(recordId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
 
@@ -78,6 +78,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		statusCode=1007
 		MyPageService(this).tryGetUsers()
+
+		statusCode=2000
+		LikesService(this).tryCheckLikes(recordId = recordId.toString())
 
 
 		binding.daybookIvBack.setOnClickListener {
@@ -114,7 +117,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 
 		binding.daybookClickHeartIcon.setOnClickListener {
-			binding.daybookClickHeartIcon.isSelected = !binding.daybookClickHeartIcon.isSelected
+			if(binding.daybookClickHeartIcon.isSelected) {
+				LikesService(this).tryDeleteLikes(recordId = recordId.toString())
+			}
+			else {
+				LikesService(this).tryPostLikes(PostLikesRequest(recordId = recordId.toString()))
+			}
 		}
 	}
 
@@ -263,9 +271,16 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onGetUsersSuccess(response: GetUsersResponse) {
 		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
+		if(response.information.imageUrl.isNullOrEmpty()){
+			binding.daybookWriterIcon.setImageResource(R.drawable.icn_person)
+		}else {
+			Glide.with(this).load(response.information.imageUrl)
+				.into(binding.daybookWriterIcon)
+		}
 	}
 
 	override fun onGetUsersFailure(message: String) {
+		dismissLoadingDialog()
 		if(message == "refreshToken") {
 			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -321,7 +336,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		binding.daybookCommentNumber.text=item.cmtCnt.toString()
 		cmtNum=item.cmtCnt
 
-		if(item.imgUrl.isNotEmpty()){
+		if(item.imgUrl != null){
 			daybookImageUrl=item.imgUrl
 			Glide.with(this).load(item.imgUrl)
 				.into(binding.daybookImage)
@@ -353,11 +368,48 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			1007 -> MyPageService(this).tryGetUsers()
 			1009 -> CommentService(this).tryPostComment(request as PostCommentRequest)
 			1011 -> DaybookService(this).tryDeleteDaybook(request as PatchDaybookRequest)
+			2000  -> LikesService(this).tryCheckLikes(recordId = recordId.toString())
 		}
 	}
 
 	// refreshToken 갱신 실패로 로그인으로 이동
-	override fun onPostRefreshFailure(message: String) {
-		TODO("Not yet implemented")
+    override fun onPostRefreshFailure(message: String) {
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(this, SplashActivity::class.java)
+        startActivity(intent)
+        finishAffinity()
+    }
+
+	override fun onPostLikesSuccess(response: LikesResponse) {
+		binding.daybookClickHeartIcon.isSelected = true
+		binding.daybookHeartNumber.text = (binding.daybookHeartNumber.text.toString().toInt() + 1).toString()
+	}
+
+	override fun onPostLikesFailure(message: String) {
+		showCustomToast("좋아요를 누를 수 없습니다.")
+	}
+
+	override fun onDeleteLikesSuccess(response: LikesResponse) {
+		binding.daybookClickHeartIcon.isSelected = false
+		binding.daybookHeartNumber.text = (binding.daybookHeartNumber.text.toString().toInt() - 1).toString()
+	}
+
+	override fun onDeleteLikesFailure(message: String) {
+		showCustomToast("좋아요를 취소할 수 없습니다.")
+	}
+
+	override fun onCheckLikesSuccess(response: CheckLikesResponse) {
+		dismissLoadingDialog()
+		binding.daybookClickHeartIcon.isSelected = response.information.likeClicked
+	}
+
+	override fun onCheckLikesFailure(message: String) {
+		dismissLoadingDialog()
+		showCustomToast("좋아요를 누른 상태를 확인할 수 없습니다.")
 	}
 }

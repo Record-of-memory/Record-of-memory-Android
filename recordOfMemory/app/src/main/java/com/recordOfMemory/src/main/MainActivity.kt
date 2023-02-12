@@ -41,14 +41,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         transaction.commit()
 
         //메인 레이아웃 보이게 하기
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
-            .commitAllowingStateLoss()
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
+//            .commitAllowingStateLoss()
 
         binding.mainBtmNav.run {
             println("MAIN BOTTOM NAVIGATION")
             setOnItemSelectedListener { item ->
-                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 when (item.itemId) {
                     R.id.menu_main_btm_nav_home -> {
                         supportFragmentManager.beginTransaction()
@@ -77,10 +77,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     fun openFragmentOnOnboarding(int: Int){
         val transaction = supportFragmentManager.beginTransaction()
         when(int){
-            1 -> transaction.replace(binding.onboardingFrm.id, fragment1)
-            2 -> transaction.replace(binding.onboardingFrm.id, fragment2)
-            3 -> transaction.replace(binding.onboardingFrm.id, fragment3)
-            4 -> transaction.replace(binding.onboardingFrm.id, fragment4)
+            1 -> transaction.replace(binding.onboardingFrm.id, fragment1).addToBackStack(null)
+            2 -> transaction.replace(binding.onboardingFrm.id, fragment2).addToBackStack(null)
+            3 -> transaction.replace(binding.onboardingFrm.id, fragment3).addToBackStack(null)
+            4 -> transaction.replace(binding.onboardingFrm.id, fragment4).addToBackStack(null)
         }
         transaction.commit()
     }

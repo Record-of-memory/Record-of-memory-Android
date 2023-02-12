@@ -120,9 +120,10 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="96dp"
             android:text="@string/start"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/noto_sans_bold"/>
+            android:fontFamily="@font/noto_sans_bold"
+            style="?android:attr/borderlessButtonStyle"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

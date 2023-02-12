@@ -6,9 +6,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.recordOfMemory.R
@@ -16,6 +18,7 @@ import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentLoginBinding
+import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.main.signUp.models.*
@@ -44,7 +47,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
 
         //뒤로가기 버튼 누르면
         viewBinding.backBtn.setOnClickListener {
-            signUpActivity!!.openFragmentSignUp(0)
+//            signUpActivity!!.openFragmentSignUp(0)
+            requireActivity().supportFragmentManager.popBackStack()
         }
         //로그인 버튼 누르면
         viewBinding.loginBtn.setOnClickListener {
@@ -54,11 +58,62 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
                     email = viewBinding.editEmail.text.toString(),
                     password = viewBinding.editPswd.text.toString()
                 )
+                showLoadingDialog(requireContext())
                 SignUpService(this).tryPostSignIn(postSignInRequest)
             } else {
                 //빈칸이 있으면 토스트 메시지 띄우기
                 Toast.makeText(activity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
+        }
+        viewBinding.editEmail.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+                val editable = (v as EditText).text
+                val start = v.selectionStart
+                val end = v.selectionEnd
+                if (start == end) {
+                    if (start > 0) {
+                        editable.delete(start - 1, start)
+                    }
+                } else {
+                    editable.delete(start, end)
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                // 엔터 눌렀을때 행동
+                viewBinding.editPswd.requestFocus()
+                viewBinding.editPswd.isCursorVisible = true
+                viewBinding.editPswd.text.clear()
+            }
+
+            true
+        }
+        viewBinding.editPswd.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+                val editable = (v as EditText).text
+                val start = v.selectionStart
+                val end = v.selectionEnd
+                if (start == end) {
+                    if (start > 0) {
+                        editable.delete(start - 1, start)
+                    }
+                } else {
+                    editable.delete(start, end)
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                //이메일이 형식에 맞고, 이메일과 비밀번호 모두 빈칸이 아닐 때
+                if (checkEmail() and viewBinding.editPswd.text.toString().isNotEmpty()) {
+                    val postSignInRequest = PostSignInRequest(
+                        email = viewBinding.editEmail.text.toString(),
+                        password = viewBinding.editPswd.text.toString()
+                    )
+                    showLoadingDialog(requireContext())
+                    SignUpService(this).tryPostSignIn(postSignInRequest)
+                } else {
+                    //빈칸이 있으면 토스트 메시지 띄우기
+                    Toast.makeText(activity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            true
         }
 //        //비밀번호 찾기 버튼 누르면
 //        viewBinding.searchPswdBtn.setOnClickListener {
@@ -104,8 +159,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
     }
 
     override fun onPostSignInSuccess(response: TokenResponse) {
+        dismissLoadingDialog()
+
         Log.d("로그인 성공","성공")
-//        dismissLoadingDialog()
 
         println("response.accessToken : ${response.information.accessToken}")
         
@@ -119,6 +175,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
     }
 
     override fun onPostSignInWrong(message: String) {
+        dismissLoadingDialog()
         Log.d("로그인 실패","비밀번호 다름")
         wrongPasswordDialogFunction()
     }

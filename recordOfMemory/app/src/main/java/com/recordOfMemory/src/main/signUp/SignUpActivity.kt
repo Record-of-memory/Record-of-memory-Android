@@ -41,12 +41,12 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(ActivitySignUpBinding
     fun openFragmentSignUp(int: Int){
         val transaction = supportFragmentManager.beginTransaction()
         when(int){
-            0 -> transaction.replace(binding.signUpFrm.id, startFragment)
-            1 -> transaction.replace(binding.signUpFrm.id, loginFragment)
-            2 -> transaction.replace(binding.signUpFrm.id, acceptTermsFragment)
-            3 -> transaction.replace(binding.signUpFrm.id, signUpEmailFragment)
-            4 -> transaction.replace(binding.signUpFrm.id, signUpPswdFragment)
-            5 -> transaction.replace(binding.signUpFrm.id, signUpNicknameFragment)
+            0 -> transaction.replace(binding.signUpFrm.id, startFragment).addToBackStack(null)
+            1 -> transaction.replace(binding.signUpFrm.id, loginFragment).addToBackStack(null)
+            2 -> transaction.replace(binding.signUpFrm.id, acceptTermsFragment).addToBackStack(null)
+            3 -> transaction.replace(binding.signUpFrm.id, signUpEmailFragment).addToBackStack(null)
+            4 -> transaction.replace(binding.signUpFrm.id, signUpPswdFragment).addToBackStack(null)
+            5 -> transaction.replace(binding.signUpFrm.id, signUpNicknameFragment).addToBackStack(null)
         }
         transaction.commit()
     }

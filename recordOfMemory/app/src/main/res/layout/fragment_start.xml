@@ -46,7 +46,8 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="96dp"
             android:text="@string/sign_up_btn_login_email"
-            android:textSize="15dp"
+            android:textSize="15sp"
+            style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/black"
             android:fontFamily="@font/noto_sans_semi_bold"/>
 
@@ -60,7 +61,8 @@
             android:backgroundTint="@android:color/transparent"
             android:textColor="@color/colorPrimary"
             android:text="@string/sign_up_btn_join_membership"
-            android:textSize="12dp"
+            android:textSize="12sp"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:paddingTop="0dp"

@@ -24,11 +24,6 @@ interface MyPageRetrofitInterface {
 		@Header("Authorization") Authorization: String,
 	):Call<GetUsersResponse>
 
-	@PATCH("/api/users/me")
-	fun patchUsers(
-		@Header("Authorization") Authorization: String,
-	):Call<GetUsersResponse>
-
 	@Multipart
 	@PATCH("/api/users/me")
 	fun patchUsers(

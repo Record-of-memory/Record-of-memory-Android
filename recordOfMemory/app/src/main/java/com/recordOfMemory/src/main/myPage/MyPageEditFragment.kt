@@ -282,8 +282,16 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		}
 	}
 
-	override fun onPostRefreshFailure(message: String) {
-		TODO("Not yet implemented")
-	}
+    override fun onPostRefreshFailure(message: String) {
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(context, SplashActivity::class.java)
+		requireActivity().finishAffinity()
+		startActivity(intent)
+    }
 
 }

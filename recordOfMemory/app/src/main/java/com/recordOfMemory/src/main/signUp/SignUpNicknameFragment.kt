@@ -3,9 +3,11 @@ package com.recordOfMemory.src.main.signUp
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.recordOfMemory.R
@@ -58,6 +60,37 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
             } else {
                 Toast.makeText(activity, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        viewBinding.editName.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+                val editable = (v as EditText).text
+                val start = v.selectionStart
+                val end = v.selectionEnd
+                if (start == end) {
+                    if (start > 0) {
+                        editable.delete(start - 1, start)
+                    }
+                } else {
+                    editable.delete(start, end)
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                // 엔터 눌렀을때 행동
+                //editName에 닉네임이 입력되어 있다면
+                if (viewBinding.editName.text.toString().isNotEmpty()) {
+                    val email = arguments?.getString("email")
+                    Log.d("이메일","$email")
+                    val password = arguments?.getString("password")
+                    Log.d("비밀번호","$password")
+                    val nickname = viewBinding.editName.text.toString()
+
+                    val postSignUpRequest = PostSignUpRequest(email.toString(), password.toString(), nickname)
+                    SignUpService(this).tryPostSignUp(postSignUpRequest)
+                } else {
+                    Toast.makeText(activity, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }
+            true
         }
     }
 

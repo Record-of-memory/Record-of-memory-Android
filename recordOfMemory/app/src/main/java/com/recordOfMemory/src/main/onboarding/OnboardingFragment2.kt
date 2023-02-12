@@ -45,7 +45,7 @@ class OnboardingFragment2 : Fragment() {
 
         //뒤로가기 누르면
         viewBinding.backBtn.setOnClickListener {
-            mainActivity!!.openFragmentOnOnboarding(1)
+            requireActivity().supportFragmentManager.popBackStack()
         }
         //다음 누르면
         viewBinding.nextBtn.setOnClickListener {

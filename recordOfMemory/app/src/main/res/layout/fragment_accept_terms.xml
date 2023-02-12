@@ -92,6 +92,7 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="96dp"
             android:text="@string/sign_up_btn_agree_and_next"
+            style="?android:attr/borderlessButtonStyle"
             android:textSize="15dp"
             android:textColor="@color/black"
             android:fontFamily="@font/noto_sans_bold"/>

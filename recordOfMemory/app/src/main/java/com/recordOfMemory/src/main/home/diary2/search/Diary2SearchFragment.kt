@@ -75,39 +75,13 @@ class Diary2SearchFragment() : BaseFragment<FragmentDiary2SearchBinding>(Fragmen
 
         println(listItemList)
 
-
-        val fm = requireActivity().supportFragmentManager
-        val transaction: FragmentTransaction = fm.beginTransaction()
-
         binding.diary2SearchBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            transaction
-                .replace(R.id.main_frm, diary2Fragment)
-                .addToBackStack(null)
-                .commit()
-            transaction.isAddToBackStackAllowed
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
-//        itemList.add(
-//            GetMemberRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
-//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
-//        )
-//
-//        itemList.add(
-//            GetMemberRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
-//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
-//        )
-//
-//        itemList.add(
-//            GetMemberRecordResponse(id = "1", title = "ss", content = "content", date = "23.01.01",user = "구리",
-//            imgUrl = "http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQkrjYxSfSHeCEA7hkPy8e2JphDsfFHZVKqx-3t37E4XKr-AT7DML8IwtwY0TnZsUcQ",
-//                cmtCnt = "1", likeCnt = "1", diary = "aa", status = "normal")
-//        )
         val items = itemListAdapterToList()
         val diary2LayoutManager = LinearLayoutManager(context)
-        val diary2RecyclerViewAdapter = Diary2SearchRecyclerViewAdapter(this, items, listItemList!!)
+        val diary2RecyclerViewAdapter = Diary2SearchRecyclerViewAdapter(this, items, listItemList)
         binding.diary2SearchRecyclerView.apply {
             layoutManager = diary2LayoutManager
         }

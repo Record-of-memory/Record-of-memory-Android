@@ -22,9 +22,6 @@ class SignUpService() {
         this.getRefreshTokenInterface = getRefreshTokenInterface
     }
 
-
-//    val ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjc1OTQ5ODYzLCJleHAiOjE2NzU5NTM0NjN9.pnUXMs9s29D957lBDDDA7NNP1IuV3EGF-ETX8P7KXxW4GV_FGmEvPvVgaEbS9Xz4ueDGLKxi14nwoVf7aEsBYg"
-
     //회원가입
     fun tryPostSignUp(postSignUpRequest: PostSignUpRequest){
         val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
@@ -32,7 +29,7 @@ class SignUpService() {
             Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
                 Log.d("api연결", "회원가입")
-                if (response.code() == 200) {
+                if (response.code() == 201) {
                     signUpFragmentInterface.onPostSignUpSuccess(response.body() as BaseResponse)
                 } else if (response.code() == 400) {
                     signUpFragmentInterface.onPostSignInFailure("회원가입 실패")

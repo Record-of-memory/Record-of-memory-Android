@@ -161,7 +161,8 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="96dp"
             android:text="@string/next"
-            android:textSize="15dp"
+            android:textSize="15sp"
+            style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/black"
             android:fontFamily="@font/noto_sans_bold"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

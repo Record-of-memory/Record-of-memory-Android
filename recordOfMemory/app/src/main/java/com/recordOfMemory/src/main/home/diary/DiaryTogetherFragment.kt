@@ -1,6 +1,7 @@
 package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
+import com.recordOfMemory.src.splash.SplashActivity
 import kotlin.math.log
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together),
@@ -131,7 +133,15 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
     }
 
     override fun onPostRefreshFailure(message: String) {
-        TODO("Not yet implemented")
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(context, SplashActivity::class.java)
+        requireActivity().finishAffinity()
+        startActivity(intent)
     }
 
     private fun addNewDiaryFunction() {

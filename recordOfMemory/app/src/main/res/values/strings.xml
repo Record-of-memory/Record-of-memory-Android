@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Record Of Memory</string>
+    <string name="app_name">우리기억</string>
 
     <!-- Naming Rules -->
     <!-- 도메인명_컴포넌트함축어_용도(=목적) -->
@@ -84,7 +84,7 @@
     <string name="diary_tv_title">나나님의 기억을 기록할 다이어리를 골라보세요!</string>
     <string name="diary_btn_together">함께 쓰는</string>
     <string name="diary_btn_alone">혼자 쓰는</string>
-    <string name="diary_tv_none">아직 다이어리가 없어요.         첫 다이어리를 만들어보세요!</string>
+    <string name="diary_tv_none">아직 다이어리가 없어요.\n첫 다이어리를 만들어보세요!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Calendar -->

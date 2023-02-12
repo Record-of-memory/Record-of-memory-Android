@@ -44,6 +44,7 @@ class DiaryAdapter(val itemList: ArrayList<ResultDiaries>) :
             val transaction: FragmentTransaction = fm.beginTransaction()
             transaction.replace(R.id.main_frm, fragment)
             transaction.commit()
+            transaction.addToBackStack(null)
             transaction.isAddToBackStackAllowed
         }
 

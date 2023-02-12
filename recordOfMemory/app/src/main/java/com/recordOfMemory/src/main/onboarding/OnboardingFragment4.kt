@@ -30,7 +30,8 @@ class OnboardingFragment4 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //뒤로가기 누르면
         viewBinding.backBtn.setOnClickListener {
-            mainActivity!!.openFragmentOnOnboarding(3)
+            requireActivity().supportFragmentManager.popBackStack()
+//            mainActivity!!.openFragmentOnOnboarding(3)
         }
         //시작하기 누르면
         viewBinding.nextBtn.setOnClickListener {

@@ -38,31 +38,23 @@
             android:fontFamily="@font/noto_sans_bold"
             />
 
-        <LinearLayout
-            android:id="@+id/layout_email"
+        <EditText
+            android:id="@+id/edit_email"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/box_edit_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="149dp"
             android:layout_marginHorizontal="24dp"
-            android:orientation="vertical"
-            android:background="@drawable/box_edit_text">
-            <EditText
-                android:id="@+id/edit_email"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="@string/sign_up_et_input_email"
-                android:textSize="11dp"
-                android:textColorHint="@color/brownGray"
-                android:fontFamily="@font/noto_sans_regular"
-                android:paddingTop="11dp"
-                android:paddingBottom="0dp"
-                android:paddingStart="10dp"
-                />
-        </LinearLayout>
+            android:hint="@string/sign_up_et_input_email"
+            android:textSize="11sp"
+            android:paddingStart="10dp"
+            android:textColorHint="@color/brownGray"
+            android:fontFamily="@font/noto_sans_regular"
+            android:inputType="textEmailAddress"
+            />
         <TextView
             android:id="@+id/tv_email_format_error"
             android:layout_width="wrap_content"
@@ -116,9 +108,10 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="96dp"
             android:text="@string/next"
-            android:textSize="15dp"
+            android:textSize="15sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/noto_sans_bold"/>
+            android:fontFamily="@font/noto_sans_bold"
+            style="?android:attr/borderlessButtonStyle"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

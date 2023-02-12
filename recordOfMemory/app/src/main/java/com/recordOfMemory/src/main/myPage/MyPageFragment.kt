@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
@@ -83,7 +84,7 @@ class MyPageFragment :
             // 로그아웃
             val refreshToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, null).toString()
             statusCode=1105
-            val postSignOutRequest=PostSignOutRequest(refreshToken = refreshToken)
+            val postSignOutRequest=PostSignOutRequest(refreshToken = "Bearer $refreshToken")
             request=postSignOutRequest
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
@@ -95,6 +96,7 @@ class MyPageFragment :
         Log.d("성공","${response.information.message}")
         //로그아웃 성공 시 화면은 스플래시 화면으로
         startActivity(Intent(context,SplashActivity::class.java))
+        requireActivity().finishAffinity()
     }
 
     override fun onPostSignOutFailure(message: String) {
@@ -103,9 +105,17 @@ class MyPageFragment :
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
         }
         // 토큰 갱신 문제가 아닐 경우
+        // 로그아웃 API이므로 그냥 로그아웃 해도 될 것 같음
         else {
             Log.d("실패",message)
-            Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+            val editor = ApplicationClass.sSharedPreferences.edit()
+            editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+            editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+            editor.apply()
+            
+            startActivity(Intent(context,SplashActivity::class.java))
+            requireActivity().finishAffinity()
         }
     }
 
@@ -145,6 +155,14 @@ class MyPageFragment :
     }
 
     override fun onPostRefreshFailure(message: String) {
-        TODO("Not yet implemented")
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(context, SplashActivity::class.java)
+        requireActivity().finishAffinity()
+        startActivity(intent)
     }
 }

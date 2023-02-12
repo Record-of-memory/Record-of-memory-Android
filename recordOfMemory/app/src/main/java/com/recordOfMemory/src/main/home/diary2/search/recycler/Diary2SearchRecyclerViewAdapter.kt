@@ -31,6 +31,7 @@ class Diary2SearchRecyclerViewAdapter(val diary2SearchInterface: Diary2SearchInt
     }
 
     override fun onBindViewHolder(holder: Diary2ListRecyclerViewHolder, position: Int) {
+        println(filteredList[position])
         holder.bindWithView(filteredList[position])
         holder.itemView.setOnClickListener {
             val item = filteredList[position]

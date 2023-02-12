@@ -32,11 +32,6 @@ class Diary2ShowMemberFragment():
             userList = arguments?.getSerializable("userList") as ArrayList<GetUserResponse>
         }
 
-
-        val fm = requireActivity().supportFragmentManager
-        val transaction: FragmentTransaction = fm.beginTransaction()
-
-
         val diary2LayoutManager = LinearLayoutManager(context)
         val diary2RecyclerViewAdapter = Diary2ShowMemberRecyclerViewAdapter(userList)
 
@@ -53,12 +48,7 @@ class Diary2ShowMemberFragment():
         }
 
         binding.diary2ShowMemberBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            transaction
-                .replace(R.id.main_frm, diary2Fragment)
-                .addToBackStack(null)
-                .commit()
-            transaction.isAddToBackStackAllowed
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 }

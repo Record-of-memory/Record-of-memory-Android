@@ -4,14 +4,18 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.databinding.FragmentSignUpPswdBinding
+import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import java.util.regex.Pattern
 
 class SignUpPswdFragment : Fragment() {
@@ -53,7 +57,8 @@ class SignUpPswdFragment : Fragment() {
 
         //뒤로가기 버튼 누르면
         viewBinding.backBtn.setOnClickListener {
-            signUpActivity!!.openFragmentSignUp(3)
+            requireActivity().supportFragmentManager.popBackStack()
+//            signUpActivity!!.openFragmentSignUp(3)
         }
         //다음 버튼 누르면
         viewBinding.nextBtn.setOnClickListener {
@@ -86,6 +91,64 @@ class SignUpPswdFragment : Fragment() {
             } else {
                 Toast.makeText(activity, "비밀번호 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
             }
+        }
+        viewBinding.editPswd.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                // 엔터 눌렀을때 행동
+                // 엔터 눌렀을때 행동
+                viewBinding.editCheckPswd.requestFocus()
+                viewBinding.editCheckPswd.isCursorVisible = true
+                viewBinding.editCheckPswd.text.clear()
+            }
+
+            true
+        }
+        viewBinding.editCheckPswd.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+                val editable = (v as EditText).text
+                val start = v.selectionStart
+                val end = v.selectionEnd
+                if (start == end) {
+                    if (start > 0) {
+                        editable.delete(start - 1, start)
+                    }
+                } else {
+                    editable.delete(start, end)
+                }
+            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                // 엔터 눌렀을때 행동
+                //이메일 형식이 올바를 때
+                if (checkPassword()) {
+                    //이메일 형식도 올바르고, 확인 비밀번호와 일치할 때
+                    if (checkSamePassword()) {
+                        val email = arguments?.getString("email")
+
+                        val bundle = Bundle()
+                        bundle.putString("password", viewBinding.editPswd.text.toString())
+                        bundle.putString("email", email.toString())
+
+                        val signUpNicknameFragment = SignUpNicknameFragment()
+                        signUpNicknameFragment.arguments = bundle
+
+                        val fm = requireActivity().supportFragmentManager
+                        val transaction: FragmentTransaction = fm.beginTransaction()
+
+                        transaction
+                            .replace(R.id.sign_up_frm, signUpNicknameFragment)
+                            .addToBackStack(null)
+                            .commit()
+                        transaction.isAddToBackStackAllowed
+//                    signUpActivity!!.openFragmentSignUp(5)
+                    }
+                    else {
+                        Toast.makeText(activity, "비밀번호가 다릅니다", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(activity, "비밀번호 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            true
         }
     }
 
