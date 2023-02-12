@@ -9,6 +9,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.databinding.ActivityMainBinding
 import com.recordOfMemory.src.main.calendar.CalendarFragment
@@ -35,10 +36,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val calendarFragment = CalendarFragment()
         val myPageFragment = MyPageFragment()
 
-        //온보딩 레이아웃 보이게 하기
-        val transaction = supportFragmentManager.beginTransaction()
-            .replace(binding.onboardingFrm.id, fragment1)
-        transaction.commit()
+        val isFirst = ApplicationClass.sSharedPreferences.getString("isFirst", null)
+
+//        if(isFirst == null) {
+//            //온보딩 레이아웃 보이게 하기
+//            val transaction = supportFragmentManager.beginTransaction()
+//                .replace(binding.onboardingFrm.id, fragment1)
+//            transaction.commit()
+//            val edit = ApplicationClass.sSharedPreferences.edit()
+//            edit.putString("isFirst", "YES")
+//            edit.apply()
+//        }
+//        else {
+            //메인 레이아웃 보이게 하기
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
+//                .commitAllowingStateLoss()
+//        }
 
         //메인 레이아웃 보이게 하기
 //        supportFragmentManager.beginTransaction()

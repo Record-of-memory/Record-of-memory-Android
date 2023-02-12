@@ -16,6 +16,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
         Handler(Looper.getMainLooper()).postDelayed({
             val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
+//            val accessToken = null
+
 
             if (accessToken != null) {
                 startActivity(Intent(this, MainActivity::class.java))

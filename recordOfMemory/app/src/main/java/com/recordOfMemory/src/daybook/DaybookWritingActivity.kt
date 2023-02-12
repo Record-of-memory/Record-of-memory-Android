@@ -68,12 +68,14 @@ DaybookInterface, DaybookWritingInterface {
 	private var screenType:String=""
 	private var recordId:Int=0;
 	private lateinit var imageUri:Uri
+	var diaryId = ""
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		screenType= intent.getStringExtra("screen_type").toString() //creat냐 update냐에 따라 전달받은게 다름
+		screenType=intent.getStringExtra("screen_type").toString() //creat냐 update냐에 따라 전달받은게 다름
 		if(screenType=="update"){ //수정시에, recordId, date(string), title, content
-			val itemGet = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			val itemGet = if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
 				intent.getSerializableExtra("item", DaybookToWriting::class.java)!!
 			} else {
 				intent.getSerializableExtra("item") as DaybookToWriting
@@ -81,31 +83,32 @@ DaybookInterface, DaybookWritingInterface {
 			//println(item)
 			recordId=itemGet.recordId
 			binding.daybookWritingDiaryTitle.text=itemGet.diaryTitle
-			binding.daybookWritingWriteTime.text = itemGet.date
+			binding.daybookWritingWriteTime.text= itemGet.date
 			binding.daybookWritingTitle.setText(itemGet.title)
 			binding.daybookWritingContent.setText(itemGet.content)
 			if(!itemGet.imgUrl.isNullOrEmpty()){ //이미지가 존재하면 추가해두기
+				println("imgUrl: ${itemGet.imgUrl}")
 				Glide.with(this).load(itemGet.imgUrl).into(binding.daybookWritingImage)
 				binding.daybookWritingFr.visibility=View.VISIBLE
 			}
 
-//			var imageUri=intent.getStringExtra("imageUri")
-//			if(!imageUri.isNullOrEmpty()){
-//				val img= Uri.parse(imageUri)
-//				binding.daybookWritingImage.setImageURI(img)
-//				binding.daybookWritingFr.visibility=View.VISIBLE
-//			}
+//       var imageUri=intent.getStringExtra("imageUri")
+//       if(!imageUri.isNullOrEmpty()){
+//          val img= Uri.parse(imageUri)
+//          binding.daybookWritingImage.setImageURI(img)
+//          binding.daybookWritingFr.visibility=View.VISIBLE
+//       }
 
 		}else{// create :  새로 일기를 쓸 때
-
+			diaryId=intent.getStringExtra("diaryId").toString()
 			//넘어오면서 다이어리 이름 세팅해주세요.<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 			binding.daybookWritingDiaryTitle.text=intent.getStringExtra("diaryTitle").toString()
-			binding.daybookWritingWriteTime.text =
+			binding.daybookWritingWriteTime.text=
 				sdfFull.format(System.currentTimeMillis()) //오늘 날짜로 기본 세팅
 		}
 
 
-		binding.daybookWritingClickCalendarIcon.setOnClickListener { //날짜 수정
+		binding.daybookWritingClickCalendarIcon.setOnClickListener{//날짜 수정
 			changeDate()
 		}
 
