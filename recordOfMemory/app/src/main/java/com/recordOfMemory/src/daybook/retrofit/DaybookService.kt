@@ -52,8 +52,8 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 			})
 	}
 
-	fun tryGetDaybook(daybookId:Int){
-		daybookRetrofitInterface.getDaybook(Authorization = X_ACCESS_TOKEN,recordId=daybookId)
+	fun tryGetDaybook(recordId:Int){
+		daybookRetrofitInterface.getDaybook(Authorization = X_ACCESS_TOKEN,recordId=recordId)
 			.enqueue(object :Callback<GetDaybookResponse>{
 				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
 					if(response.code()==200){

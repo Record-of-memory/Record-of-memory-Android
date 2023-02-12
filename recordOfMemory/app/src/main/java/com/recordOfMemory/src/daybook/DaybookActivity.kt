@@ -49,7 +49,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
 	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
 	private val sdfFull2 = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
-	private var daybookId:Int =0 // 일기리스트에서 아이디 받아오면 굳이 필요 없는 변수일수도?
+	private var recordId:Int =0 // 일기리스트에서 아이디 받아오면 굳이 필요 없는 변수일수도?
 	private var cmtNum:Int=0
 
 	private lateinit var userComment:Comment
@@ -59,22 +59,22 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
-//		daybookId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//		recordId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 //			intent.getSerializableExtra("recordId", GetRecordResponse::class.java)!!
 //		} else {
 //			intent.getSerializableExtra("item") as GetRecordResponse
 //		}
 //		println(item)
-		if(daybookId==0){
-			daybookId=intent.getStringExtra("recordId")!!.toInt()
-			Log.d("아이디",daybookId.toString())
+		if(recordId==0){
+			recordId=intent.getStringExtra("recordId")!!.toInt()
+			Log.d("아이디",recordId.toString())
 		}
 
 		statusCode=1003
-		DaybookService(this).tryGetDaybook(daybookId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		DaybookService(this).tryGetDaybook(recordId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
 
 		statusCode=1005
-		CommentService(this).tryGetComments(daybookId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(recordId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
 
 		statusCode=1007
 		MyPageService(this).tryGetUsers()
@@ -94,7 +94,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				val commentText=comment.text.toString()
 
 				statusCode = 1009
-				val postCommentRequest=PostCommentRequest(recordId = daybookId, content = commentText)
+				val postCommentRequest=PostCommentRequest(recordId = recordId, content = commentText)
 				request=postCommentRequest
 				Log.d("내용",postCommentRequest.toString())
 				CommentService(this).tryPostComment(postCommentRequest)
@@ -122,7 +122,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		super.onActivityResult(requestCode, resultCode, data)
 		if(requestCode== 10){
 			Toast.makeText(this,data?.getStringExtra("recordId"),Toast.LENGTH_SHORT).show()
-			daybookId= data?.getStringExtra("recordId")!!.toInt()
+			recordId= data?.getStringExtra("recordId")!!.toInt()
 		}
 	}
 
@@ -140,7 +140,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			intent.putExtra("screen_type","update")
 
 			var itemSend=DaybookToWriting(
-				recordId = daybookId,
+				recordId = recordId,
 				diaryTitle = binding.daybookDiaryTitle.text.toString(),
 				date = binding.daybookWriteTime.text.toString(),
 				title=binding.daybookTitle.text.toString(),
@@ -158,7 +158,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_delete).setOnClickListener {
 			// 삭제
 			statusCode = 1011
-			val patchDaybookRequest=PatchDaybookRequest(recordId = daybookId)
+			val patchDaybookRequest=PatchDaybookRequest(recordId = recordId)
 			request=patchDaybookRequest
 			DaybookService(this).tryDeleteDaybook(patchDaybookRequest)
 			miniDialog.dismiss()
@@ -304,7 +304,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onGetDaybookSuccess(response: GetDaybookResponse) {
 		val item=response.information
 
-		daybookId=item.id
+		recordId=item.id
 		binding.daybookDiaryTitle.text=item.diary
 
 		if(item.date.contains("T")){
@@ -348,8 +348,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		editor.apply()
 
 		when(statusCode) {
-			1003 -> DaybookService(this).tryGetDaybook(daybookId)
-			1005 -> CommentService(this).tryGetComments(daybookId)
+			1003 -> DaybookService(this).tryGetDaybook(recordId)
+			1005 -> CommentService(this).tryGetComments(recordId)
 			1007 -> MyPageService(this).tryGetUsers()
 			1009 -> CommentService(this).tryPostComment(request as PostCommentRequest)
 			1011 -> DaybookService(this).tryDeleteDaybook(request as PatchDaybookRequest)

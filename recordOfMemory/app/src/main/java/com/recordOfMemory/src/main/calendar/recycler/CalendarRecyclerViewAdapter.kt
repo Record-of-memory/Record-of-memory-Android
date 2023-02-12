@@ -11,10 +11,10 @@ import com.recordOfMemory.R
 
 import com.recordOfMemory.src.main.calendar.CalendarFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 
 
-class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetRecordResponse>)
+class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetMemberRecordResponse>)
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable {
     lateinit var diary2ListRecyclerViewHolder : Diary2ListRecyclerViewHolder
     private var unFilteredList = itemList
@@ -48,14 +48,14 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
                 val charString = constraint.toString()
                 if(charString == "") {
                     val filterResults = FilterResults()
-                    filterResults.values = ArrayList<GetRecordResponse>()
+                    filterResults.values = ArrayList<GetMemberRecordResponse>()
                     return filterResults
                 }
                 else {
                     filteredList = if (charString.isEmpty()) {
                         unFilteredList
                     } else {
-                        val filteringList = ArrayList<GetRecordResponse>()
+                        val filteringList = ArrayList<GetMemberRecordResponse>()
                         for (item in unFilteredList) {
                             if (item.date.contains(charString)) {
                                 filteringList.add(item)
@@ -71,7 +71,7 @@ class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToL
             }
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
-                filteredList = results.values as ArrayList<GetRecordResponse>
+                filteredList = results.values as ArrayList<GetMemberRecordResponse>
 
                 println(filteredList)
                 notifyDataSetChanged()

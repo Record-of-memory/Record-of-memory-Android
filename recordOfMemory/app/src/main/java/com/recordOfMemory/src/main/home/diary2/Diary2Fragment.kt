@@ -66,7 +66,7 @@ Diary2Interface, GetRefreshTokenInterface{
             startActivity(Intent(activity, DaybookActivity()::class.java)
                 .putExtra("item", item as java.io.Serializable)
                 .putExtra("screen_type","read")
-                .putExtra("daybookId", item.id)
+                .putExtra("recordId", item.id)
             )
         }
     }

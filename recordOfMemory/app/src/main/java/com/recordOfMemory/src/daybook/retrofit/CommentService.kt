@@ -17,8 +17,8 @@ class CommentService(val commentInterface: CommentInterface) {
 	val X_ACCESS_TOKEN = "Bearer $token"
 	private val commentRetrofitInterface:CommentRetrofitInterface=ApplicationClass.sRetrofit.create(CommentRetrofitInterface::class.java)
 
-	fun tryGetComments(daybookId:Int){
-		commentRetrofitInterface.getComments(Authorization = X_ACCESS_TOKEN, id=daybookId)
+	fun tryGetComments(recordId:Int){
+		commentRetrofitInterface.getComments(Authorization = X_ACCESS_TOKEN, id=recordId)
 			.enqueue(object :Callback<GetCommentsResponse>{
 				override fun onResponse(call: Call<GetCommentsResponse>, response: Response<GetCommentsResponse>, ) {
 					if(response.code()==200){
