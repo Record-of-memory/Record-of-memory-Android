@@ -1,10 +1,11 @@
 package com.recordOfMemory.src.main.home.diary2.retrofit
 
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
-import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,6 +18,7 @@ class Diary2Service() {
     val X_ACCESS_TOKEN = "Bearer $token"
 //    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjc2MDU0NDIyLCJleHAiOjE2NzYwNTgwMjJ9.oxrL9v_gT1jfiONkZaVjSjLFhKYW37ii_uUi7QrAsbajgSxYSUDu_9o7FDJktlhy9__JXaZ1vZv5I_RTUJm4Hg"
 
+    val diary2RetrofitInterface = ApplicationClass.sRetrofit.create(Diary2RetrofitInterface::class.java)
 
     constructor(diary2Interface: Diary2Interface) : this() {
         this.diary2Interface = diary2Interface
@@ -25,30 +27,27 @@ class Diary2Service() {
         this.diary2InviteInterface = diary2InviteInterface
     }
 
-    fun tryPostDiariesInvite(params: PostDiary2InviteRequest) {
-
-        val diary2RetrofitInterface = ApplicationClass.sRetrofit.create(Diary2RetrofitInterface::class.java)
+    fun tryPostDiaryInvite(params: PostDiary2InviteRequest) {
         diary2RetrofitInterface.postDiaries(Authorization = X_ACCESS_TOKEN, params = params).enqueue(object :
-            Callback<PostDiary2InviteResponse> {
+            Callback<BaseResponse> {
             override fun onResponse(
-                call: Call<PostDiary2InviteResponse>,
-                response: Response<PostDiary2InviteResponse>
+                call: Call<BaseResponse>,
+                response: Response<BaseResponse>
             ) {
                 if(response.code() == 200) {
-                    diary2InviteInterface.onPostDiary2InviteSuccess(response.body() as PostDiary2InviteResponse)
+                    diary2InviteInterface.onPostDiary2InviteSuccess(response.body() as BaseResponse)
                 }
                 else if(response.code() == 401) {
                     diary2InviteInterface.onPostDiary2InviteFailure("refreshToken")
                 }
             }
 
-            override fun onFailure(call: Call<PostDiary2InviteResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 diary2InviteInterface.onPostDiary2InviteFailure(t.message ?: "통신 오류")
             }
         })
     }
     fun tryGetUserEmail(email: String) {
-        val diary2RetrofitInterface = ApplicationClass.sRetrofit.create(Diary2RetrofitInterface::class.java)
         diary2RetrofitInterface.getUserEmail(Authorization = X_ACCESS_TOKEN, email = email).enqueue(object :
             Callback<GetUsersResponse> {
             override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>
@@ -67,7 +66,6 @@ class Diary2Service() {
         })
     }
     fun tryGetRecords(diaryId: String) {
-        val diary2RetrofitInterface = ApplicationClass.sRetrofit.create(Diary2RetrofitInterface::class.java)
         diary2RetrofitInterface.getRecords(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
             Callback<GetRecordsResponse> {
             override fun onResponse(
@@ -84,6 +82,47 @@ class Diary2Service() {
 
             override fun onFailure(call: Call<GetRecordsResponse>, t: Throwable) {
                 diary2Interface.onGetRecordsFailure(t.message ?: "통신 오류")
+            }
+        })
+    }
+    fun tryLeaveDiary(diaryId: String) {
+        diary2RetrofitInterface.deleteDiary(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
+            Callback<BaseResponse> {
+            override fun onResponse(
+                call: Call<BaseResponse>,
+                response: Response<BaseResponse>
+            ) {
+                if(response.code() == 200) {
+                    diary2Interface.onDeleteDiarySuccess(response.body() as BaseResponse)
+                }
+                else if(response.code() == 401) {
+                    diary2Interface.onDeleteDiaryFailure("refreshToken")
+                }
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                diary2Interface.onDeleteDiaryFailure(t.message ?: "통신 오류")
+            }
+        })
+    }
+
+    fun tryGetMembers(diaryId: String) {
+        diary2RetrofitInterface.getMembers(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
+            Callback<GetMembersResponse> {
+            override fun onResponse(
+                call: Call<GetMembersResponse>,
+                response: Response<GetMembersResponse>
+            ) {
+                if(response.code() == 200) {
+                    diary2Interface.onGetMembersSuccess(response.body() as GetMembersResponse)
+                }
+                else if(response.code() == 401) {
+                    diary2Interface.onGetMembersFailure("refreshToken")
+                }
+            }
+
+            override fun onFailure(call: Call<GetMembersResponse>, t: Throwable) {
+                diary2Interface.onGetMembersFailure(t.message ?: "통신 오류")
             }
         })
     }

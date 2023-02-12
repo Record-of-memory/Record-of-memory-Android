@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentMyPageBinding
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
@@ -67,7 +68,8 @@ class MyPageFragment :
             logoutDialog.dismiss()
 
             // 로그아웃
-            val postSignOutRequest=PostSignOutRequest(refreshToken = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NzcxNTkxNjF9.ExSfPwle9LtcEh5e4CQIv89Y3hDlwq-_Wib7qIogO1ZeirM9sOze7-eM9REAdCWzwyeJhE8FUlZ2oaZ52Egnng")
+            val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN,null).toString()
+            val postSignOutRequest=PostSignOutRequest(refreshToken = X_REFRESH_TOKEN)
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
 
@@ -76,7 +78,13 @@ class MyPageFragment :
 
     override fun onPostSignOutSuccess(response: PostSignOutResponse) {
         Log.d("성공","${response.information.message}")
+
         //로그아웃 성공 시 화면은 스플래시 화면으로
+        val edit = ApplicationClass.sSharedPreferences.edit()
+        edit.remove(ApplicationClass.X_ACCESS_TOKEN)
+        edit.remove(ApplicationClass.X_REFRESH_TOKEN)
+        edit.apply()
+
         startActivity(Intent(context,SplashActivity::class.java))
     }
 

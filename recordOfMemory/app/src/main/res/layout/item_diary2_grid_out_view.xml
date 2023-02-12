@@ -22,10 +22,13 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             android:gravity="center">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icn_user"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/item_diary2_grid_out_iv_img"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:clickable="false"
+                android:layout_gravity="center_horizontal|top"
+                android:background="@drawable/icn_user"/>
             <TextView
                 android:id="@+id/item_diary2_grid_out_tv_writer"
                 android:layout_width="wrap_content"

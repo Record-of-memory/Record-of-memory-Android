@@ -23,7 +23,7 @@ class SignUpService() {
     }
 
 
-    val ACCESS_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjc1OTQ5ODYzLCJleHAiOjE2NzU5NTM0NjN9.pnUXMs9s29D957lBDDDA7NNP1IuV3EGF-ETX8P7KXxW4GV_FGmEvPvVgaEbS9Xz4ueDGLKxi14nwoVf7aEsBYg"
+    val ACCESS_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null).toString()
 
     fun tryPostSignUp(postSignUpRequest: PostSignUpRequest){
         val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)

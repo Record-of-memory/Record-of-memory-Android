@@ -24,6 +24,7 @@ import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
+import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
@@ -33,7 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
-	MyPageInterface, DaybookInterface {
+	MyPageInterface, DaybookInterface, LikesInterface {
 	private var commentList = ArrayList<Comment>()
 	private lateinit var commentAdapter :CommentAdapter
 	private var imageUri:String=""
@@ -48,10 +49,13 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		daybookId = intent.getStringExtra("daybookId").toString().toInt()
 
-		DaybookService(this).tryGetDaybook(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
-		CommentService(this).tryGetComments(17) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		showLoadingDialog(this)
+		DaybookService(this).tryGetDaybook(daybookId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(daybookId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
 		MyPageService(this).tryGetUsers()
+		LikesService(this).tryCheckLikes(recordId = daybookId.toString())
 		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
 //		item = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 //			intent.getSerializableExtra("item", GetDiary2Response::class.java)!!
@@ -92,7 +96,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 
 		binding.daybookClickHeartIcon.setOnClickListener {
-			binding.daybookClickHeartIcon.isSelected = !binding.daybookClickHeartIcon.isSelected
+			if(binding.daybookClickHeartIcon.isSelected) {
+				LikesService(this).tryDeleteLikes(recordId = daybookId.toString())
+			}
+			else {
+				LikesService(this).tryPostLikes(PostLikesRequest(recordId = daybookId.toString()))
+			}
 		}
 	}
 
@@ -214,19 +223,18 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onGetUsersSuccess(response: GetUsersResponse) {
 		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
+		if(response.information.imageUrl.isNullOrEmpty()){
+			binding.daybookWriterIcon.setImageResource(R.drawable.icn_person)
+		}else {
+			Glide.with(this).load(response.information.imageUrl)
+				.into(binding.daybookWriterIcon)
+		}
 	}
 
 	override fun onGetUsersFailure(message: String) {
+		dismissLoadingDialog()
 		Log.d("실패","$message")
 		Toast.makeText(this,"유저 정보를 가져올 수 없습니다",Toast.LENGTH_SHORT).show()
-	}
-
-	override fun onPostRecordSuccess(response: BaseResponse) {
-		TODO("Not yet implemented")
-	}
-
-	override fun onPostRecordFailure(response: String) {
-		TODO("Not yet implemented")
 	}
 
 	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {
@@ -265,8 +273,37 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onGetDaybookFailure(message: String) {
+		dismissLoadingDialog()
 		Log.d("실패","$message")
 		Toast.makeText(this,"일기를 가져올 수 없습니다.",Toast.LENGTH_SHORT).show()
 		finish() //다시 일기리스트로 돌아감
+	}
+
+	override fun onPostLikesSuccess(response: LikesResponse) {
+		binding.daybookClickHeartIcon.isSelected = true
+		binding.daybookHeartNumber.text = (binding.daybookHeartNumber.text.toString().toInt() + 1).toString()
+	}
+
+	override fun onPostLikesFailure(message: String) {
+		showCustomToast("좋아요를 누를 수 없습니다.")
+	}
+
+	override fun onDeleteLikesSuccess(response: LikesResponse) {
+		binding.daybookClickHeartIcon.isSelected = false
+		binding.daybookHeartNumber.text = (binding.daybookHeartNumber.text.toString().toInt() - 1).toString()
+	}
+
+	override fun onDeleteLikesFailure(message: String) {
+		showCustomToast("좋아요를 취소할 수 없습니다.")
+	}
+
+	override fun onCheckLikesSuccess(response: CheckLikesResponse) {
+		dismissLoadingDialog()
+		binding.daybookClickHeartIcon.isSelected = response.information.likeClicked
+	}
+
+	override fun onCheckLikesFailure(message: String) {
+		dismissLoadingDialog()
+		showCustomToast("좋아요를 누른 상태를 확인할 수 없습니다.")
 	}
 }

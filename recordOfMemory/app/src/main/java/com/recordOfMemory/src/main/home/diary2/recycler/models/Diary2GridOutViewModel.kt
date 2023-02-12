@@ -1,4 +1,4 @@
-package com.recordOfMemory.src.main.home.diary2.recycler.grid.models
+package com.recordOfMemory.src.main.home.diary2.recycler.models
 
 import com.google.gson.annotations.SerializedName
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse

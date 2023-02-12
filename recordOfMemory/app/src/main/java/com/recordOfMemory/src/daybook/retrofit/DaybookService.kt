@@ -11,14 +11,22 @@ import android.util.Log
 import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
-import retrofit2.create
 
-class DaybookService(val daybookInterface: DaybookInterface) {
-    val X_ACCESS_TOKEN = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNjc2MDU0NDIyLCJleHAiOjE2NzYwNTgwMjJ9.oxrL9v_gT1jfiONkZaVjSjLFhKYW37ii_uUi7QrAsbajgSxYSUDu_9o7FDJktlhy9__JXaZ1vZv5I_RTUJm4Hg"
+class DaybookService() {
+	lateinit var daybookWritingInterface: DaybookWritingInterface
+	lateinit var daybookInterface: DaybookInterface
+	constructor(daybookWritingInterface: DaybookWritingInterface) : this() {
+		this.daybookWritingInterface = daybookWritingInterface
+	}
+	constructor(daybookInterface: DaybookInterface) : this() {
+		this.daybookInterface = daybookInterface
+	}
+
+    val X_ACCESS_TOKEN = "Bearer ${ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)}"
 	private val daybookRetrofitInterface:DaybookRetrofitInterface=ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
 
 	fun tryDeleteDaybook(params: PatchDaybookRequest){
-		daybookRetrofitInterface.deleteDaybook(Authorization = "Bearer $X_ACCESS_TOKEN",params=params)
+		daybookRetrofitInterface.deleteDaybook(Authorization = X_ACCESS_TOKEN,params=params)
 			.enqueue(object : Callback<PatchDaybookResponse>{
 				override fun onResponse(call: Call<PatchDaybookResponse>, response: Response<PatchDaybookResponse>, ) {
 					if(response.code()==200){
@@ -37,7 +45,7 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 	}
 
 	fun tryGetDaybook(daybookId:Int){
-		daybookRetrofitInterface.getDaybook(Authorization = "Bearer $X_ACCESS_TOKEN",recordId=daybookId)
+		daybookRetrofitInterface.getDaybook(Authorization = X_ACCESS_TOKEN,recordId=daybookId)
 			.enqueue(object :Callback<GetDaybookResponse>{
 				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
 					if(response.code()==200){
@@ -54,8 +62,10 @@ class DaybookService(val daybookInterface: DaybookInterface) {
 
 			})
 	}
-    fun tryPostRecord(imgUrl : MultipartBody.Part, writeRecordReq : RequestBody) {
-        println("imgUrl: ${imgUrl.body}")
+    fun tryPostRecord(imgUrl : MultipartBody.Part?, writeRecordReq : RequestBody) {
+		if (imgUrl != null) {
+			println("imgUrl: ${imgUrl.body}")
+		}
         println("writeRecordReq $writeRecordReq")
 
         val daybookRetrofitInterface = ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
@@ -66,12 +76,35 @@ class DaybookService(val daybookInterface: DaybookInterface) {
                 call: Call<BaseResponse>,
                 response: Response<BaseResponse>
             ) {
-                daybookInterface.onPostRecordSuccess(response.body() as BaseResponse)
+				daybookWritingInterface.onPostRecordSuccess(response.body() as BaseResponse)
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                daybookInterface.onPostRecordFailure(t.message ?: "통신 오류")
+				daybookWritingInterface.onPostRecordFailure(t.message ?: "통신 오류")
             }
         })
     }
+
+	fun tryPatchRecord(imgUrl : MultipartBody.Part?, updateRecordReq : RequestBody) {
+		if (imgUrl != null) {
+			println("imgUrl: ${imgUrl.body}")
+		}
+		println("updateRecordReq $updateRecordReq")
+
+		val daybookRetrofitInterface = ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
+		daybookRetrofitInterface.patchRecord(Authorization = X_ACCESS_TOKEN, img = imgUrl, updateRecordReq = updateRecordReq)
+			.enqueue(object :
+				Callback<BaseResponse> {
+				override fun onResponse(
+					call: Call<BaseResponse>,
+					response: Response<BaseResponse>
+				) {
+					daybookWritingInterface.onPatchRecordSuccess(response.body() as BaseResponse)
+				}
+
+				override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+					daybookWritingInterface.onPatchRecordFailure(t.message ?: "통신 오류")
+				}
+			})
+	}
 }

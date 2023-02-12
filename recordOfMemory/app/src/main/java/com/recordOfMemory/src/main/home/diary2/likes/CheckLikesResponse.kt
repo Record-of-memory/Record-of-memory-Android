@@ -4,5 +4,10 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class CheckLikesResponse(
+    @SerializedName("check") val check: Boolean,
+    @SerializedName("information") val information: Check
+)
+
+data class Check(
     @SerializedName("likeClicked") val likeClicked: Boolean
-) : Serializable
+)

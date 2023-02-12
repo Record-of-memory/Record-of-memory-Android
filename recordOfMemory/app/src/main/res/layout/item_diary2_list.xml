@@ -65,6 +65,7 @@
             android:layout_height="7.6dp"
             android:src="@drawable/icn_heart_filled"/>
         <TextView
+            android:id="@+id/item_diary2_list_tv_likes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1"
@@ -77,8 +78,9 @@
             android:layout_marginStart="5dp"
             android:layout_width="8.71dp"
             android:layout_height="7.6dp"
-            android:src="@drawable/icn_heart_filled"/>
+            android:src="@drawable/icn_comment_filled"/>
         <TextView
+            android:id="@+id/item_diary2_list_tv_comments"
             android:layout_marginStart="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,10 +112,13 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
         android:gravity="center">
-       <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icn_user"/>
+       <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_diary2_list_iv_user_img"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:clickable="false"
+            android:layout_gravity="center_horizontal|top"
+           android:background="@drawable/icn_user"/>
         <TextView
             android:id="@+id/item_diary2_list_tv_writer"
             android:layout_width="wrap_content"

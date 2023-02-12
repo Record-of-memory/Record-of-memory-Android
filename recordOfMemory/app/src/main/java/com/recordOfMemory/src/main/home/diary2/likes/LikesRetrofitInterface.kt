@@ -7,10 +7,10 @@ interface LikesRetrofitInterface {
     @POST("/api/likes")
     fun postlikes(@Header("Authorization") Authorization: String, @Body params: PostLikesRequest): Call<LikesResponse>
 
-    @DELETE("/api/likes/{diaryId}")
-    fun deletelikes(@Header("Authorization") Authorization: String, @Path("diaryId") diaryId : String): Call<LikesResponse>
+    @DELETE("/api/likes/{recordId}")
+    fun deletelikes(@Header("Authorization") Authorization: String, @Path("recordId") recordId : String): Call<LikesResponse>
 
-    @GET("api/likes/{diaryId}")
-    fun checklikes(@Header("Authorization") Authorization: String, @Path("diaryId") diaryId : String): Call<CheckLikesResponse>
+    @GET("api/likes/{recordId}")
+    fun checklikes(@Header("Authorization") Authorization: String, @Path("recordId") recordId : String): Call<CheckLikesResponse>
 
 }

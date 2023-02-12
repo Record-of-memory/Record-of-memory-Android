@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class PostLikesRequest(
-    @SerializedName("recordId") val recordId: Int
+    @SerializedName("recordId") val recordId: String
 ) : Serializable
