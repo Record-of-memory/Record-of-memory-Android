@@ -7,12 +7,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentMyPageEditPasswordBinding
+import com.recordOfMemory.src.main.signUp.models.TokenResponse
+import com.recordOfMemory.src.main.signUp.models.UserEmailCheckNoTokenResponse
+import com.recordOfMemory.src.main.signUp.models.UserEmailCheckResponse
+import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
 import java.util.regex.Pattern
 
 
 class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBinding>(FragmentMyPageEditPasswordBinding::bind,
-	R.layout.fragment_my_page_edit_password) {
+	R.layout.fragment_my_page_edit_password), SignUpFragmentInterface {
 
 	private var prevPassword:String?=null
 	private var newPassword1:String?=null
@@ -96,5 +101,43 @@ class MyPageEditPasswordFragment : BaseFragment<FragmentMyPageEditPasswordBindin
 		}
 		return false
 	}
+
+	override fun onPostSignUpSuccess(response: BaseResponse) {}
+
+	override fun onPostSignUpFailure(message: String) {}
+
+	override fun onPostSignInSuccess(response: TokenResponse) {}
+
+	override fun onPostSignInWrong(message: String) {}
+
+	override fun onPostSignInFailure(message: String) {}
+
+	override fun onPostChangePasswordSuccess(response: BaseResponse) {
+		Toast.makeText(activity, "비밀번호가 변경되었습니다", Toast.LENGTH_SHORT).show()
+		//화면 전환
+		requireActivity().supportFragmentManager.beginTransaction()
+			.replace(R.id.main_frm, MyPageFragment())
+			.commitAllowingStateLoss()
+	}
+
+	override fun onPostChangePasswordFailure(message: String) {
+		if (message == "통신 오류") {
+			Toast.makeText(activity, "통신 오류", Toast.LENGTH_SHORT).show()
+		} else if (message == "비밀번호 다름"){
+			Toast.makeText(activity, "비밀번호를 확인해주세요", Toast.LENGTH_SHORT).show()
+		}
+	}
+
+	override fun onGetUserEmailCheckExist(response: UserEmailCheckResponse) {}
+
+	override fun onGetUserEmailCheckNotExist(message: String) {}
+
+	override fun onGetUserEmailCheckFailure(message: String) {}
+
+	override fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse) {}
+
+	override fun onGetUserEmailCheckNoTokenNotExist(message: String) {}
+
+	override fun onGetUserEmailCheckNoTokenFailure(message: String) {}
 
 }

@@ -20,11 +20,21 @@ interface SignUpRetrofitInterface {
 
     //비밀번호 변경
     @POST("/api/users/me/password")
-    fun postChangePassword(@Body params : PostChangePasswordRequest) : Call<BaseResponse>
+    fun postChangePassword(
+        @Body params : PostChangePasswordRequest,
+        @Header("Authorization") Authorization: String
+    ) : Call<BaseResponse>
 
+    //이메일로 유저 확인(토큰 필요)
     @GET("/api/users")
     fun getUserEmailCheck(
         @Query("email") email : String,
         @Header("Authorization") Authorization: String
     ) : Call<UserEmailCheckResponse>
+
+    //이메일로 유저 확인(토큰 필요X)
+    @GET("/auth/check/{email}")
+    fun getUserEmailCheckNoToken(
+        @Path("email") email : String
+    ): Call<UserEmailCheckNoTokenResponse>
 }
