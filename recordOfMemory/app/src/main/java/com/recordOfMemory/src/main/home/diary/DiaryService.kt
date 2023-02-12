@@ -4,7 +4,6 @@ import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import retrofit2.Call
 import retrofit2.Callback

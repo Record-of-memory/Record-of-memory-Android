@@ -110,7 +110,7 @@ class SignUpService() {
     fun tryPostChangePassword(postChangePasswordRequest: PostChangePasswordRequest){
         val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
 
-        val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN,null).toString()
+        val accessToken = "Bearer ${ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN,null).toString()}"
 
         if (accessToken != null) {
             signUpRetrofitInterface.postChangePassword(postChangePasswordRequest, accessToken).enqueue(object :
@@ -129,6 +129,10 @@ class SignUpService() {
                         signUpFragmentInterface.onPostChangePasswordFailure("비밀번호 다름")
                         Log.d("code","400")
                     } else if (response.code() == 401) {
+                        // 이 부분 에러가 날 확률이 높음
+                        // tryPostRefresh()를 호출하고 tryPostChangePassword()를 호출하는 과정에서 트렌젝션이 충돌해 런타임 에러가 날 가능성이 있다.
+                        // 토큰 재발급이 성공하면 이후에 onPostRefreshSuccess에서 다시 tryPostChangePassword()를 호출해야 한다.
+
                         //토큰 재발급
                         val X_REFRESH_TOKEN =
                             ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")

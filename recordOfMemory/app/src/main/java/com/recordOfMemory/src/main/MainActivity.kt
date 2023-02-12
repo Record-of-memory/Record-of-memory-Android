@@ -31,6 +31,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val diaryTogetherFragment = DiaryTogetherFragment()
+        val calendarFragment = CalendarFragment()
+        val myPageFragment = MyPageFragment()
 
         //온보딩 레이아웃 보이게 하기
         val transaction = supportFragmentManager.beginTransaction()
@@ -38,26 +41,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         transaction.commit()
 
         //메인 레이아웃 보이게 하기
-//        supportFragmentManager.beginTransaction().replace(R.id.main_frm, DiaryTogetherFragment()).commitAllowingStateLoss()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
+            .commitAllowingStateLoss()
 
         binding.mainBtmNav.run {
+            println("MAIN BOTTOM NAVIGATION")
             setOnItemSelectedListener { item ->
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 when (item.itemId) {
                     R.id.menu_main_btm_nav_home -> {
                         supportFragmentManager.beginTransaction()
-                            .replace(binding.mainFrm.id, DiaryTogetherFragment())
+                            .replace(R.id.main_frm, diaryTogetherFragment)
 //                            .replace(R.id.main_frm, Diary2Fragment())
                             .commitAllowingStateLoss()
                     }
                     R.id.menu_main_btm_nav_calendar -> {
                         supportFragmentManager.beginTransaction()
-                            .replace(binding.mainFrm.id, CalendarFragment())
+                            .replace(R.id.main_frm, calendarFragment)
                             .commitAllowingStateLoss()
                     }
                     R.id.menu_main_btm_nav_mypage -> {
                         supportFragmentManager.beginTransaction()
-                            .replace(binding.mainFrm.id, MyPageFragment())
+                            .replace(R.id.main_frm, myPageFragment)
                             .commitAllowingStateLoss()
                     }
                 }
