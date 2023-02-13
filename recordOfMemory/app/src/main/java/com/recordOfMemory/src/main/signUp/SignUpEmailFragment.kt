@@ -15,6 +15,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
@@ -113,11 +115,11 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
         val p = Pattern.matches(emailValidation, email) // 서로 패턴이 맞는지 확인
         if (p) {
             //이메일 형태가 정상일 경우
-            viewBinding.tvEmailFormatError.visibility = View.INVISIBLE
+            viewBinding.tvEmailFormatError.isGone = true
             return true
         } else {
             //정상이 아니면 다시 에러 메시지 보이게
-            viewBinding.tvEmailFormatError.visibility = View.VISIBLE
+            viewBinding.tvEmailFormatError.isVisible = true
             return false
         }
     }

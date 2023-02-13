@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
@@ -47,9 +49,9 @@ class SignUpPswdFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 //editPswd와 editCheckPswd의 입력값이 같을 때 다음 활성화
                 if (checkSamePassword()) {
-                    viewBinding.tvPswdFormatError.visibility = View.INVISIBLE
+                    viewBinding.tvPswdFormatError.isGone = true
                 } else {
-                    viewBinding.tvPswdFormatError.visibility = View.VISIBLE
+                    viewBinding.tvPswdFormatError.isVisible = true
                 }
             }
             override fun afterTextChanged(s: Editable?) {}

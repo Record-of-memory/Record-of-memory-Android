@@ -294,15 +294,17 @@ Diary2Interface, GetRefreshTokenInterface{
         listItemList = response.information.records
 
         if(diaryType == "WITH") {
-            var tempList = ArrayList<GetMemberRecordResponse>()
-            for(listItem in listItemList) {
-                // listItem의 이메일이 memberList에 있는지 확인
-                if(memberList.find { it.email == listItem.user.email } != null) {
-                    tempList.add(listItem)
+            val tempList = ArrayList<GetMemberRecordResponse>()
+            if(listItemList.size > 0) {
+                for (listItem in listItemList) {
+                    // listItem의 이메일이 memberList에 있는지 확인
+                    if (memberList.find { it.email == listItem.user.email } != null) {
+                        tempList.add(listItem)
+                    }
+                    // gridItemList에 tempList를 넣어준다.
                 }
-                // gridItemList에 tempList를 넣어준다.
+                gridItemList.add(Diary2GridOutViewModel(tempList[0].user.nickname, tempList))
             }
-            gridItemList.add(Diary2GridOutViewModel(tempList[0].user.nickname, tempList))
         }
         else {
             if(listItemList.size > 0) {

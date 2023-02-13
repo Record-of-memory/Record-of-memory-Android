@@ -8,6 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseActivity
@@ -49,12 +51,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             edit.apply()
         }
         else {
-            // 메인 레이아웃 보이게 하기
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
-//                .commitAllowingStateLoss()
-//        }
-
             hideMainFragment(false)
             binding.mainBtmNav.run {
                 println("MAIN BOTTOM NAVIGATION")
@@ -101,13 +97,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     fun hideMainFragment(bool: Boolean) {
         if (bool)  {
             // 안보이게
-            binding.mainFrm.visibility = View.GONE
-            binding.mainBtmNav.visibility = View.GONE
+            binding.mainFrm.isGone = true
+            binding.mainBtmNav.isGone = true
         } else {
             // 보이게
-            binding.onboardingFrm.visibility = View.GONE
-            binding.mainBtmNav.visibility = View.VISIBLE
-            binding.mainFrm.visibility = View.VISIBLE
+            binding.onboardingFrm.isGone = true
+            binding.mainBtmNav.isVisible = true
+            binding.mainFrm.isVisible = true
         }
     }
 
