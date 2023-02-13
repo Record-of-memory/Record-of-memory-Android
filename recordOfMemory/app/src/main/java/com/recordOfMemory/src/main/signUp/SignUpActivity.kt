@@ -24,9 +24,9 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(ActivitySignUpBinding
         super.onCreate(savedInstanceState)
 
         //fragment 레이아웃 보이게 하기, 시작은 startFragment
-        supportFragmentManager.beginTransaction().replace(binding.signUpFrm.id, startFragment).commitAllowingStateLoss()
-
-
+        val transaction = supportFragmentManager.beginTransaction()
+            .replace(binding.signUpFrm.id, startFragment)
+        transaction.commit()
     }
 
     // activity 바꾸는 메소드
@@ -34,7 +34,6 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(ActivitySignUpBinding
         finishAffinity()
         intent = Intent(this,MainActivity::class.java)
         startActivity(intent)
-        finish()
     }
 
     // fragment 바꾸는 메소드

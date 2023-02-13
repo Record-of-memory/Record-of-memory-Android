@@ -35,33 +35,10 @@ class Diary2SearchFragment() : BaseFragment<FragmentDiary2SearchBinding>(Fragmen
 //            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity::class.java)
+                .putExtra("recordId", item.id)
                 .putExtra("item",  item as java.io.Serializable)
                 .putExtra("screen_type","read"))
         }
-    }
-
-    // 일기 open
-    fun openItem(item: GetMemberRecordResponse) {
-//        startActivity(Intent(activity, DaybookActivity(item)::class.java))
-
-//        val fm = requireActivity().supportFragmentManager
-//        val transaction: FragmentTransaction = fm.beginTransaction()
-//
-//        val email = ApplicationClass.sSharedPreferences.getString("email", "")
-//        if(email == "NO") {
-//            transaction
-//                .replace(R.id.main_frm, LoginFragment())
-//                .addToBackStack(null)
-//                .commit()
-//            transaction.isAddToBackStackAllowed
-//        }
-//        else {
-//            transaction
-//                .replace(R.id.main_frm, itemFragment)
-//                .addToBackStack(null)
-//                .commit()
-//            transaction.isAddToBackStackAllowed
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

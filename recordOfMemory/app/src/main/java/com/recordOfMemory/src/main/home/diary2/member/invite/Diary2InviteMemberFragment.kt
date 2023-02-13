@@ -47,7 +47,7 @@ class Diary2InviteMemberFragment():BaseFragment<FragmentDiary2InviteMemberBindin
             requireActivity().supportFragmentManager.popBackStack()
         }
         binding.diary2InviteMemberEtInputEmail.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+            if (keyCode == KeyEvent.KEYCODE_DEL) {
                 val editable = (v as EditText).text
                 val start = v.selectionStart
                 val end = v.selectionEnd

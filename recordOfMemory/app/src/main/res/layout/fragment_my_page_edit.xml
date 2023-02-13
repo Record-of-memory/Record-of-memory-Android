@@ -114,7 +114,8 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal|top"
             android:background="@drawable/mypage_person_background"
-            android:src="@drawable/icn_person"
+            android:src="@drawable/icn_user"
+            android:scaleType="centerCrop"
             />
 
         <ImageView

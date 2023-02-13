@@ -33,7 +33,6 @@ class OnboardingFragment1 : Fragment(), DiaryFragmentInterface {
         savedInstanceState: Bundle?
     ): View {
         viewBinding = FragmentOnboarding1Binding.inflate(inflater, container, false)
-        mainActivity!!.hideMainFragment(true)
         return viewBinding.root
     }
 

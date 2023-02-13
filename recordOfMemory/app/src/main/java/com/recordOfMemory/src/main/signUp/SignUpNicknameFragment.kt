@@ -63,7 +63,7 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
         }
 
         viewBinding.editName.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+            if (keyCode == KeyEvent.KEYCODE_DEL) {
                 val editable = (v as EditText).text
                 val start = v.selectionStart
                 val end = v.selectionEnd

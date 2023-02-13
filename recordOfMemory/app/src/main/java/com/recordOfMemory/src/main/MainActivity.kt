@@ -38,52 +38,50 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         val isFirst = ApplicationClass.sSharedPreferences.getString("isFirst", null)
 
-//        if(isFirst == null) {
-//            //온보딩 레이아웃 보이게 하기
-//            val transaction = supportFragmentManager.beginTransaction()
-//                .replace(binding.onboardingFrm.id, fragment1)
-//            transaction.commit()
-//            val edit = ApplicationClass.sSharedPreferences.edit()
-//            edit.putString("isFirst", "YES")
-//            edit.apply()
-//        }
-//        else {
-            //메인 레이아웃 보이게 하기
+        if(isFirst == null) {
+            hideMainFragment(true)
+            // 온보딩 레이아웃 보이게 하기
+            val transaction = supportFragmentManager.beginTransaction()
+                .replace(binding.onboardingFrm.id, fragment1)
+            transaction.commit()
+            val edit = ApplicationClass.sSharedPreferences.edit()
+            edit.putString("isFirst", "YES")
+            edit.apply()
+        }
+        else {
+            // 메인 레이아웃 보이게 하기
 //            supportFragmentManager.beginTransaction()
 //                .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
 //                .commitAllowingStateLoss()
 //        }
 
-        //메인 레이아웃 보이게 하기
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.main_frm, diaryTogetherFragment, "diaryTogetherFragment")
-//            .commitAllowingStateLoss()
-
-        binding.mainBtmNav.run {
-            println("MAIN BOTTOM NAVIGATION")
-            setOnItemSelectedListener { item ->
+            hideMainFragment(false)
+            binding.mainBtmNav.run {
+                println("MAIN BOTTOM NAVIGATION")
+                setOnItemSelectedListener { item ->
 //                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                when (item.itemId) {
-                    R.id.menu_main_btm_nav_home -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.main_frm, diaryTogetherFragment)
+                    when (item.itemId) {
+                        R.id.menu_main_btm_nav_home -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_frm, diaryTogetherFragment)
 //                            .replace(R.id.main_frm, Diary2Fragment())
-                            .commitAllowingStateLoss()
+                                .commitAllowingStateLoss()
+                        }
+                        R.id.menu_main_btm_nav_calendar -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_frm, calendarFragment)
+                                .commitAllowingStateLoss()
+                        }
+                        R.id.menu_main_btm_nav_mypage -> {
+                            supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_frm, myPageFragment)
+                                .commitAllowingStateLoss()
+                        }
                     }
-                    R.id.menu_main_btm_nav_calendar -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.main_frm, calendarFragment)
-                            .commitAllowingStateLoss()
-                    }
-                    R.id.menu_main_btm_nav_mypage -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.main_frm, myPageFragment)
-                            .commitAllowingStateLoss()
-                    }
+                    true
                 }
-                true
+                selectedItemId = R.id.menu_main_btm_nav_home
             }
-            selectedItemId = R.id.menu_main_btm_nav_home
         }
     }
 

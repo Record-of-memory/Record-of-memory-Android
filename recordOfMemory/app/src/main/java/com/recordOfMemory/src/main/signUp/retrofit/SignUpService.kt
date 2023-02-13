@@ -94,7 +94,23 @@ class SignUpService() {
         signUpRetrofitInterface.postRefresh(postRefreshRequest).enqueue(object :
             Callback<TokenResponse> {
             override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
-                getRefreshTokenInterface.onPostRefreshSuccess(response.body() as TokenResponse)
+                if(response.code() == 200) {
+                    getRefreshTokenInterface.onPostRefreshSuccess(response.body() as TokenResponse)
+                }
+                else {
+                    // error body 가져오는 코드 필요함
+                    val gson = GsonBuilder().create()
+                    try {
+                        val error = gson.fromJson(
+                            response.errorBody()!!.string(),
+                            ErrorResponse::class.java)
+                        // 토큰 갱신 실패 에러 메시지
+                        getRefreshTokenInterface.onPostRefreshFailure(error.information.message)
+                    } catch (e: IOException) {
+                        // 통신 오류 에러 메시지
+                        getRefreshTokenInterface.onPostRefreshFailure(e.message ?: "통신 오류")
+                    }
+                }
             }
 
             override fun onFailure(call: Call<TokenResponse>, t: Throwable) {

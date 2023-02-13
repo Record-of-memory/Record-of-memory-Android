@@ -36,7 +36,7 @@ class AcceptTermsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //뒤로가기 버튼 누르면
         viewBinding.backBtn.setOnClickListener {
-            signUpActivity!!.openFragmentSignUp(0)
+            requireActivity().supportFragmentManager.popBackStack()
         }
         //다음 버튼 누르면
         viewBinding.nextBtn.setOnClickListener {

@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isGone
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
@@ -43,7 +44,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //비밀번호 찾기 버튼 안보이게 해두기(임시)
-        viewBinding.searchPswdBtn.visibility = View.INVISIBLE
+        viewBinding.searchPswdBtn.isGone = true
 
         //뒤로가기 버튼 누르면
         viewBinding.backBtn.setOnClickListener {
@@ -66,7 +67,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
             }
         }
         viewBinding.editEmail.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+            if (keyCode == KeyEvent.KEYCODE_DEL) {
                 val editable = (v as EditText).text
                 val start = v.selectionStart
                 val end = v.selectionEnd
@@ -87,7 +88,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
             true
         }
         viewBinding.editPswd.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_BACK) {
+            if (keyCode == KeyEvent.KEYCODE_DEL) {
                 val editable = (v as EditText).text
                 val start = v.selectionStart
                 val end = v.selectionEnd
@@ -99,18 +100,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
                     editable.delete(start, end)
                 }
             } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                //이메일이 형식에 맞고, 이메일과 비밀번호 모두 빈칸이 아닐 때
-                if (checkEmail() and viewBinding.editPswd.text.toString().isNotEmpty()) {
-                    val postSignInRequest = PostSignInRequest(
-                        email = viewBinding.editEmail.text.toString(),
-                        password = viewBinding.editPswd.text.toString()
-                    )
-                    showLoadingDialog(requireContext())
-                    SignUpService(this).tryPostSignIn(postSignInRequest)
-                } else {
-                    //빈칸이 있으면 토스트 메시지 띄우기
-                    Toast.makeText(activity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-                }
+                viewBinding.loginBtn.performClick()
             }
 
             true
