@@ -24,7 +24,6 @@
         android:fontFamily="@font/noto_sans_bold"
         android:includeFontPadding="false"
         android:gravity="center_vertical"
-        android:text="택현님의 기억을 기록할\n다이어리를 골라보세요!"
         android:textColor="#27544C"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"

@@ -23,13 +23,13 @@ class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
         diaryRetrofitInterface.getDiaries(Authorization = X_ACCESS_TOKEN).enqueue(object : Callback<GetDiariesResponse>{
             override fun onResponse(call: Call<GetDiariesResponse>, response: Response<GetDiariesResponse>) {
-                (response.body() as GetDiariesResponse?)?.let {
-                    diaryFragmentInterface.onGetDiariesSuccess(
-                        it
-                    )
+                if(response.code() == 200) {
+                    diaryFragmentInterface.onGetDiariesSuccess(response.body() as GetDiariesResponse)
+                }
+                else if(response.code() == 401) {
+                    diaryFragmentInterface.onGetDiariesFailure("refreshToken")
                 }
             }
-
             override fun onFailure(call: Call<GetDiariesResponse>, t: Throwable) {
                 diaryFragmentInterface.onGetDiariesFailure(t.message ?: "통신 오류")
             }
@@ -40,13 +40,13 @@ class DiaryService(val diaryFragmentInterface: DiaryFragmentInterface) {
         val diaryRetrofitInterface = ApplicationClass.sRetrofit.create(DiaryRetrofitInterface::class.java)
         diaryRetrofitInterface.postDiaries(Authorization = X_ACCESS_TOKEN, params = params).enqueue(object : Callback<BaseResponse>{
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                (response.body() as BaseResponse?)?.let {
-                    diaryFragmentInterface.onPostDiariesSuccess(
-                        it
-                    )
+                if(response.code() == 200) {
+                    diaryFragmentInterface.onPostDiariesSuccess(response.body() as BaseResponse)
+                }
+                else if(response.code() == 401) {
+                    diaryFragmentInterface.onPostDiariesFailure("refreshToken")
                 }
             }
-
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 diaryFragmentInterface.onPostDiariesFailure(t.message ?: "통신 오류")
             }

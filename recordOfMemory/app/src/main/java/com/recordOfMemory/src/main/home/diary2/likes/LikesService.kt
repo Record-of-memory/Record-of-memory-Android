@@ -15,11 +15,11 @@ class LikesService(val likesInterface: LikesInterface) {
         likesRetrofitInterface.postlikes(Authorization = X_ACCESS_TOKEN, params = postLikesRequest).enqueue(object :
             Callback<LikesResponse> {
             override fun onResponse(call: Call<LikesResponse>, response: Response<LikesResponse>) {
-                if(response.isSuccessful){
+                if(response.code() == 200) {
                     likesInterface.onPostLikesSuccess(response.body() as LikesResponse)
-                }else{
-                    Log.d("fail","fail to post likes")
-                    likesInterface.onPostLikesFailure("fail")
+                }
+                else if(response.code() == 401) {
+                    likesInterface.onPostLikesFailure("refreshToken")
                 }
             }
 
@@ -33,11 +33,11 @@ class LikesService(val likesInterface: LikesInterface) {
         val likesRetrofitInterface = ApplicationClass.sRetrofit.create(LikesRetrofitInterface::class.java)
         likesRetrofitInterface.deletelikes(Authorization = X_ACCESS_TOKEN, recordId = recordId).enqueue(object : Callback<LikesResponse> {
             override fun onResponse(call: Call<LikesResponse>, response: Response<LikesResponse>) {
-                if(response.isSuccessful){
+                if(response.code() == 200) {
                     likesInterface.onDeleteLikesSuccess(response.body() as LikesResponse)
-                }else{
-                    Log.d("fail","fail to delete likes")
-                    likesInterface.onDeleteLikesFailure("fail")
+                }
+                else if(response.code() == 401) {
+                    likesInterface.onDeleteLikesFailure("refreshToken")
                 }
             }
 
@@ -51,11 +51,11 @@ class LikesService(val likesInterface: LikesInterface) {
         val likesRetrofitInterface = ApplicationClass.sRetrofit.create(LikesRetrofitInterface::class.java)
         likesRetrofitInterface.checklikes(Authorization = X_ACCESS_TOKEN, recordId = recordId).enqueue(object : Callback<CheckLikesResponse> {
             override fun onResponse(call: Call<CheckLikesResponse>, response: Response<CheckLikesResponse>) {
-                if(response.isSuccessful){
+                if(response.code() == 200) {
                     likesInterface.onCheckLikesSuccess(response.body() as CheckLikesResponse)
-                }else{
-                    Log.d("fail","fail to check likes")
-                    likesInterface.onCheckLikesFailure("fail")
+                }
+                else if(response.code() == 401) {
+                    likesInterface.onCheckLikesFailure("refreshToken")
                 }
             }
 
@@ -64,6 +64,4 @@ class LikesService(val likesInterface: LikesInterface) {
             }
         })
     }
-
-
 }
