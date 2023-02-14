@@ -320,6 +320,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		if(item.date.contains("T")){
 			val date= sdfFull.parse(item.date.split("T")[0])
 			binding.daybookWriteTime.text= sdfFull2.format(date)
+		}else if(item.date.contains("-")){ //저장시에 2023-02-13으로 했을 경우
+			val date=sdfFull.parse(item.date)
+			binding.daybookWriteTime.text=sdfFull2.format(date) //일단 보여주는건 2023.02.13. (월)
 		}else{
 			binding.daybookWriteTime.text=item.date
 		}
