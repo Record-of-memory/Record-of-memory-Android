@@ -100,6 +100,7 @@
                 android:fontFamily="@font/noto_sans_semi_bold"
                 android:hint="일기의 제목을 입력해주세요 (최대 20자)"
                 android:textColorHint="#27544C"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:maxLength="20"
                 app:layout_constraintStart_toStartOf="parent"

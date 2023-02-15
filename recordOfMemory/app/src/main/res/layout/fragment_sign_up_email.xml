@@ -52,6 +52,7 @@
             android:textSize="11sp"
             android:paddingStart="10dp"
             android:textColorHint="@color/brownGray"
+            android:textColor="@color/black"
             android:fontFamily="@font/noto_sans_regular"
             android:inputType="textEmailAddress"
             />
@@ -64,7 +65,7 @@
             android:layout_marginStart="33dp"
             android:textColor="@color/red"
             android:text="@string/sign_up_err_tv_email"
-            android:textSize="11dp"
+            android:textSize="11sp"
             android:layout_marginTop="193dp"
             android:fontFamily="@font/noto_sans_regular"/>
 

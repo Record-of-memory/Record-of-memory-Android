@@ -56,6 +56,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:hint="@string/sign_up_et_input_nickname"
                 android:textSize="11dp"
+                android:textColor="@color/black"
                 android:textColorHint="@color/brownGray"
                 android:fontFamily="@font/noto_sans_bold"
                 android:paddingTop="11dp"

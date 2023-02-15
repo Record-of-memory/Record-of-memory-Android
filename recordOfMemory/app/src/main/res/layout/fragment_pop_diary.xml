@@ -46,18 +46,14 @@
         android:id="@+id/pop_tv_name"
         android:layout_width="95dp"
         android:layout_height="0dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_marginTop="92dp"
         android:layout_marginEnd="88dp"
         android:fontFamily="@font/noto_sans"
         android:gravity="center_horizontal|center_vertical"
-        android:lineHeight="20.43px"
         android:text="다이어리 이름"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textFontWeight="600"
-        android:textSize="15dp"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,28 +63,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="137dp"
         android:layout_marginEnd="55dp"
-        android:ems="10"
         android:fontFamily="@font/noto_sans"
         android:inputType="textPersonName"
         android:textAlignment="center"
-        android:textFontWeight="400"
-        android:textSize="15dp"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:background="@drawable/background_et_pop_diary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/pop_tv_alarm"
-        android:layout_width="108dp"
+        android:layout_width="wrap_content"
         android:layout_height="17dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:textSize="9dp"
-        android:layout_marginLeft="76dp"
+        android:textSize="9sp"
         android:layout_marginTop="180dp"
         android:fontFamily="@font/noto_sans_regular"
         android:gravity="center_horizontal|center_vertical"
-        android:text=""
+        android:text="10자 이내로 설정해주세요"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.widget.Button
@@ -101,7 +95,8 @@
         android:layout_marginEnd="102dp"
         android:background="@drawable/backgorund_diary_button"
         android:text="확인"
-        android:textSize="10dp"
+        android:textSize="10sp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

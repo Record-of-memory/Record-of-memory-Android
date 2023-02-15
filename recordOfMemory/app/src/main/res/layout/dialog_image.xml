@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:maxWidth="312dp"
         android:maxHeight="632dp"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:src="@drawable/ex_img"
         android:background="@drawable/daybook_image_background"

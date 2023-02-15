@@ -40,6 +40,7 @@
         android:includeFontPadding="false"
         android:textSize="11sp"
         android:maxLines="1"
+        android:textColor="@color/black"
         android:inputType="textEmailAddress"
         android:paddingStart="14dp"/>
 
