@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -68,10 +69,10 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		showLoadingDialog(this)
 		statusCode=1003
-		DaybookService(this).tryGetDaybook(recordId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		DaybookService(this).tryGetDaybook(recordId)
 
 		statusCode=1005
-		CommentService(this).tryGetComments(recordId) //#####여기 넣을 아이디를 일기리스트에서 넘어올 때 받아올 것
+		CommentService(this).tryGetComments(recordId)
 
 		statusCode=1007
 		MyPageService(this).tryGetUsers()
@@ -98,12 +99,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 				request=postCommentRequest
 				Log.d("내용",postCommentRequest.toString())
+				showLoadingDialog(this)
 				CommentService(this).tryPostComment(postCommentRequest)
-
-//				userComment.content=commentText
-//				userComment.createdAt=sdfMini.format(System.currentTimeMillis())
-//				commentList.add(0,userComment)
-//				commentAdapter.notifyItemInserted(0)
 			}else{
 				commentDialogFunction()
 			}
@@ -115,6 +112,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 
 		binding.daybookClickHeartIcon.setOnClickListener {
+			showLoadingDialog(this)
 			if(binding.daybookClickHeartIcon.isSelected) {
 				LikesService(this).tryDeleteLikes(recordId = recordId.toString())
 			}
@@ -168,6 +166,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			val patchDaybookRequest=PatchDaybookRequest(recordId = recordId)
 
 			request=patchDaybookRequest
+			showLoadingDialog(this)
 			DaybookService(this).tryDeleteDaybook(patchDaybookRequest)
 			miniDialog.dismiss()
 		}
@@ -222,6 +221,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onPostCommentSuccess(response: PostCommentResponse) {
+		dismissLoadingDialog()
 		userComment.content=binding.daybookWriteComment.text.toString()
 		userComment.createdAt=sdfMini.format(System.currentTimeMillis())
 		commentList.add(0,userComment)
@@ -235,6 +235,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onPostCommentFailure(message: String) {
+		dismissLoadingDialog()
 		if(message == "refreshToken") {
 			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -301,10 +302,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {
+		dismissLoadingDialog()
 		finish()
 	}
 
 	override fun onDeleteDaybookFailure(message: String) {
+		dismissLoadingDialog()
 		if(message == "refreshToken") {
 			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -325,6 +328,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		if(item.date.contains("T")){
 			val date= sdfFull.parse(item.date.split("T")[0])
 			binding.daybookWriteTime.text= sdfFull2.format(date)
+		}else if(item.date.contains("-")){ //저장시에 2023-02-13으로 했을 경우
+			val date=sdfFull.parse(item.date)
+			binding.daybookWriteTime.text=sdfFull2.format(date) //일단 보여주는건 2023.02.13. (월)
 		}else{
 			binding.daybookWriteTime.text=item.date
 		}
@@ -352,11 +358,13 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		else {
 			Log.d("실패",message)
 			Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+			dismissLoadingDialog()
 			finish() //다시 일기리스트로 돌아감
 		}
 	}
 
 	override fun onPostRefreshSuccess(response: TokenResponse) {
+		dismissLoadingDialog()
 		val editor = ApplicationClass.sSharedPreferences.edit()
 		editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
 		editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
@@ -386,20 +394,24 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
     }
 
 	override fun onPostLikesSuccess(response: LikesResponse) {
+		dismissLoadingDialog()
 		binding.daybookClickHeartIcon.isSelected = true
 		binding.daybookHeartNumber.text = (binding.daybookHeartNumber.text.toString().toInt() + 1).toString()
 	}
 
 	override fun onPostLikesFailure(message: String) {
+		dismissLoadingDialog()
 		showCustomToast("좋아요를 누를 수 없습니다.")
 	}
 
 	override fun onDeleteLikesSuccess(response: LikesResponse) {
+		dismissLoadingDialog()
 		binding.daybookClickHeartIcon.isSelected = false
 		binding.daybookHeartNumber.text = (binding.daybookHeartNumber.text.toString().toInt() - 1).toString()
 	}
 
 	override fun onDeleteLikesFailure(message: String) {
+		dismissLoadingDialog()
 		showCustomToast("좋아요를 취소할 수 없습니다.")
 	}
 

@@ -43,6 +43,7 @@ class MyPageFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // 마이페이지 정보 조회
+        showLoadingDialog(requireContext())
         statusCode=1103
         MyPageService(this).tryGetUsers()
 
@@ -87,6 +88,7 @@ class MyPageFragment :
             val postSignOutRequest=PostSignOutRequest(refreshToken = "Bearer $refreshToken")
 
             request=postSignOutRequest
+            showLoadingDialog(requireContext())
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }
 
@@ -94,6 +96,7 @@ class MyPageFragment :
     }
 
     override fun onPostSignOutSuccess(response: PostSignOutResponse) {
+        dismissLoadingDialog()
         Log.d("성공","${response.information.message}")
         //로그아웃 성공 시 화면은 스플래시 화면으로
         startActivity(Intent(context,SplashActivity::class.java))
@@ -101,8 +104,10 @@ class MyPageFragment :
     }
 
     override fun onPostSignOutFailure(message: String) {
+        dismissLoadingDialog()
         if(message == "refreshToken") {
             val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+            showLoadingDialog(requireContext())
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
         }
         // 토큰 갱신 문제가 아닐 경우
@@ -121,6 +126,7 @@ class MyPageFragment :
     }
 
     override fun onGetUsersSuccess(response: GetUsersResponse) {
+        dismissLoadingDialog()
         binding.mypageBoxName.text=response.information.nickname
         binding.mypageBoxAccount.text=response.information.email
         if(response.information.imageUrl.isNullOrEmpty()){
@@ -132,8 +138,10 @@ class MyPageFragment :
     }
 
     override fun onGetUsersFailure(message: String) {
+        dismissLoadingDialog()
         if(message == "refreshToken") {
             val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+            showLoadingDialog(requireContext())
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
         }
         // 토큰 갱신 문제가 아닐 경우
@@ -144,11 +152,13 @@ class MyPageFragment :
     }
 
     override fun onPostRefreshSuccess(response: TokenResponse) {
+        dismissLoadingDialog()
         val editor = ApplicationClass.sSharedPreferences.edit()
         editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
         editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
         editor.apply()
 
+        showLoadingDialog(requireContext())
         when(statusCode) {
             1103 -> MyPageService(this).tryGetUsers()
             1105 -> MyPageService(this).tryPostSignOut(request as PostSignOutRequest)

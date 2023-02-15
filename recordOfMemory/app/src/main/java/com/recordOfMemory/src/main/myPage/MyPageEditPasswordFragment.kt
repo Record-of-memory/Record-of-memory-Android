@@ -54,6 +54,7 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 				statusCode=1303
 				val postChangePasswordRequest=PostChangePasswordRequest(oldPassword = prevPassword.toString(), newPassword = newPassword2.toString())
 				request=postChangePasswordRequest
+				showLoadingDialog(requireContext())
 				MyPageEditPasswordService(this).tryPostChangePassword(postChangePasswordRequest)
 
 			}
@@ -109,6 +110,7 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 	}
 
 	override fun onPostChangePasswordSuccess(response: BaseResponse) {
+		dismissLoadingDialog()
 		Log.d("성공","${response.information.message}")
 		//화면 전환
 		val fm = requireActivity().supportFragmentManager
@@ -116,6 +118,7 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 	}
 
 	override fun onPostChangePasswordFailure(message: String) {
+		dismissLoadingDialog()
 		if(message == "refreshToken") {
 			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -128,11 +131,13 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 	}
 
 	override fun onPostRefreshSuccess(response: TokenResponse) {
+		dismissLoadingDialog()
 		val editor = ApplicationClass.sSharedPreferences.edit()
 		editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
 		editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
 		editor.apply()
 
+		showLoadingDialog(requireContext())
 		when (statusCode) {
 			1303 -> MyPageEditPasswordService(this).tryPostChangePassword(request as PostChangePasswordRequest)
 		}
