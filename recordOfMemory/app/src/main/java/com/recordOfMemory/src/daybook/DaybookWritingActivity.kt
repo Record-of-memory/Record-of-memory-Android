@@ -155,7 +155,7 @@ DaybookInterface, DaybookWritingInterface {
 								"\"content\":\"${binding.daybookWritingContent.text}\"" +
 								"}").toString()
 					val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
-					DaybookService(daybookInterface = this).tryPostRecord(writeRecordReq = jsonBody, imgUrl = imgUrl)
+					DaybookService(daybookWritingInterface = this).tryPostRecord(writeRecordReq = jsonBody, imgUrl = imgUrl)
 				}
 			}
 		}

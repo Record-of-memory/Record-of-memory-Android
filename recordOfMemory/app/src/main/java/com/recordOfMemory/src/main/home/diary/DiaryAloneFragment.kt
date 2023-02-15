@@ -1,9 +1,11 @@
 package com.recordOfMemory.src.main.home.diary
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +13,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
+import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
 import com.recordOfMemory.src.main.home.diary.retrofit.models.ResultDiaries
@@ -19,9 +22,16 @@ import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
+import com.recordOfMemory.src.main.signUp.models.TokenResponse
+import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
+import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
+import com.recordOfMemory.src.splash.SplashActivity
 
 class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiaryAloneBinding::bind, R.layout.fragment_diary_alone),
-    DiaryFragmentInterface {
+    DiaryFragmentInterface, GetRefreshTokenInterface {
+    var statusCode = 1000
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val fm = requireActivity().supportFragmentManager
@@ -32,8 +42,9 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         binding.diaryIvNone.visibility=View.INVISIBLE
         binding.diaryTvNone.visibility=View.INVISIBLE
 
+        showLoadingDialog(requireContext())
+        statusCode = 1000
         DiaryService(this).tryGetUsers()
-        DiaryService(this).tryGetDiaries()
 
         binding.diaryBtnTogether.setOnClickListener { //같이쓰는 으로 전환
             transaction
@@ -65,10 +76,10 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         confirm.setOnClickListener() {
             val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
             if (0 < newItemName.length && newItemName.length < 10){
+                statusCode = 2000
                 var newItem = PostDiariesRequest(name = newItemName, diaryType= "ALONE")
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()
-                DiaryService(this).tryGetDiaries()
             } else{
                 val alarm = mDialogView.findViewById<TextView>(R.id.pop_tv_alarm)
                 alarm.text = "10자 이내로 설정해주세요"
@@ -76,7 +87,12 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
         }
     }
 
+    private fun diariesRefresh(){
+        DiaryService(this).tryGetDiaries()
+    }
+
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
+        dismissLoadingDialog()
         val data = response.information
         //val userName = data[0].nickname -> 로그인 후 받은 닉네임 정보로
         //binding.diaryTvTitle.text=userName+"님의 기억을 기록할 다이어리를 골라보세요!"
@@ -100,7 +116,7 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
     }
 
     override fun onPostDiariesSuccess(response: BaseResponse) {
-        showCustomToast("성공")
+        diariesRefresh()
     }
 
     override fun onPostDiariesFailure(message: String) {
@@ -108,14 +124,55 @@ class DiaryAloneFragment : BaseFragment<FragmentDiaryAloneBinding>(FragmentDiary
     }
 
     override fun onGetUsersSuccess(response: GetUsersResponse) {
+        Log.e("onGetUsersSuccess", response.toString())
+        dismissLoadingDialog()
         val nickname = response.information.nickname
-        binding.diaryTvTitle.text=nickname+"님의 기억을 기록할\n다이어리를 골라보세요!"
+        binding.diaryTvTitle.text = nickname + "님의 기억을 기록할\n다이어리를 골라보세요!"
+
+        statusCode = 2000
+        showLoadingDialog(requireContext())
+        diariesRefresh()
     }
 
     override fun onGetUsersFailure(message: String) {
-        showCustomToast("오류 : $message")
+        if(message == "refreshToken") {
+            statusCode = 1000
+            val X_REFRESH_TOKEN =
+                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
+                    .toString()
+
+            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+
+        }
+        // 토큰 갱신 문제가 아닐 경우
+        else {
+            //TODO
+        }
     }
 
+    override fun onPostRefreshSuccess(response: TokenResponse) {
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+        editor.apply()
+
+        when(statusCode) {
+            1000 -> DiaryService(this).tryGetUsers()
+            2000 -> DiaryService(this).tryGetDiaries()
+        }
+    }
+
+    override fun onPostRefreshFailure(message: String) {
+        dismissLoadingDialog()
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
+        editor.apply()
+
+        val intent = Intent(context, SplashActivity::class.java)
+        requireActivity().finishAffinity()
+        startActivity(intent)
+    }
 }
 
 

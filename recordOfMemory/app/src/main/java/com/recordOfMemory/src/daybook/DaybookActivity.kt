@@ -293,14 +293,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 	}
 
-	override fun onPostRecordSuccess(response: BaseResponse) {
-		TODO("Not yet implemented")
-	}
-
-	override fun onPostRecordFailure(response: String) {
-		TODO("Not yet implemented")
-	}
-
 	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {
 		dismissLoadingDialog()
 		finish()

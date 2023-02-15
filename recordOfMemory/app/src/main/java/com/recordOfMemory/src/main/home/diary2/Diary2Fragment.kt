@@ -77,9 +77,7 @@ Diary2Interface, GetRefreshTokenInterface{
     override fun onResume() {
         super.onResume()
         gridItemList = ArrayList()
-        statusCode = 1000
         showLoadingDialog(requireContext())
-        request = diaryId
         if(stateFlag) {
             binding.diary2IvList.isChecked = true
             binding.diary2IvGrid.isChecked = false
@@ -88,7 +86,8 @@ Diary2Interface, GetRefreshTokenInterface{
             binding.diary2IvList.isChecked = false
             binding.diary2IvGrid.isChecked = true
         }
-//        Diary2Service(this).tryGetRecords(diaryId)
+        statusCode = 1000
+        request = diaryId
         Diary2Service(this).tryGetMembers(diaryId)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -151,8 +150,8 @@ Diary2Interface, GetRefreshTokenInterface{
             }
         }
         binding.diary2IvGrid.setOnClickListener {
-            gridItemList.add(Diary2GridOutViewModel("구리", listItemList))
-            gridItemList.add(Diary2GridOutViewModel("나나", listItemList))
+//            gridItemList.add(Diary2GridOutViewModel("구리", listItemList))
+//            gridItemList.add(Diary2GridOutViewModel("나나", listItemList))
 
             Log.e("grid isChecked", binding.diary2IvGrid.isChecked.toString())
             if(binding.diary2IvGrid.isChecked) {
@@ -253,32 +252,35 @@ Diary2Interface, GetRefreshTokenInterface{
         }
         val leaveBtn = customDialog.findViewById<TextView>(R.id.dialog_diary2_leave_btn_leave)
         leaveBtn.setOnClickListener {
-            showLoadingDialog(requireContext())
+            showLoadingDialog (requireContext())
+            // 3000 -> leave diary
+            statusCode = 3000
+            request = diaryId
             Diary2Service(this).tryLeaveDiary(diaryId)
             customDialog.dismiss()
         }
         customDialog.show()
     }
 
-    override fun onGetRecordsSuccess(response: GetRecordsResponse) {
-    }
-
-    // 토큰 갱신 필요 시 토큰 갱신으로 이동
-    override fun onGetRecordsFailure(message: String) {
-        if(message == "refreshToken") {
-            val X_REFRESH_TOKEN =
-                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
-                    .toString()
-
-            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
-
-        }
-        // 토큰 갱신 문제가 아닐 경우
-        else {
-            //TODO
-            showCustomToast("다시 시도해주세요.")
-        }
-   }
+//    override fun onGetRecordsSuccess(response: GetRecordsResponse) {
+//    }
+//
+//    // 토큰 갱신 필요 시 토큰 갱신으로 이동
+//    override fun onGetRecordsFailure(message: String) {
+//        if(message == "refreshToken") {
+//            val X_REFRESH_TOKEN =
+//                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
+//                    .toString()
+//
+//            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+//
+//        }
+//        // 토큰 갱신 문제가 아닐 경우
+//        else {
+//            //TODO
+//            showCustomToast("다시 시도해주세요.")
+//        }
+//   }
 
     override fun onDeleteDiarySuccess(response: BaseResponse) {
         dismissLoadingDialog()
@@ -302,6 +304,8 @@ Diary2Interface, GetRefreshTokenInterface{
     }
 
     override fun onGetMembersSuccess(response: GetMembersResponse) {
+        dismissLoadingDialog()
+
         memberList = response.information.users
         listItemList = response.information.records
 
@@ -360,7 +364,6 @@ Diary2Interface, GetRefreshTokenInterface{
                 binding.diary2LinearEmptyContent.isVisible = true
             }
         }
-        dismissLoadingDialog()
     }
 
     override fun onGetMembersFailure(message: String) {
@@ -389,6 +392,7 @@ Diary2Interface, GetRefreshTokenInterface{
 
         when(statusCode) {
             1000 -> Diary2Service(this).tryGetMembers(request as String)
+            3000 -> Diary2Service(this).tryLeaveDiary(request as String)
         }
     }
 

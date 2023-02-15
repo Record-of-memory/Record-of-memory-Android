@@ -36,6 +36,10 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
     var statusCode = 1000
     var request : Any = ""
 
+    override fun onPause() {
+        super.onPause()
+        Log.e("onPause", "onPause")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.diaryBtnTogether.isSelected = true
@@ -47,6 +51,7 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
 
         showLoadingDialog(requireContext())
+        statusCode = 1000
         DiaryService(this).tryGetUsers()
 
         binding.diaryBtnAlone.setOnClickListener { //혼자쓰는 으로 전환
@@ -64,7 +69,39 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
             binding.diaryTvNone.isGone= true
         }
     }
+
+    private fun addNewDiaryFunction() {
+        val mDialogView = Dialog(requireContext())
+        mDialogView.setContentView(R.layout.fragment_pop_diary)
+        mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        mDialogView.show()
+
+        val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
+        noButton.setOnClickListener {
+            mDialogView.dismiss()
+        }
+
+        val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
+
+        confirm.setOnClickListener() {
+            val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
+            if (newItemName.length in 1..9){
+                statusCode = 2000
+                var newItem = PostDiariesRequest(name = newItemName, diaryType= "WITH")
+                DiaryService(this).tryPostDiaries(newItem)
+                mDialogView.dismiss()
+            } else{
+                val alarm = mDialogView.findViewById<TextView>(R.id.pop_tv_alarm)
+                alarm.text = "10자 이내로 설정해주세요"
+            }
+        }
+    }
+
+    private fun diariesRefresh(){
+        DiaryService(this).tryGetDiaries()
+    }
     override fun onGetDiariesSuccess(response: GetDiariesResponse) {
+        dismissLoadingDialog()
         val data = response.information
 
         val filterData = data.filter { it.diaryType=="WITH" }
@@ -86,7 +123,7 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
     }
 
     override fun onPostDiariesSuccess(response: BaseResponse) {
-        showCustomToast("성공")
+        diariesRefresh()
     }
 
     override fun onPostDiariesFailure(message: String) {
@@ -100,7 +137,8 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         binding.diaryTvTitle.text = nickname + "님의 기억을 기록할\n다이어리를 골라보세요!"
 
         statusCode = 2000
-        DiaryService(this).tryGetDiaries()
+        showLoadingDialog(requireContext())
+        diariesRefresh()
     }
 
     override fun onGetUsersFailure(message: String) {
@@ -140,32 +178,5 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         val intent = Intent(context, SplashActivity::class.java)
         requireActivity().finishAffinity()
         startActivity(intent)
-    }
-
-    private fun addNewDiaryFunction() {
-        val mDialogView = Dialog(requireContext())
-        mDialogView.setContentView(R.layout.fragment_pop_diary)
-        mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        mDialogView.show()
-
-        val noButton = mDialogView.findViewById<Button>(R.id.pop_btn_close)
-        noButton.setOnClickListener {
-            mDialogView.dismiss()
-        }
-
-        val confirm = mDialogView.findViewById<Button>(R.id.pop_btn_confirm)
-
-        confirm.setOnClickListener() {
-            val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
-            if (newItemName.length in 1..9){
-                var newItem = PostDiariesRequest(name = newItemName, diaryType= "WITH")
-                DiaryService(this).tryPostDiaries(newItem)
-                mDialogView.dismiss()
-                DiaryService(this).tryGetDiaries()
-            } else{
-                val alarm = mDialogView.findViewById<TextView>(R.id.pop_tv_alarm)
-                alarm.text = "10자 이내로 설정해주세요"
-            }
-        }
     }
 }

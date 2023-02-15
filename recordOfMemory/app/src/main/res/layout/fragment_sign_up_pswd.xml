@@ -64,7 +64,7 @@
                 android:layout_height="30dp"
                 android:backgroundTint="@android:color/transparent"
                 android:hint="@string/sign_up_tv_input_password"
-                android:textSize="11dp"
+                android:textSize="11sp"
                 android:textColorHint="@color/brownGray"
                 android:fontFamily="@font/noto_sans_regular"
                 android:paddingTop="11dp"
@@ -90,7 +90,7 @@
                 android:layout_height="30dp"
                 android:backgroundTint="@android:color/transparent"
                 android:hint="@string/sign_up_tv_input_password_again"
-                android:textSize="11dp"
+                android:textSize="11sp"
                 android:textColorHint="@color/brownGray"
                 android:fontFamily="@font/noto_sans_regular"
                 android:paddingTop="11dp"
@@ -108,7 +108,7 @@
             android:layout_marginStart="33dp"
             android:textColor="@color/red"
             android:text="@string/sign_up_err_tv_password"
-            android:textSize="11dp"
+            android:textSize="11sp"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/noto_sans_regular"/>
 

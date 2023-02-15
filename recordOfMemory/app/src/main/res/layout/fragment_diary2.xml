@@ -44,6 +44,7 @@
             android:layout_marginTop="18dp"
             android:gravity="center"
             android:fontFamily="@font/noto_sans_semi_bold"
+            android:includeFontPadding="false"
             android:textSize="16sp"
             android:textColor="@color/green4"
             android:text="나의 첫 다이어리"/>
