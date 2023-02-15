@@ -34,11 +34,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val diaryTogetherFragment = DiaryTogetherFragment()
-        val calendarFragment = CalendarFragment()
-        val myPageFragment = MyPageFragment()
-
         val isFirst = ApplicationClass.sSharedPreferences.getString("isFirst", null)
+//        val isFirst = null
+
 
         if(isFirst == null) {
             hideMainFragment(true)
@@ -52,32 +50,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
         else {
             hideMainFragment(false)
-            binding.mainBtmNav.run {
-                println("MAIN BOTTOM NAVIGATION")
-                setOnItemSelectedListener { item ->
-//                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    when (item.itemId) {
-                        R.id.menu_main_btm_nav_home -> {
-                            supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_frm, diaryTogetherFragment)
-//                            .replace(R.id.main_frm, Diary2Fragment())
-                                .commitAllowingStateLoss()
-                        }
-                        R.id.menu_main_btm_nav_calendar -> {
-                            supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_frm, calendarFragment)
-                                .commitAllowingStateLoss()
-                        }
-                        R.id.menu_main_btm_nav_mypage -> {
-                            supportFragmentManager.beginTransaction()
-                                .replace(R.id.main_frm, myPageFragment)
-                                .commitAllowingStateLoss()
-                        }
-                    }
-                    true
-                }
-                selectedItemId = R.id.menu_main_btm_nav_home
-            }
+            startMainFrame()
         }
     }
 
@@ -104,6 +77,40 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             binding.onboardingFrm.isGone = true
             binding.mainBtmNav.isVisible = true
             binding.mainFrm.isVisible = true
+        }
+    }
+
+    fun startMainFrame() {
+        hideMainFragment(false)
+        val diaryTogetherFragment = DiaryTogetherFragment()
+        val calendarFragment = CalendarFragment()
+        val myPageFragment = MyPageFragment()
+
+        binding.mainBtmNav.run {
+            println("MAIN BOTTOM NAVIGATION")
+            setOnItemSelectedListener { item ->
+//                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                when (item.itemId) {
+                    R.id.menu_main_btm_nav_home -> {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_frm, diaryTogetherFragment)
+//                            .replace(R.id.main_frm, Diary2Fragment())
+                            .commitAllowingStateLoss()
+                    }
+                    R.id.menu_main_btm_nav_calendar -> {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_frm, calendarFragment)
+                            .commitAllowingStateLoss()
+                    }
+                    R.id.menu_main_btm_nav_mypage -> {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_frm, myPageFragment)
+                            .commitAllowingStateLoss()
+                    }
+                }
+                true
+            }
+            selectedItemId = R.id.menu_main_btm_nav_home
         }
     }
 

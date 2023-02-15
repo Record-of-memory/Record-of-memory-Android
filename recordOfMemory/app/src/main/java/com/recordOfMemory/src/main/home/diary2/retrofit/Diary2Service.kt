@@ -66,26 +66,26 @@ class Diary2Service() {
             }
         })
     }
-    fun tryGetRecords(diaryId: String) {
-        diary2RetrofitInterface.getRecords(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
-            Callback<GetRecordsResponse> {
-            override fun onResponse(
-                call: Call<GetRecordsResponse>,
-                response: Response<GetRecordsResponse>
-            ) {
-                if(response.code() == 200) {
-                    diary2Interface.onGetRecordsSuccess(response.body() as GetRecordsResponse)
-                }
-                else if(response.code() == 401) {
-                    diary2Interface.onGetRecordsFailure("refreshToken")
-                }
-            }
-
-            override fun onFailure(call: Call<GetRecordsResponse>, t: Throwable) {
-                diary2Interface.onGetRecordsFailure(t.message ?: "통신 오류")
-            }
-        })
-    }
+//    fun tryGetRecords(diaryId: String) {
+//        diary2RetrofitInterface.getRecords(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
+//            Callback<GetRecordsResponse> {
+//            override fun onResponse(
+//                call: Call<GetRecordsResponse>,
+//                response: Response<GetRecordsResponse>
+//            ) {
+//                if(response.code() == 200) {
+//                    diary2Interface.onGetRecordsSuccess(response.body() as GetRecordsResponse)
+//                }
+//                else if(response.code() == 401) {
+//                    diary2Interface.onGetRecordsFailure("refreshToken")
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<GetRecordsResponse>, t: Throwable) {
+//                diary2Interface.onGetRecordsFailure(t.message ?: "통신 오류")
+//            }
+//        })
+//    }
     fun tryLeaveDiary(diaryId: String) {
         diary2RetrofitInterface.deleteDiary(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
             Callback<BaseResponse> {

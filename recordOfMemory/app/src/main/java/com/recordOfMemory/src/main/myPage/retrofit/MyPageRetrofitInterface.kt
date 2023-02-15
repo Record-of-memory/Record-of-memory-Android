@@ -23,12 +23,4 @@ interface MyPageRetrofitInterface {
 	fun getUsers(
 		@Header("Authorization") Authorization: String,
 	):Call<GetUsersResponse>
-
-	@Multipart
-	@PATCH("/api/users/me")
-	fun patchUsers(
-		@Header("Authorization") Authorization: String,
-		@Part profileImg: MultipartBody.Part?,
-		@Part("nickname") nickname: String
-	): Call<BaseResponse>
 }

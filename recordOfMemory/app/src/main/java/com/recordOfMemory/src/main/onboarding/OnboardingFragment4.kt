@@ -35,7 +35,7 @@ class OnboardingFragment4 : Fragment() {
         }
         //시작하기 누르면
         viewBinding.nextBtn.setOnClickListener {
-            mainActivity!!.hideMainFragment(false)
+            mainActivity!!.startMainFrame()
         }
     }
 

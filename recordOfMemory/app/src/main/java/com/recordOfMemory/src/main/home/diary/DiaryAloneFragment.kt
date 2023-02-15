@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentDiaryAloneBinding
-import com.recordOfMemory.src.main.home.diary.DiaryAdapter
-import com.recordOfMemory.src.main.home.diary.DiaryFragmentInterface
-import com.recordOfMemory.src.main.home.diary.ResultDiaries
+import com.recordOfMemory.src.main.home.diary.retrofit.models.ResultDiaries
 import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
 import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest

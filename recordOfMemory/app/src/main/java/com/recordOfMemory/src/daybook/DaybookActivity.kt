@@ -152,8 +152,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				imgUrl = daybookImageUrl)
 
 			intent.putExtra("item",itemSend)
-			startActivityForResult(intent,10)
-			//startActivity(intent)
+//			startActivityForResult(intent,10)
+			startActivity(intent)
 			//finish()
 			miniDialog.dismiss()
 

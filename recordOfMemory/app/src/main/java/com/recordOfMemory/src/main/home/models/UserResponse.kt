@@ -1,7 +1,7 @@
 package com.recordOfMemory.src.main.home.models
 
 import com.google.gson.annotations.SerializedName
-import com.recordOfMemory.src.main.home.diary.ResultDiaries
+import com.recordOfMemory.src.main.home.diary.retrofit.models.ResultDiaries
 
 data class UserResponse(
         @SerializedName("isSuccess") val isSuccess: Boolean,

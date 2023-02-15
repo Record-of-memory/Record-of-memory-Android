@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginVertical="5dp">
+    <TextView
+            android:id="@+id/item_calendar_header_tv_diary_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:fontFamily="@font/noto_sans_bold"
+            android:gravity="center|start"
+            android:includeFontPadding="false"
+            android:text="@string/calendar_tv_my_first_diary"
+            android:textColor="@color/green4"/>
+
+</FrameLayout>

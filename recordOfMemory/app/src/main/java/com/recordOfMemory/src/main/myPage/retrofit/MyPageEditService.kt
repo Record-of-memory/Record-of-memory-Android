@@ -3,11 +3,13 @@ package com.recordOfMemory.src.main.myPage.retrofit
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.DeleteUsersResponse
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,6 +43,33 @@ class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
 
 			override fun onFailure(call: Call<DeleteUsersResponse>, t: Throwable) {
 				myPageEditInterface.onDeleteUsersFailure(t.message ?: "통신 오류")
+			}
+		})
+	}
+
+	fun tryPatchUsers(profileImg : MultipartBody.Part?, nickname : String){
+		myPageEditRetrofitInterface.patchUsers(Authorization = X_ACCESS_TOKEN, profileImg = profileImg, nickname = nickname).enqueue(object : Callback<BaseResponse> {
+			override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+				if(response.isSuccessful){
+					myPageEditInterface.onPatchUsersSuccess(response.body() as BaseResponse)
+				}else if(response.code()==401){
+					myPageEditInterface.onPatchUsersFailure("refreshToken")
+				}else{
+					// error body 가져오는 코드 필요함
+					val gson = GsonBuilder().create()
+					try {
+						val error = gson.fromJson(
+							response.errorBody()!!.string(),
+							ErrorResponse::class.java)
+						myPageEditInterface.onPatchUsersFailure(error.information.message.split(": ")[1].split("\"")[0])
+					} catch (e: IOException) {
+						myPageEditInterface.onPatchUsersFailure(e.message ?: "통신 오류")
+					}
+				}
+			}
+
+			override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+				myPageEditInterface.onPatchUsersFailure(t.message ?: "통신 오류")
 			}
 		})
 	}

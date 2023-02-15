@@ -56,7 +56,7 @@ class OnboardingFragment1 : Fragment(), DiaryFragmentInterface {
         }
         //건너뛰기 누르면
         viewBinding.skipBtn.setOnClickListener {
-            mainActivity!!.hideMainFragment(false)
+            mainActivity!!.startMainFrame()
         }
     }
 

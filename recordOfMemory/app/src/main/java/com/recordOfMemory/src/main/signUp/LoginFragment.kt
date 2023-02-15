@@ -27,7 +27,6 @@ import com.recordOfMemory.src.main.signUp.models.*
 import java.util.regex.Pattern
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::bind, R.layout.fragment_login), SignUpFragmentInterface {
-    private lateinit var viewBinding: FragmentLoginBinding
     var signUpActivity: SignUpActivity? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,20 +36,20 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //비밀번호 찾기 버튼 안보이게 해두기(임시)
-        viewBinding.searchPswdBtn.isGone = true
+        binding.searchPswdBtn.isGone = true
 
         //뒤로가기 버튼 누르면
-        viewBinding.backBtn.setOnClickListener {
+        binding.backBtn.setOnClickListener {
 //            signUpActivity!!.openFragmentSignUp(0)
             requireActivity().supportFragmentManager.popBackStack()
         }
         //로그인 버튼 누르면
-        viewBinding.loginBtn.setOnClickListener {
+        binding.loginBtn.setOnClickListener {
             //이메일이 형식에 맞고, 이메일과 비밀번호 모두 빈칸이 아닐 때
-            if (checkEmail() and viewBinding.editPswd.text.toString().isNotEmpty()) {
+            if (checkEmail() and binding.editPswd.text.toString().isNotEmpty()) {
                 val postSignInRequest = PostSignInRequest(
-                    email = viewBinding.editEmail.text.toString(),
-                    password = viewBinding.editPswd.text.toString()
+                    email = binding.editEmail.text.toString(),
+                    password = binding.editPswd.text.toString()
                 )
                 showLoadingDialog(requireContext())
                 SignUpService(this).tryPostSignIn(postSignInRequest)
@@ -59,7 +58,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
                 Toast.makeText(activity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
         }
-        viewBinding.editEmail.setOnKeyListener { v, keyCode, event ->
+        binding.editEmail.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
                 val editable = (v as EditText).text
                 val start = v.selectionStart
@@ -73,14 +72,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
                 }
             } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 // 엔터 눌렀을때 행동
-                viewBinding.editPswd.requestFocus()
-                viewBinding.editPswd.isCursorVisible = true
-                viewBinding.editPswd.text.clear()
+                binding.editPswd.requestFocus()
+                binding.editPswd.isCursorVisible = true
+                binding.editPswd.text.clear()
             }
 
             true
         }
-        viewBinding.editPswd.setOnKeyListener { v, keyCode, event ->
+        binding.editPswd.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
                 val editable = (v as EditText).text
                 val start = v.selectionStart
@@ -93,13 +92,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
                     editable.delete(start, end)
                 }
             } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                viewBinding.loginBtn.performClick()
+                binding.loginBtn.performClick()
             }
 
             true
         }
 //        //비밀번호 찾기 버튼 누르면
-//        viewBinding.searchPswdBtn.setOnClickListener {
+//        binding.searchPswdBtn.setOnClickListener {
 //            signUpActivity!!.openFragmentSignUp(6)
 //        }
     }
@@ -109,7 +108,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
         //이메일 검사 정규식
         val emailValidation = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
 
-        var email = viewBinding.editEmail.text.toString().trim() //공백제거
+        var email = binding.editEmail.text.toString().trim() //공백제거
         val p = Pattern.matches(emailValidation, email) // 서로 패턴이 맞는지 확인
         if (p) {
             //이메일 형태가 정상일 경우

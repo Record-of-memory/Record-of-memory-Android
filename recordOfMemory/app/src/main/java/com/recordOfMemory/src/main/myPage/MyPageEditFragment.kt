@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentMyPageEditBinding
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageEditService
@@ -36,6 +37,7 @@ import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
+import okhttp3.MultipartBody
 import java.io.IOException
 
 
@@ -54,6 +56,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 	private var changeImg=false;
 	var statusCode = 1201
 	var request : Any = ""
+	var nickname = ""
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -84,6 +87,8 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
 			if(!(checkName() && changeImg)){ //이름과 이미지 중에 바뀐 것이 있으면
 				//저장하고
+				nickname = binding.mypageEditBoxName.text.toString()
+
 			}
 			
 			// 마이페이지로 넘어가기
@@ -269,6 +274,14 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 			Log.d("실패",message)
 			Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
 		}
+	}
+
+	override fun onPatchUsersSuccess(response: BaseResponse) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onPatchUsersFailure(message: String) {
+		TODO("Not yet implemented")
 	}
 
 	override fun onPostRefreshSuccess(response: TokenResponse) {

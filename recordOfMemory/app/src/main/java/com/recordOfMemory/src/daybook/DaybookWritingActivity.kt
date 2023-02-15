@@ -131,11 +131,15 @@ DaybookInterface, DaybookWritingInterface {
 //				}
 				showLoadingDialog(this)
 				//데이터 통신 끝나고 일기 화면으로 돌아갈 때.
+				val dateBefore = sdfFull.parse(binding.daybookWritingWriteTime.text.toString())
+				val sdfSend = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA) //날짜 포맷
+				val dateSend = sdfSend.format(dateBefore!!)
+
 				if(screenType=="update"){
 					val jsonObject = JSONObject(
 						"{" +
 								"\"recordId\":\"${recordId}\"," +
-								"\"date\":\"${LocalDateTime.now()}\"," +
+								"\"date\":\"${dateSend}\"," +
 								"\"title\":\"${binding.daybookWritingTitle.text}\"," +
 								"\"content\":\"${binding.daybookWritingContent.text}\"" +
 								"}").toString()
@@ -146,7 +150,7 @@ DaybookInterface, DaybookWritingInterface {
 					val jsonObject = JSONObject(
 						"{" +
 								"\"diaryId\":\"${diaryId}\"," +
-								"\"date\":\"${LocalDateTime.now()}\"," +
+								"\"date\":\"${dateSend}\"," +
 								"\"title\":\"${binding.daybookWritingTitle.text}\"," +
 								"\"content\":\"${binding.daybookWritingContent.text}\"" +
 								"}").toString()
@@ -158,7 +162,15 @@ DaybookInterface, DaybookWritingInterface {
 
 		binding.daybookWritingIvBack.setOnClickListener {  // 뒤로가기
 			//뒤로가기 눌렀을 때 경고창을 띄우기?
-			onBackPressed()
+			if(binding.daybookWritingTitle.text.toString().isNotEmpty() || binding.daybookWritingContent.text.toString().isNotEmpty()){
+				backPressedDialogFunction()
+			}else{
+				//super.onBackPressed()
+//			val intent=Intent(this,DaybookActivity::class.java)
+//			intent.putExtra("recordId",recordId.toString())
+//			startActivity(intent)
+				finish()
+			}
 		}
 
 		binding.daybookWritingAlbum.isEnabled = binding.daybookWritingFr.visibility==View.GONE
@@ -178,9 +190,10 @@ DaybookInterface, DaybookWritingInterface {
 			backPressedDialogFunction()
 		}else{
 			//super.onBackPressed()
-			val intent=Intent(this,DaybookActivity::class.java)
-			intent.putExtra("recordId",recordId.toString())
-			startActivity(intent)
+//			val intent=Intent(this,DaybookActivity::class.java)
+//			intent.putExtra("recordId",recordId.toString())
+//			startActivity(intent)
+			finish()
 		}
 	}
 
@@ -446,15 +459,18 @@ DaybookInterface, DaybookWritingInterface {
 
 	override fun onPatchRecordSuccess(response: BaseResponse) {
 		dismissLoadingDialog()
-		val intent=Intent(this,DaybookActivity::class.java)
-		intent.putExtra("recordId",recordId.toString())
-		setResult(RESULT_OK,intent)
 		finish()
-		startActivity(intent)
+//		val intent=Intent(this,DaybookActivity::class.java)
+//		intent.putExtra("recordId",recordId.toString())
+//		setResult(RESULT_OK,intent)
+//		finish()
+//		startActivity(intent)
 	}
 
 	override fun onPatchRecordFailure(message: String) {
-		TODO("Not yet implemented")
+		dismissLoadingDialog()
+
+		//TODO("Not yet implemented")
 	}
 
 	override fun onPostRecordSuccess(response: BaseResponse) {

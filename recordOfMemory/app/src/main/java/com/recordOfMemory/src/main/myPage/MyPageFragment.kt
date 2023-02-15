@@ -130,7 +130,7 @@ class MyPageFragment :
         binding.mypageBoxName.text=response.information.nickname
         binding.mypageBoxAccount.text=response.information.email
         if(response.information.imageUrl.isNullOrEmpty()){
-            binding.mypagePersonImg.setImageResource(R.drawable.icn_person)
+            binding.mypagePersonImg.setImageResource(R.drawable.icn_user)
         }else{
             Glide.with(this).load(response.information.imageUrl)
                 .into(binding.mypagePersonImg)

@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.MainActivity
-import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.diary.retrofit.models.ResultDiaries
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
 
 class DiaryAdapter(val itemList: ArrayList<ResultDiaries>) :

@@ -18,6 +18,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
 //            val accessToken = null
 
+//            val edit = ApplicationClass.sSharedPreferences.edit()
+//            edit.remove("isFirst")
+//            edit.apply()
 
             if (accessToken != null) {
                 startActivity(Intent(this, MainActivity::class.java))

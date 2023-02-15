@@ -22,14 +22,13 @@ import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
 import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
+import com.recordOfMemory.src.main.home.diary.retrofit.models.ResultDiaries
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
-import kotlin.math.log
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together),
     DiaryFragmentInterface, GetRefreshTokenInterface {
@@ -48,7 +47,6 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
 
         showLoadingDialog(requireContext())
-
         DiaryService(this).tryGetUsers()
 
         binding.diaryBtnAlone.setOnClickListener { //혼자쓰는 으로 전환
