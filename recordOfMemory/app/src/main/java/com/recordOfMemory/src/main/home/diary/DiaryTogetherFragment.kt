@@ -159,7 +159,7 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
         confirm.setOnClickListener() {
             val newItemName = mDialogView.findViewById<EditText>(R.id.pop_et_name).text.toString()
-            if (0 < newItemName.length && newItemName.length < 10){
+            if (newItemName.length in 1..9){
                 var newItem = PostDiariesRequest(name = newItemName, diaryType= "WITH")
                 DiaryService(this).tryPostDiaries(newItem)
                 mDialogView.dismiss()

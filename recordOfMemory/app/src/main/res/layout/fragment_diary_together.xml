@@ -24,6 +24,7 @@
         android:fontFamily="@font/noto_sans_bold"
         android:includeFontPadding="false"
         android:gravity="center_vertical"
+        android:text=""
         android:textColor="#27544C"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"

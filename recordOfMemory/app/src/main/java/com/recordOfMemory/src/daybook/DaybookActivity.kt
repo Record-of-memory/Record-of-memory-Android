@@ -28,9 +28,6 @@ import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
 import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
@@ -98,6 +95,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 				statusCode = 1009
 				val postCommentRequest=PostCommentRequest(recordId = recordId, content = commentText)
+
 				request=postCommentRequest
 				Log.d("내용",postCommentRequest.toString())
 				CommentService(this).tryPostComment(postCommentRequest)
@@ -166,7 +164,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		miniDialog.findViewById<TextView>(R.id.dialog_daybook_mini_btn_delete).setOnClickListener {
 			// 삭제
 			statusCode = 1011
+
 			val patchDaybookRequest=PatchDaybookRequest(recordId = recordId)
+
 			request=patchDaybookRequest
 			DaybookService(this).tryDeleteDaybook(patchDaybookRequest)
 			miniDialog.dismiss()
@@ -290,6 +290,14 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			Log.d("실패",message)
 			Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
 		}
+	}
+
+	override fun onPostRecordSuccess(response: BaseResponse) {
+		TODO("Not yet implemented")
+	}
+
+	override fun onPostRecordFailure(response: String) {
+		TODO("Not yet implemented")
 	}
 
 	override fun onDeleteDaybookSuccess(response: PatchDaybookResponse) {

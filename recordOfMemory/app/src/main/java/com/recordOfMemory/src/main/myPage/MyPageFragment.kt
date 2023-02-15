@@ -85,6 +85,7 @@ class MyPageFragment :
             val refreshToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, null).toString()
             statusCode=1105
             val postSignOutRequest=PostSignOutRequest(refreshToken = "Bearer $refreshToken")
+
             request=postSignOutRequest
             MyPageService(this).tryPostSignOut(postSignOutRequest)
         }

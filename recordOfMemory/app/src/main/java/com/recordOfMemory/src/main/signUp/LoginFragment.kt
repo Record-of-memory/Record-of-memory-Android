@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -27,20 +28,12 @@ import java.util.regex.Pattern
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::bind, R.layout.fragment_login), SignUpFragmentInterface {
     private lateinit var viewBinding: FragmentLoginBinding
-
     var signUpActivity: SignUpActivity? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         signUpActivity = context as SignUpActivity
     }
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        viewBinding = FragmentLoginBinding.inflate(inflater, container, false)
-        return viewBinding.root
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //비밀번호 찾기 버튼 안보이게 해두기(임시)

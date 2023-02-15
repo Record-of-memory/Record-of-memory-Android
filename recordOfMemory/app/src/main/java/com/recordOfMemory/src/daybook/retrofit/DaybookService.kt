@@ -30,6 +30,7 @@ class DaybookService() {
 	}
 
 	val X_ACCESS_TOKEN = "Bearer ${ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)}"
+
 	private val daybookRetrofitInterface:DaybookRetrofitInterface=ApplicationClass.sRetrofit.create(DaybookRetrofitInterface::class.java)
 
 	fun tryDeleteDaybook(params: PatchDaybookRequest){
@@ -38,9 +39,20 @@ class DaybookService() {
 				override fun onResponse(call: Call<PatchDaybookResponse>, response: Response<PatchDaybookResponse>, ) {
 					if(response.code()==200){
 						daybookInterface.onDeleteDaybookSuccess(response.body() as PatchDaybookResponse)
+					}else if(response.code()==401){
+						daybookInterface.onDeleteDaybookFailure("refreshToken")
 					}else{
-						Log.d("fail","fail to delete Daybook")
-						daybookInterface.onDeleteDaybookFailure("fail")
+						// error body 가져오는 코드 필요함
+						val gson = GsonBuilder().create()
+						try {
+							val error = gson.fromJson(
+								response.errorBody()!!.string(),
+								ErrorResponse::class.java)
+							daybookInterface.onDeleteDaybookFailure(error.information.message.split(": ")[1].split("\"")[0])
+						} catch (e: IOException) {
+							daybookInterface.onDeleteDaybookFailure(e.message ?: "통신 오류")
+						}
+
 					}
 				}
 
@@ -57,9 +69,19 @@ class DaybookService() {
 				override fun onResponse(call: Call<GetDaybookResponse>, response: Response<GetDaybookResponse>, ) {
 					if(response.code()==200){
 						daybookInterface.onGetDaybookSuccess(response.body() as GetDaybookResponse)
+					}else if(response.code()==401){
+						daybookInterface.onGetDaybookFailure("refreshToken")
 					}else{
-						Log.d("fail","fail to get Daybook")
-						daybookInterface.onGetDaybookFailure("fail")
+						val gson = GsonBuilder().create()
+						try {
+							val error = gson.fromJson(
+								response.errorBody()!!.string(),
+								ErrorResponse::class.java)
+							daybookInterface.onGetDaybookFailure(error.information.message.split(": ")[1].split("\"")[0])
+						} catch (e: IOException) {
+							daybookInterface.onGetDaybookFailure(e.message ?: "통신 오류")
+						}
+
 					}
 				}
 
@@ -69,6 +91,7 @@ class DaybookService() {
 
 			})
 	}
+
 	fun tryPostRecord(imgUrl : MultipartBody.Part?, writeRecordReq : RequestBody) {
 		if (imgUrl != null) {
 			println("imgUrl: ${imgUrl.body}")

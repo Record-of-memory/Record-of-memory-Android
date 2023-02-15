@@ -11,8 +11,8 @@ import com.recordOfMemory.R
 
 import com.recordOfMemory.src.main.calendar.CalendarFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewHolder
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 
 class CalendarRecyclerViewAdapter(var items: CalendarFragment.itemListAdapterToList, val itemList: ArrayList<GetMemberRecordResponse>)
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable {

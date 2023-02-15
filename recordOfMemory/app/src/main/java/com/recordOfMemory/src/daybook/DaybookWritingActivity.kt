@@ -281,6 +281,7 @@ DaybookInterface, DaybookWritingInterface {
 						)
 					}
 					println("imgUrl ${imgUrl?.body}")
+
 					// 우리 프로젝트에서는 이미지 파일이 없으면 null로 넘겨주기로 약속했기 때문에 이미지 경로가 없으면 null처리 해준다.
 
 					binding.daybookWritingFr.visibility= View.VISIBLE
@@ -345,7 +346,7 @@ DaybookInterface, DaybookWritingInterface {
 						}
 					}
 
-					val thumbNail: Bitmap = it.data!!.extras?.get("data") as Bitmap
+					val thumbNail: Bitmap = it!!.data!!.extras?.get("data") as Bitmap
 					binding.daybookWritingImage.setImageBitmap(thumbNail) // 이미지 연결
 					binding.daybookWritingFr.visibility= View.VISIBLE
 					binding.daybookWritingAlbum.isEnabled=false

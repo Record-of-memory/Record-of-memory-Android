@@ -17,6 +17,7 @@ import com.recordOfMemory.databinding.FragmentCalendarBinding
 import com.recordOfMemory.databinding.CalendarDayContainerBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.main.calendar.recycler.CalendarRecyclerViewAdapter
+
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -37,6 +38,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
     inner class itemListAdapterToList {
         // 일기 open function
         fun getItemId(item: GetMemberRecordResponse) {
+
 //            openItem(item)
             println(item)
             startActivity(
@@ -69,8 +71,6 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         val diary2LayoutManager = LinearLayoutManager(context)
 
         val itemList = ArrayList<GetMemberRecordResponse>()
-
-
 
         diary2RecyclerViewAdapter = CalendarRecyclerViewAdapter(items, itemList)
         binding.calendarRecyclerView.apply {

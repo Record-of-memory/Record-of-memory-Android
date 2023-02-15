@@ -26,6 +26,7 @@ interface SignUpRetrofitInterface {
     ) : Call<BaseResponse>
 
     //이메일로 유저 확인(토큰 필요)
+
     @GET("/api/users")
     fun getUserEmailCheck(
         @Query("email") email : String,
@@ -37,4 +38,5 @@ interface SignUpRetrofitInterface {
     fun getUserEmailCheckNoToken(
         @Path("email") email : String
     ): Call<UserEmailCheckNoTokenResponse>
+
 }

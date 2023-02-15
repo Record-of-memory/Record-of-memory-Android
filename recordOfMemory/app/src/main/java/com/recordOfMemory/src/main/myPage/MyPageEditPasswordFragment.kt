@@ -19,6 +19,7 @@ import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
+
 import com.recordOfMemory.src.splash.SplashActivity
 import java.util.regex.Pattern
 
@@ -111,12 +112,7 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 		Log.d("성공","${response.information.message}")
 		//화면 전환
 		val fm = requireActivity().supportFragmentManager
-		val transaction: FragmentTransaction = fm.beginTransaction()
-		fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-		transaction
-			.replace(R.id.main_frm, myPageEditFragment) //수정 화면으로 가게
-			.commitAllowingStateLoss()
-		transaction.isAddToBackStackAllowed
+		fm.popBackStack()
 	}
 
 	override fun onPostChangePasswordFailure(message: String) {
@@ -153,5 +149,4 @@ class MyPageEditPasswordFragment() : BaseFragment<FragmentMyPageEditPasswordBind
 		requireActivity().finishAffinity()
 		startActivity(intent)
     }
-
 }

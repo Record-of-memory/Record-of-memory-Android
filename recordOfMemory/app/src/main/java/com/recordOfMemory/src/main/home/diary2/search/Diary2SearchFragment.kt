@@ -88,4 +88,13 @@ class Diary2SearchFragment() : BaseFragment<FragmentDiary2SearchBinding>(Fragmen
             binding.diary2SearchEmpty.isVisible = true
         }
     }
+
+    fun <T : Parcelable> Bundle.parcelableArrayList(key: String): ArrayList<T>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            getParcelableArrayList(key)
+        } else {
+            @Suppress("DEPRECATION")
+            getParcelableArrayList(key)
+        }
+    }
 }

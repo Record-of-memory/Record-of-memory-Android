@@ -5,6 +5,8 @@ import com.recordOfMemory.src.daybook.retrofit.models.GetDaybookResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PatchDaybookResponse
 
 interface DaybookInterface {
+    fun onPostRecordSuccess(response: BaseResponse)
+    fun onPostRecordFailure(response: String)
 	fun onDeleteDaybookSuccess(response: PatchDaybookResponse)
 	fun onDeleteDaybookFailure(message: String)
 

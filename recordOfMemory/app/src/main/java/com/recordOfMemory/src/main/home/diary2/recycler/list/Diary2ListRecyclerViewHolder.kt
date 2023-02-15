@@ -23,7 +23,6 @@ class Diary2ListRecyclerViewHolder(val context: Context, itemView: View)
     val itemComments = itemView.findViewById<TextView>(R.id.item_diary2_list_tv_comments)
     val userImg = itemView.findViewById<ImageView>(R.id.item_diary2_list_iv_user_img)
 
-
     fun bindWithView(item: GetMemberRecordResponse) {
         Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)

@@ -33,6 +33,7 @@ import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewAdapter
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Interface
+
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersResponse
@@ -97,11 +98,19 @@ Diary2Interface, GetRefreshTokenInterface{
         diaryId = requireArguments().getString("diaryId").toString()
         binding.diary2TvTitle.text = name
 
-
         val fm = requireActivity().supportFragmentManager
         val transaction: FragmentTransaction = fm.beginTransaction()
 
         super.onViewCreated(view, savedInstanceState)
+
+//        // 토큰 저장
+//        val editor = ApplicationClass.sSharedPreferences.edit()
+//        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.accessToken)
+//        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.refreshToken)
+//        editor.apply()
+//
+//        // 토큰 불러오기
+//        val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN)
 
         binding.diary2IvSearch.setOnClickListener {
             val bundle = Bundle()
@@ -142,6 +151,9 @@ Diary2Interface, GetRefreshTokenInterface{
             }
         }
         binding.diary2IvGrid.setOnClickListener {
+            gridItemList.add(Diary2GridOutViewModel("구리", listItemList))
+            gridItemList.add(Diary2GridOutViewModel("나나", listItemList))
+
             Log.e("grid isChecked", binding.diary2IvGrid.isChecked.toString())
             if(binding.diary2IvGrid.isChecked) {
                 binding.diary2IvGrid.isChecked = true
@@ -407,5 +419,62 @@ Diary2Interface, GetRefreshTokenInterface{
         }
         customDialog.show()
     }
+    override fun onGetRecordsSuccess(response: GetRecordsResponse) {
+        dismissLoadingDialog()
+        listItemList = response.information
+        // list
+        if(stateFlag) {
+            val diary2LayoutManager = LinearLayoutManager(context)
+            val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
+            binding.diary2RecyclerView.apply {
+                layoutManager = diary2LayoutManager
+                adapter = diary2RecyclerVIewAdapter
+            }
+        }
 
+        // grid
+        else {
+            val diary2LayoutManager = LinearLayoutManager(context)
+            val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, gridItemList)
+            binding.diary2RecyclerView.apply {
+                layoutManager = diary2LayoutManager
+                adapter = diary2RecyclerVIewAdapter
+            }
+
+        }
+    }
+
+    // 토큰 갱신 필요 시 토큰 갱신으로 이동
+    override fun onGetRecordsFailure(message: String) {
+        if(message == "refreshToken") {
+            val X_REFRESH_TOKEN =
+                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
+                    .toString()
+
+            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+
+        }
+        // 토큰 갱신 문제가 아닐 경우
+        else {
+            //TODO
+        }
+   }
+
+    // 통신 시도 -> 토큰이 유효 X -> 토큰 갱신 O -> 통신 재시도
+
+    override fun onPostRefreshSuccess(response: TokenResponse) {
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+        editor.apply()
+
+        when(statusCode) {
+            1000 -> Diary2Service(this).tryGetRecords(request as String)
+        }
+    }
+
+    // refreshToken 갱신 실패 로그인으로 이동한다.
+    override fun onPostRefreshFailure(message: String) {
+        TODO("Not yet implemented")
+    }
 }

@@ -12,6 +12,7 @@ import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.search.retrofit.Diary2SearchInterface
 
 class Diary2SearchRecyclerViewAdapter(val diary2SearchInterface: Diary2SearchInterface, var items: Diary2SearchFragment.itemListAdapterToList, itemList: ArrayList<GetMemberRecordResponse>)
+
     : RecyclerView.Adapter<Diary2ListRecyclerViewHolder>(), Filterable { init{
     setHasStableIds(true)
     }

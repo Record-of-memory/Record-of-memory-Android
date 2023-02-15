@@ -16,6 +16,7 @@ interface Diary2RetrofitInterface {
         @Body params: PostDiary2InviteRequest
     ) : Call<BaseResponse>
 
+
     // 이메일로 유저 조회
     @GET("/api/users")
     fun getUserEmail(

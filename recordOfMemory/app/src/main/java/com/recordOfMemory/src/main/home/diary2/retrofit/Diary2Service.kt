@@ -6,6 +6,7 @@ import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2Invi
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersResponse
+
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import retrofit2.Call
 import retrofit2.Callback
