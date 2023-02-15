@@ -52,6 +52,7 @@ class OnboardingFragment1 : Fragment(), DiaryFragmentInterface {
 
         //다음 누르면
         viewBinding.nextBtn.setOnClickListener {
+            mainActivity!!.setString("content", viewBinding.editRecordContent.text.toString())
             mainActivity!!.openFragmentOnOnboarding(2)
         }
         //건너뛰기 누르면

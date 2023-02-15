@@ -10,6 +10,7 @@ import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutRequest
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,7 +48,8 @@ class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
 		})
 	}
 
-	fun tryPatchUsers(profileImg : MultipartBody.Part?, nickname : String){
+	fun tryPatchUsers(profileImg : MultipartBody.Part?, nickname : RequestBody){
+		println("profileImg: $profileImg")
 		myPageEditRetrofitInterface.patchUsers(Authorization = X_ACCESS_TOKEN, profileImg = profileImg, nickname = nickname).enqueue(object : Callback<BaseResponse> {
 			override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
 				if(response.isSuccessful){

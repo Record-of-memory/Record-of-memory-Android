@@ -49,6 +49,7 @@ class OnboardingFragment3 : Fragment() {
         }
         //다음 누르면
         viewBinding.nextBtn.setOnClickListener {
+            mainActivity!!.setString("diaryName", viewBinding.editDiaryName.text.toString())
             mainActivity!!.openFragmentOnOnboarding(4)
         }
     }

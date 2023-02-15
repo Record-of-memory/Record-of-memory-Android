@@ -2,6 +2,7 @@ package com.recordOfMemory.src.main.myPage
 
 import android.Manifest
 import android.app.Dialog
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -37,8 +38,14 @@ import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.File
 import java.io.IOException
+import java.util.*
 
 
 class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPageEditBinding::bind, R.layout.fragment_my_page_edit),MyPageEditInterface,
@@ -57,6 +64,8 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 	var statusCode = 1201
 	var request : Any = ""
 	var nickname = ""
+	var imgUrl : MultipartBody.Part? = null
+
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
@@ -85,19 +94,21 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		}
 
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
-			if(!(checkName() && changeImg)){ //이름과 이미지 중에 바뀐 것이 있으면
+//			if(!(checkName() && changeImg)){ //이름과 이미지 중에 바뀐 것이 있으면
 				//저장하고
 				nickname = binding.mypageEditBoxName.text.toString()
 
-			}
-			
+//			}
+
+			println("imgUrl: ${imgUrl!!.body}")
+			println("nickname: $nickname")
+
+			val jsonObject = JSONObject(
+				"{\"nickname\":\"${nickname}\"}").toString()
+			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
+
 			// 마이페이지로 넘어가기
-			fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-			transaction
-				.replace(R.id.main_frm, myPageFragment)
-				.addToBackStack(null) //주석으로 하면, mypage돌아갔을 때 뒤로가기 시 바로 끝
-				.commit()
-			transaction.isAddToBackStackAllowed
+			MyPageEditService(this).tryPatchUsers(imgUrl, jsonBody)
 		}
 
 
@@ -188,12 +199,29 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 	private val galleryLauncher: ActivityResultLauncher<Intent> =
 		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
 			if (it.resultCode == AppCompatActivity.RESULT_OK && it.data!=null){
-				val contentURI= it.data!!.data
+				val contentURI= it.data!!.data!!
 				try{
 //					val selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,contentURI )  //아직까진 굴러감
 //					binding.daybookWritingImage.setImageBitmap(selectedImageBitmap) //아직까진 굴러감. 그냥 아래꺼 쓸까..
 					binding.mypageEditPersonImg.setImageURI(contentURI)
 					changeImg=true// 이미지가 새것인지 체크
+
+					val filePath = getFilePath(contentURI)
+
+					// Get the image file
+					val file = File(filePath)
+					println("content uri $contentURI")
+					println("file Path $filePath")
+					println("file $file")
+					val requestFile =
+						file.asRequestBody("image/*".toMediaTypeOrNull())
+
+					imgUrl = requestFile.let{ it1->
+						MultipartBody.Part.createFormData("img", file.name,
+							it1
+						)
+					}
+						println("imgUrl: $imgUrl")
 				}catch (e: IOException){
 					e.printStackTrace()
 					Toast.makeText(context, "Failed to load image from gallery", Toast.LENGTH_SHORT).show()
@@ -202,15 +230,64 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		}
 
 	private val cameraLauncher: ActivityResultLauncher<Intent> =
-		registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-			if (it.resultCode == AppCompatActivity.RESULT_OK && it.data!=null){
+		registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+			if (it.resultCode == AppCompatActivity.RESULT_OK && it.data != null) {
 				try {
-					val thumbNail: Bitmap = it!!.data!!.extras?.get("data") as Bitmap
+					val img = it!!.data!!.extras?.get("data") as Bitmap
+
+					val contentValues = ContentValues().apply {
+						put(
+							MediaStore.Images.Media.DISPLAY_NAME,
+							"IMG - ${Calendar.getInstance().time}"
+						)
+						put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+						put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+						put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+					}
+
+					val contentURI = requireActivity().contentResolver.insert(
+						MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+						contentValues
+					)
+
+					if (contentURI != null) {
+						try {
+							requireActivity().contentResolver.openOutputStream(contentURI)
+								.use { outputStream ->
+									img.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+								}
+
+							val filePath = getFilePath(contentURI)
+							println("filePath: $filePath")
+
+							// do something with the file path here
+
+							// Get the image file
+							val file = File(filePath)
+							println("file Path $filePath")
+							println("file $file")
+							val requestFile =
+								file.asRequestBody("image/*".toMediaTypeOrNull())
+
+							imgUrl = MultipartBody.Part.createFormData(
+								"img", file.name,
+								requestFile
+							)
+						} catch (e: Exception) {
+							e.printStackTrace()
+							Toast.makeText(
+								context,
+								"Failed to take photo from Camera",
+								Toast.LENGTH_SHORT
+							).show()
+						}
+					}
+					val thumbNail: Bitmap = it.data!!.extras?.get("data") as Bitmap
 					binding.mypageEditPersonImg.setImageBitmap(thumbNail) // 이미지 연결
-					changeImg=true // 이미지가 새것인지 체크
+					changeImg = true // 이미지가 새것인지 체크
 				} catch (e: IOException) {
 					e.printStackTrace()
-					Toast.makeText(context, "Failed to take photo from Camera", Toast.LENGTH_SHORT).show()
+					showCustomToast("Failed to take photo from Camera")
 				}
 			}
 		}
@@ -251,7 +328,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		return if(userNewName.isEmpty()){
 			false
 		}else{
-			Toast.makeText(context,"$userNewName",Toast.LENGTH_SHORT).show()
+//			Toast.makeText(context,"$userNewName",Toast.LENGTH_SHORT).show()
 			//데이터 저장하기
 
 			true
@@ -277,11 +354,23 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 	}
 
 	override fun onPatchUsersSuccess(response: BaseResponse) {
-		TODO("Not yet implemented")
+		val fm = requireActivity().supportFragmentManager
+		val transaction: FragmentTransaction = fm.beginTransaction()
+
+		fm.popBackStack()
+
 	}
 
 	override fun onPatchUsersFailure(message: String) {
-		TODO("Not yet implemented")
+		if(message == "refreshToken") {
+			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+		}
+		// 토큰 갱신 문제가 아닐 경우
+		else {
+			Log.d("실패",message)
+			Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+		}
 	}
 
 	override fun onPostRefreshSuccess(response: TokenResponse) {
@@ -307,4 +396,16 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		startActivity(intent)
     }
 
+	private fun getFilePath(contentUri: Uri): String {
+		val cursor = requireActivity().contentResolver.query(contentUri, arrayOf(MediaStore.Images.Media.DATA), null, null, null)
+
+		cursor?.use {
+			if (it.moveToFirst()) {
+				val columnIndex = it.getColumnIndex(MediaStore.Images.Media.DATA)
+				return it.getString(columnIndex)
+			}
+		}
+
+		return ""
+	}
 }

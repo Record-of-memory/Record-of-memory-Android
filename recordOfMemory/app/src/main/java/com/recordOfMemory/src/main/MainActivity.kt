@@ -13,16 +13,32 @@ import androidx.core.view.isVisible
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseActivity
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityMainBinding
+import com.recordOfMemory.src.daybook.retrofit.DaybookService
+import com.recordOfMemory.src.daybook.retrofit.DaybookWritingInterface
 import com.recordOfMemory.src.main.calendar.CalendarFragment
+import com.recordOfMemory.src.main.home.diary.DiaryFragmentInterface
 import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
+import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
+import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
+import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
+import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.MyPageFragment
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment1
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment2
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment3
 import com.recordOfMemory.src.main.onboarding.OnboardingFragment4
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
-class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate),
+    DiaryFragmentInterface, DaybookWritingInterface {
 
     //https://sbe03005dev.tistory.com/entry/Android-Kotlin-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EC%BD%94%ED%8B%80%EB%A6%B0-Fragment-%EC%83%81%ED%83%9C-%EC%9C%A0%EC%A7%80
     //replace 대신 add, show, hide
@@ -31,6 +47,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private var fragment2 = OnboardingFragment2()
     private var fragment3 = OnboardingFragment3()
     private var fragment4 = OnboardingFragment4()
+    var title = ""
+    var content = ""
+    var diaryName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +74,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     // 온보딩 fragment 바꾸는 메소드
-    fun openFragmentOnOnboarding(int: Int){
+    fun openFragmentOnOnboarding(int: Int) {
         val transaction = supportFragmentManager.beginTransaction()
         when(int){
             1 -> transaction.replace(binding.onboardingFrm.id, fragment1).addToBackStack(null)
@@ -129,5 +148,63 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+    fun setString(key : String, value : String) {
+        if(key == "title") {
+            title = value
+        }
+        else if(key == "content") {
+            content = value
+        }
+        else if(key == "diaryName") {
+            diaryName = value
+        }
+    }
+    fun makeDiaryAndRecord() {
+        var newItem = PostDiariesRequest(name = diaryName, diaryType= "ALONE")
+        DiaryService(this).tryPostDiaries(newItem)
+    }
+
+    override fun onGetDiariesSuccess(response: GetDiariesResponse) {
+        val diaryId = response.information[0].id
+        val jsonObject = JSONObject(
+            "{" +
+                    "\"diaryId\":\"${diaryId}\"," +
+                    "\"date\":\"${LocalDate.now()}\"," +
+                    "\"title\":\"$title\"," +
+                    "\"content\":\"$content\"" +
+                    "}").toString()
+        val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
+
+        DaybookService(daybookWritingInterface = this).tryPostRecord(writeRecordReq = jsonBody, imgUrl = null)
+    }
+
+    override fun onGetDiariesFailure(message: String) {
+    }
+
+    override fun onPostDiariesSuccess(response: BaseResponse) {
+        DiaryService(this).tryGetDiaries()
+    }
+
+    override fun onPostDiariesFailure(message: String) {
+    }
+
+    override fun onGetUsersSuccess(response: GetUsersResponse) {
+    }
+
+    override fun onGetUsersFailure(message: String) {
+    }
+
+    override fun onPatchRecordSuccess(response: BaseResponse) {
+    }
+
+    override fun onPatchRecordFailure(message: String) {
+    }
+
+    override fun onPostRecordSuccess(response: BaseResponse) {
+        startMainFrame()
+    }
+
+    override fun onPostRecordFailure(response: String) {
     }
 }

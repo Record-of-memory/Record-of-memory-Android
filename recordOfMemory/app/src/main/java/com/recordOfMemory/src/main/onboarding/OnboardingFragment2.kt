@@ -11,10 +11,17 @@ import androidx.fragment.app.Fragment
 import com.recordOfMemory.databinding.FragmentOnboarding2Binding
 import com.recordOfMemory.src.main.MainActivity
 
-class OnboardingFragment2 : Fragment() {
+class OnboardingFragment2() : Fragment() {
     private lateinit var viewBinding: FragmentOnboarding2Binding
 
     var mainActivity: MainActivity? = null
+    private lateinit var key: String
+    private lateinit var value: String
+
+    constructor(key: String, value: String) : this() {
+        this.key = key
+        this.value = value
+    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -49,6 +56,7 @@ class OnboardingFragment2 : Fragment() {
         }
         //다음 누르면
         viewBinding.nextBtn.setOnClickListener {
+            mainActivity!!.setString("title", viewBinding.editRecordTitle.text.toString())
             mainActivity!!.openFragmentOnOnboarding(3)
         }
     }
