@@ -31,7 +31,7 @@ import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import java.util.regex.Pattern
 
-class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::bind, R.layout.fragment_login),
+class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::bind, R.layout.fragment_sign_up_email),
     SignUpFragmentInterface {
     private lateinit var viewBinding: FragmentSignUpEmailBinding
     //이메일 검사 정규식
@@ -73,10 +73,11 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
         viewBinding.nextBtn.setOnClickListener {
             if (checkEmail()) {
                 val email = viewBinding.editEmail.text.toString()
+                showLoadingDialog(requireContext())
+
                 Log.d("입력받은 이메일",email)
                 SignUpService(this).tryGetUserEmailNoTokenCheck(email)
 
-//                signUpCheckDialogFunction()
             } else {
                 Toast.makeText(activity, "이메일 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
             }
@@ -126,18 +127,19 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
 
     //입력한 이메일로 가입할건지 물어보는 메소드
     private fun signUpCheckDialogFunction(){
-        val logoutDialog = Dialog(requireContext())
-        logoutDialog.setContentView(R.layout.dialog_custom5)
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dismissLoadingDialog()
+        val signUpCheckDialog = Dialog(requireContext())
+        signUpCheckDialog.setContentView(R.layout.dialog_custom5)
+        signUpCheckDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        logoutDialog.findViewById<TextView>(R.id.dialog5_btn_cancel).setOnClickListener {
+        signUpCheckDialog.findViewById<TextView>(R.id.dialog5_btn_cancel).setOnClickListener {
             // dialog 내림
-            logoutDialog.dismiss()
+            signUpCheckDialog.dismiss()
         }
 
-        val logoutBtn=logoutDialog.findViewById<TextView>(R.id.dialog5_btn_access)
+        val logoutBtn=signUpCheckDialog.findViewById<TextView>(R.id.dialog5_btn_access)
         logoutBtn.setOnClickListener {
-            logoutDialog.dismiss()
+            signUpCheckDialog.dismiss()
 
             val bundle = Bundle()
             bundle.putString("email", viewBinding.editEmail.text.toString())
@@ -153,12 +155,12 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
                 .commit()
             transaction.isAddToBackStackAllowed
         }
-
-        logoutDialog.show()
+        signUpCheckDialog.show()
     }
 
     //입력한 이메일이 이미 가입된 이메일임을 보여주는 메소드
     private fun alreadySignUpDialogFunction(){
+        dismissLoadingDialog()
         val logoutDialog = Dialog(requireContext())
         logoutDialog.setContentView(R.layout.dialog_custom2)
         logoutDialog.findViewById<TextView>(R.id.dialog2_title).text = "이미 존재하는 메일 주소입니다.\n다시 시도해주세요."
@@ -193,18 +195,21 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
 
     //중복됨
     override fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse) {
+
         Log.d("이메일 중복확인", "중복됨")
         alreadySignUpDialogFunction()
     }
 
     //중복 없음
     override fun onGetUserEmailCheckNoTokenNotExist(message: String) {
+
         Log.d("이메일 중복확인", "중복없음")
         signUpCheckDialogFunction()
     }
 
     //통신실패
     override fun onGetUserEmailCheckNoTokenFailure(message: String) {
+        dismissLoadingDialog()
         Log.d("이메일 중복확인", "오류")
     }
 }
