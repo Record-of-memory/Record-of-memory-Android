@@ -55,6 +55,7 @@ class SignUpService() {
         })
     }
 
+    //로그인
     fun tryPostSignIn(postSignInRequest: PostSignInRequest){
         val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
         signUpRetrofitInterface.postSignIn(postSignInRequest).enqueue(object :
