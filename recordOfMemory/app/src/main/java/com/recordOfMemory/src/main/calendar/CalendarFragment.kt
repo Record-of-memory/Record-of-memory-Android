@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.*
@@ -19,10 +20,10 @@ import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.databinding.FragmentCalendarBinding
 import com.recordOfMemory.databinding.CalendarDayContainerBinding
 import com.recordOfMemory.src.daybook.DaybookActivity
+import com.recordOfMemory.src.main.calendar.recycler.CalendarOutRecyclerViewAdapter
 import com.recordOfMemory.src.main.calendar.recycler.CalendarRecyclerViewAdapter
 import com.recordOfMemory.src.main.calendar.retrofit.CalendarInterface
 import com.recordOfMemory.src.main.calendar.retrofit.CalendarService
-import com.recordOfMemory.src.main.calendar.retrofit.models.DiaryName
 import com.recordOfMemory.src.main.calendar.retrofit.models.GetCalendarDiariesRequest
 import com.recordOfMemory.src.main.calendar.retrofit.models.GetCalendarDiariesResponse
 import com.recordOfMemory.src.main.calendar.retrofit.models.Record
@@ -43,14 +44,10 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
 
     private val monthCalendarView: CalendarView get() = binding.calendarDays
 
-    private var selectedDate :LocalDate ?= null
-    private val today = LocalDate.now()
+    private var selectedDate :LocalDate ?= LocalDate.now()
 //    lateinit var diary2RecyclerViewAdapter : CalendarRecyclerViewAdapter
     var statusCode = 1000
     var request : Any = ""
-
-    private lateinit var itemDecoration: StickyHeaderItemDecoration
-
 
     inner class itemListAdapterToList {
         // 일기 open function
@@ -59,7 +56,8 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
             println(item)
             startActivity(
                 Intent(activity, DaybookActivity::class.java)
-                .putExtra("item", item as java.io.Serializable))
+                .putExtra("item", item as java.io.Serializable)
+                .putExtra("recordId", item.id))
         }
     }
 
@@ -152,10 +150,10 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
                     textView.setTextColorRes(R.color.colorPrimary)
                     textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                 }
-                today == date -> {  //오늘
-                    textView.setTextColorRes(R.color.colorPrimary)
-                    textView.setBackgroundResource(R.drawable.calendar_today_bg)
-                }
+//                today == date -> {  //오늘
+//                    textView.setTextColorRes(R.color.colorPrimary)
+//                    textView.setBackgroundResource(R.drawable.calendar_today_bg)
+//                }
                 else -> { //그 이외의 선택 가능한 날
                     textView.setTextColorRes(R.color.black)
                     textView.background = null
@@ -168,9 +166,7 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
     }
 
     private fun dateClicked(date: LocalDate) {
-        if (selectedDate == date ) { //원래 선택했던 것이라면 취소
-            selectedDate = null
-        } else { //그게 아니라면 항상 새로 선택한 것으로 추가
+        if (selectedDate != date ) { //원래 선택했던 것이라면 취소
             selectedDate = date
             // LocalDate 파싱
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -216,30 +212,21 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
 
     override fun onGetRecordsDateSuccess(getCalendarDiariesResponse: GetCalendarDiariesResponse) {
         dismissLoadingDialog()
-        val diaryNameList = ArrayList<DiaryName>()
-        val recordList = ArrayList<Record>()
-        for(response in getCalendarDiariesResponse.information) {
-            println(response)
-            diaryNameList.add(DiaryName(diaryId = response.diaryId, diaryName = response.diaryName))
-            recordList += response.records
-        }
+        val calendarRecordsList = getCalendarDiariesResponse.information
 
-        println("recordList: $recordList")
+        binding.calendarRecyclerView.isVisible = true
+
+        println("calendarRecordsList: $calendarRecordsList")
 
         // recycler view 연결
         val items = itemListAdapterToList()
-        val diary2LayoutManager = LinearLayoutManager(context)
+        val calendarLayoutManager = LinearLayoutManager(context)
 
-        val itemDecoration = StickyHeaderItemDecoration(requireContext()) {
-            diaryNameList
-        }
-
-        val diary2RecyclerViewAdapter = CalendarRecyclerViewAdapter(items, recordList)
-        binding.calendarRecyclerView.adapter = diary2RecyclerViewAdapter
+        val calendarOutRecyclerViewAdapter = CalendarOutRecyclerViewAdapter(items, calendarRecordsList)
+        binding.calendarRecyclerView.adapter = calendarOutRecyclerViewAdapter
         binding.calendarRecyclerView.apply {
-            layoutManager = diary2LayoutManager
-            adapter = diary2RecyclerViewAdapter
-            addItemDecoration(itemDecoration)
+            layoutManager = calendarLayoutManager
+            adapter = calendarOutRecyclerViewAdapter
         }
     }
 
@@ -254,6 +241,8 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         else {
             Log.d("실패",message)
             showCustomToast(message)
+
+            binding.calendarRecyclerView.isVisible = false
         }
     }
 

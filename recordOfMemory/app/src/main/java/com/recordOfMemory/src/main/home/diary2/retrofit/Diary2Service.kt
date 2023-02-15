@@ -1,7 +1,9 @@
 package com.recordOfMemory.src.main.home.diary2.retrofit
 
+import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseResponse
+import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
@@ -11,6 +13,7 @@ import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsRespons
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class Diary2Service() {
     lateinit var diary2Interface: Diary2Interface
@@ -41,6 +44,16 @@ class Diary2Service() {
                 else if(response.code() == 401) {
                     diary2InviteInterface.onPostDiary2InviteFailure("refreshToken")
                 }
+                else {
+                    // error body 가져오는 코드 필요함
+                    val gson = GsonBuilder().create()
+                    val error = gson.fromJson(
+                        response.errorBody()!!.string(),
+                        ErrorResponse::class.java
+                    )
+                    // 로그인 실패 에러 메시지
+                    diary2InviteInterface.onPostDiary2InviteFailure(error.information.message.split(": ")[1].split("\"")[0])
+                }
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
@@ -58,6 +71,23 @@ class Diary2Service() {
                 }
                 else if(response.code() == 401) {
                     diary2InviteInterface.onGetUSerEmailFailure("refreshToken")
+                }
+                // error body 가져오는 코드 필요함
+                val gson = GsonBuilder().create()
+                try {
+                    val error = gson.fromJson(
+                        response.errorBody()!!.string(),
+                        ErrorResponse::class.java
+                    )
+                    // 로그인 실패 에러 메시지
+                    diary2InviteInterface.onGetUSerEmailFailure(
+                        error.information.message.split(": ")[1].split(
+                            "\""
+                        )[0]
+                    )
+                } catch (e: IOException) {
+                    // 통신 오류 에러 메시지
+                    diary2InviteInterface.onGetUSerEmailFailure(e.message ?: "통신 오류")
                 }
             }
 

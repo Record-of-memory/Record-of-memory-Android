@@ -134,7 +134,8 @@
             android:layout_marginHorizontal="30dp"
             android:paddingHorizontal="0dp"
             android:background="@android:color/transparent"
-            android:textSize="11dp"
+            android:textSize="11sp"
+            android:textColorHint="@color/brownGray"
             android:fontFamily="@font/noto_sans_regular"
             android:textColor="@color/black"
             android:maxLength="10"/>

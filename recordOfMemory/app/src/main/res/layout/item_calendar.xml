@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <TextView
+            android:id="@+id/item_calendar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="@font/noto_sans_bold"
+            android:textColor="@color/green4"
+            android:includeFontPadding="false"
+            android:layout_marginBottom="10dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_calendar_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

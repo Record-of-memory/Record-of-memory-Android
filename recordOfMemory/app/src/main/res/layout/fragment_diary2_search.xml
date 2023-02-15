@@ -24,6 +24,7 @@
         android:layout_marginTop="32dp"
         android:hint="@string/diary2_search_et"
         android:textSize="11sp"
+        android:textColorHint="@color/brownGray"
         android:maxLines="1"
         android:lines="1"
         android:imeOptions="actionSearch"

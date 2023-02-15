@@ -41,31 +41,4 @@ class Diary2GridRecyclerOutViewAdapter(var items: Diary2Fragment.itemListAdapter
     override fun getItemCount(): Int {
         return itemList.size
     }
-
-//    override fun getFilter(): Filter {
-//        return object : Filter() {
-//            override fun performFiltering(constraint: CharSequence?): FilterResults {
-//                val charString = constraint.toString()
-//                filteredList = if (charString.isEmpty()) {
-//                    unFilteredList
-//                } else {
-//                    val filteringList = ArrayList<GetDiary2Response>()
-//                    for (item in unFilteredList) {
-//                        if (item.category == charString) filteringList.add(item)
-//                    }
-//                    filteringList
-//                }
-//                val filterResults = FilterResults()
-//                filterResults.values = filteredList
-//
-//                return filterResults
-//            }
-//
-//            override fun publishResults(constraint: CharSequence, results: FilterResults) {
-//                filteredList = results.values as ArrayList<*>
-//                notifyDataSetChanged()
-//            }
-//        }
-//
-//    }
 }

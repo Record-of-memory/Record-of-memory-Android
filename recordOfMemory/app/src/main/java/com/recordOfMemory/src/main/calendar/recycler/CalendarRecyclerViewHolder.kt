@@ -25,7 +25,8 @@ class CalendarRecyclerViewHolder(val context: Context, itemView: View)
 
 
     fun bindWithView(item: Record) {
-        Glide.with(itemView).load(item.imgURL)
+        println("item: ${item}")
+        Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)
         itemImg.clipToOutline = true
         itemTitle.text = item.title
@@ -38,10 +39,10 @@ class CalendarRecyclerViewHolder(val context: Context, itemView: View)
         val dayOfWeek = getDayOfWeek(dateTime.dayOfWeek)
         itemDate.text = "$date ($dayOfWeek)"
 
-        if(item.user.imageURL.isNullOrEmpty()){
+        if(item.user.imageUrl.isNullOrEmpty()){
             userImg.setImageResource(R.drawable.icn_person)
         }else{
-            Glide.with(itemView).load(item.user.imageURL)
+            Glide.with(itemView).load(item.user.imageUrl)
                 .into(userImg)
         }
 

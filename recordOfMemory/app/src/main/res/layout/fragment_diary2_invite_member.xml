@@ -38,6 +38,7 @@
         android:hint="@string/diary2_invite_et_input_email"
         android:fontFamily="@font/noto_sans_regular"
         android:includeFontPadding="false"
+        android:textColorHint="@color/brownGray"
         android:textSize="11sp"
         android:maxLines="1"
         android:textColor="@color/black"

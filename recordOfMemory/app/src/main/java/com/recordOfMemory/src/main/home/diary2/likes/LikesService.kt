@@ -1,10 +1,13 @@
 package com.recordOfMemory.src.main.home.diary2.likes
 
 import android.util.Log
+import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.ErrorResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class LikesService(val likesInterface: LikesInterface) {
         val token = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, null)
@@ -20,6 +23,25 @@ class LikesService(val likesInterface: LikesInterface) {
                 }
                 else if(response.code() == 401) {
                     likesInterface.onPostLikesFailure("refreshToken")
+                }
+                else {
+                    // error body 가져오는 코드 필요함
+                    val gson = GsonBuilder().create()
+                    try {
+                        val error = gson.fromJson(
+                            response.errorBody()!!.string(),
+                            ErrorResponse::class.java
+                        )
+                        // 로그인 실패 에러 메시지
+                        likesInterface.onPostLikesFailure(
+                            error.information.message.split(": ")[1].split(
+                                "\""
+                            )[0]
+                        )
+                    } catch (e: IOException) {
+                        // 통신 오류 에러 메시지
+                        likesInterface.onPostLikesFailure(e.message ?: "통신 오류")
+                    }
                 }
             }
 
@@ -39,6 +61,25 @@ class LikesService(val likesInterface: LikesInterface) {
                 else if(response.code() == 401) {
                     likesInterface.onDeleteLikesFailure("refreshToken")
                 }
+                else {
+                    // error body 가져오는 코드 필요함
+                    val gson = GsonBuilder().create()
+                    try {
+                        val error = gson.fromJson(
+                            response.errorBody()!!.string(),
+                            ErrorResponse::class.java
+                        )
+                        // 로그인 실패 에러 메시지
+                        likesInterface.onPostLikesFailure(
+                            error.information.message.split(": ")[1].split(
+                                "\""
+                            )[0]
+                        )
+                    } catch (e: IOException) {
+                        // 통신 오류 에러 메시지
+                        likesInterface.onPostLikesFailure(e.message ?: "통신 오류")
+                    }
+                }
             }
 
             override fun onFailure(call: Call<LikesResponse>, t: Throwable) {
@@ -56,6 +97,25 @@ class LikesService(val likesInterface: LikesInterface) {
                 }
                 else if(response.code() == 401) {
                     likesInterface.onCheckLikesFailure("refreshToken")
+                }
+                else {
+                    // error body 가져오는 코드 필요함
+                    val gson = GsonBuilder().create()
+                    try {
+                        val error = gson.fromJson(
+                            response.errorBody()!!.string(),
+                            ErrorResponse::class.java
+                        )
+                        // 로그인 실패 에러 메시지
+                        likesInterface.onPostLikesFailure(
+                            error.information.message.split(": ")[1].split(
+                                "\""
+                            )[0]
+                        )
+                    } catch (e: IOException) {
+                        // 통신 오류 에러 메시지
+                        likesInterface.onPostLikesFailure(e.message ?: "통신 오류")
+                    }
                 }
             }
 
