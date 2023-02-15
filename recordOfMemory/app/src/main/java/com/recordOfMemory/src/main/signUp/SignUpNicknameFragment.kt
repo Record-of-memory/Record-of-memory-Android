@@ -104,10 +104,12 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
             Log.d("**", password)
         }
 //        // 자동 로그인
-//        val postSignInRequest = PostSignInRequest(email.toString(), password.toString())
-//        SignUpService(this).tryPostSignIn(postSignInRequest)
+        showLoadingDialog(requireContext())
+        val postSignInRequest = PostSignInRequest(email.toString(), password.toString())
+        println("postSignInRequest : $postSignInRequest")
+        SignUpService(this).tryPostSignIn(postSignInRequest)
         // 화면 넘어가기
-        signUpActivity!!.openNextActivity()
+//        signUpActivity!!.openNextActivity()
     }
 
     override fun onPostSignUpFailure(message: String) {

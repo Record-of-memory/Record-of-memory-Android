@@ -31,7 +31,6 @@ class SignUpService() {
                 Log.d("api연결", "회원가입")
                 if (response.code() == 201) {
                     signUpFragmentInterface.onPostSignUpSuccess(response.body() as BaseResponse)
-                    tryPostSignIn(PostSignInRequest(postSignUpRequest.email, postSignUpRequest.password))
                 } else if (response.code() == 400) {
                     signUpFragmentInterface.onPostSignInFailure("회원가입 실패")
                 } else {
