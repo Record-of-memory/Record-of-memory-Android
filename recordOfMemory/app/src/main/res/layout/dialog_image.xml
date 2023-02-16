@@ -15,7 +15,7 @@
         android:maxHeight="632dp"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:src="@drawable/ex_img"
+        tools:src="@drawable/ex_img"
         android:background="@drawable/daybook_image_background"
         android:padding="1dp"
         app:layout_constraintTop_toTopOf="parent"
