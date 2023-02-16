@@ -80,6 +80,9 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         setupMonthCalendar(startMonth, endMonth, currentMonth, daysOfWeek) //다음달로 스크롤 가능
 
         setMonthChangeBtn()
+        showLoadingDialog(requireContext())
+        val getCalendarDiariesRequest = GetCalendarDiariesRequest(date = selectedDate.toString())
+        CalendarService(this).tryGetRecordsDate(getCalendarDiariesRequest)
 //<<<<<<< Updated upstream
 //
 //        // recycler view 연결
