@@ -22,6 +22,6 @@ interface MyPageEditRetrofitInterface {
 	fun patchUsers(
 		@Header("Authorization") Authorization: String,
 		@Part profileImg: MultipartBody.Part?,
-		@Part("nickname") nickname: RequestBody
+		@Part("nickname") nickname: String
 	): Call<BaseResponse>
 }

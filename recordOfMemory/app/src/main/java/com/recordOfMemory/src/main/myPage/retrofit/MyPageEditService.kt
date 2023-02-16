@@ -48,7 +48,7 @@ class MyPageEditService(val myPageEditInterface: MyPageEditInterface) {
 		})
 	}
 
-	fun tryPatchUsers(profileImg : MultipartBody.Part?, nickname : RequestBody){
+	fun tryPatchUsers(profileImg : MultipartBody.Part?, nickname : String){
 		println("profileImg: $profileImg")
 		myPageEditRetrofitInterface.patchUsers(Authorization = X_ACCESS_TOKEN, profileImg = profileImg, nickname = nickname).enqueue(object : Callback<BaseResponse> {
 			override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {

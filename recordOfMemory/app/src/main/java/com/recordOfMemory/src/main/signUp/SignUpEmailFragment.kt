@@ -127,7 +127,6 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
 
     //입력한 이메일로 가입할건지 물어보는 메소드
     private fun signUpCheckDialogFunction(){
-        dismissLoadingDialog()
         val signUpCheckDialog = Dialog(requireContext())
         signUpCheckDialog.setContentView(R.layout.dialog_custom5)
         signUpCheckDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

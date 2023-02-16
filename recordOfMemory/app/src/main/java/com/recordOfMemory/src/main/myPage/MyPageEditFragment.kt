@@ -103,12 +103,12 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 			println("imgUrl: ${imgUrl!!.body}")
 			println("nickname: $nickname")
 
-			val jsonObject = JSONObject(
-				"{\"nickname\":\"${nickname}\"}").toString()
-			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
+//			val jsonObject = JSONObject(
+//			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
+//				"{\"nickname\":\"${nickname}\"}").toString()
 
 			// 마이페이지로 넘어가기
-			MyPageEditService(this).tryPatchUsers(imgUrl, jsonBody)
+			MyPageEditService(this).tryPatchUsers(imgUrl, nickname)
 		}
 
 
@@ -217,7 +217,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 						file.asRequestBody("image/*".toMediaTypeOrNull())
 
 					imgUrl = requestFile.let{ it1->
-						MultipartBody.Part.createFormData("img", file.name,
+						MultipartBody.Part.createFormData("profileImg", file.name,
 							it1
 						)
 					}
@@ -270,7 +270,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 								file.asRequestBody("image/*".toMediaTypeOrNull())
 
 							imgUrl = MultipartBody.Part.createFormData(
-								"img", file.name,
+								"profileImg", file.name,
 								requestFile
 							)
 						} catch (e: Exception) {
@@ -355,7 +355,6 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 
 	override fun onPatchUsersSuccess(response: BaseResponse) {
 		val fm = requireActivity().supportFragmentManager
-		val transaction: FragmentTransaction = fm.beginTransaction()
 
 		fm.popBackStack()
 

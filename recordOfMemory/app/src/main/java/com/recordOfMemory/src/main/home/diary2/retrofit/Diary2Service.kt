@@ -66,6 +66,7 @@ class Diary2Service() {
             Callback<GetUsersResponse> {
             override fun onResponse(call: Call<GetUsersResponse>, response: Response<GetUsersResponse>
             ) {
+                println(response.code())
                 if(response.code() == 200) {
                     diary2InviteInterface.onGetUserEmailSuccess(response.body() as GetUsersResponse)
                 }
@@ -73,21 +74,23 @@ class Diary2Service() {
                     diary2InviteInterface.onGetUSerEmailFailure("refreshToken")
                 }
                 // error body 가져오는 코드 필요함
-                val gson = GsonBuilder().create()
-                try {
-                    val error = gson.fromJson(
-                        response.errorBody()!!.string(),
-                        ErrorResponse::class.java
-                    )
-                    // 로그인 실패 에러 메시지
-                    diary2InviteInterface.onGetUSerEmailFailure(
-                        error.information.message.split(": ")[1].split(
-                            "\""
-                        )[0]
-                    )
-                } catch (e: IOException) {
-                    // 통신 오류 에러 메시지
-                    diary2InviteInterface.onGetUSerEmailFailure(e.message ?: "통신 오류")
+                else {
+                    val gson = GsonBuilder().create()
+                    try {
+                        val error = gson.fromJson(
+                            response.errorBody()!!.string(),
+                            ErrorResponse::class.java
+                        )
+                        // 로그인 실패 에러 메시지
+                        diary2InviteInterface.onGetUSerEmailFailure(
+                            error.information.message.split(": ")[1].split(
+                                "\""
+                            )[0]
+                        )
+                    } catch (e: IOException) {
+                        // 통신 오류 에러 메시지
+                        diary2InviteInterface.onGetUSerEmailFailure(e.message ?: "통신 오류")
+                    }
                 }
             }
 
