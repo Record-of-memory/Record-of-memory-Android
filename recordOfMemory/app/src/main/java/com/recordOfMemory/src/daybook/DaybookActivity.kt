@@ -86,7 +86,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 
 		binding.daybookImage.setOnClickListener { //이미지 클릭
-			imageDialogFunction()
+			if(!daybookImageUrl.isNullOrEmpty()){
+				imageDialogFunction()
+			}
 		}
 
 		binding.daybookBtnSubmit.setOnClickListener {
