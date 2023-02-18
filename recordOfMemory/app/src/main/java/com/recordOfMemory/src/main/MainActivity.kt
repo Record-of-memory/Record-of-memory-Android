@@ -162,6 +162,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
     fun makeDiaryAndRecord() {
         var newItem = PostDiariesRequest(name = diaryName, diaryType= "ALONE")
+        showLoadingDialog(this)
         DiaryService(this).tryPostDiaries(newItem)
     }
 
@@ -183,6 +184,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     override fun onPostDiariesSuccess(response: BaseResponse) {
+        dismissLoadingDialog()
         DiaryService(this).tryGetDiaries()
     }
 

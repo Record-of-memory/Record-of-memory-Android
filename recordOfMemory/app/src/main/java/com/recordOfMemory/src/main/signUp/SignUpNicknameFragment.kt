@@ -24,8 +24,9 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
     SignUpFragmentInterface {
     private lateinit var viewBinding: FragmentSignUpNicknameBinding
 
-    val email = arguments?.getString("email")
-    val password = arguments?.getString("password")
+    var email = arguments?.getString("email")
+    var password = arguments?.getString("password")
+    var nickname = ""
 
     var signUpActivity: SignUpActivity? = null
     override fun onAttach(context: Context) {
@@ -50,11 +51,11 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
         viewBinding.nextBtn.setOnClickListener {
             //editName에 닉네임이 입력되어 있다면
             if (viewBinding.editName.text.toString().isNotEmpty()) {
-                val email = arguments?.getString("email")
+                email = arguments?.getString("email")
                 Log.d("이메일","$email")
-                val password = arguments?.getString("password")
+                password = arguments?.getString("password")
                 Log.d("비밀번호","$password")
-                val nickname = viewBinding.editName.text.toString()
+                nickname = viewBinding.editName.text.toString()
 
                 showLoadingDialog(requireContext())
 
@@ -65,32 +66,32 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
             }
         }
 
-        viewBinding.editName.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_DEL) {
-                val editable = (v as EditText).text
-                val start = v.selectionStart
-                val end = v.selectionEnd
-                if (start == end) {
-                    if (start > 0) {
-                        editable.delete(start - 1, start)
-                    }
-                } else {
-                    editable.delete(start, end)
-                }
-            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                // 엔터 눌렀을때 행동
-                //editName에 닉네임이 입력되어 있다면
-                if (viewBinding.editName.text.toString().isNotEmpty()) {
-                    val nickname = viewBinding.editName.text.toString()
-
-                    val postSignUpRequest = PostSignUpRequest(email.toString(), password.toString(), nickname)
-                    SignUpService(this).tryPostSignUp(postSignUpRequest)
-                } else {
-                    Toast.makeText(activity, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
-                }
-            }
-            true
-        }
+//        viewBinding.editName.setOnKeyListener { v, keyCode, event ->
+//            if (keyCode == KeyEvent.KEYCODE_DEL) {
+//                val editable = (v as EditText).text
+//                val start = v.selectionStart
+//                val end = v.selectionEnd
+//                if (start == end) {
+//                    if (start > 0) {
+//                        editable.delete(start - 1, start)
+//                    }
+//                } else {
+//                    editable.delete(start, end)
+//                }
+//            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                // 엔터 눌렀을때 행동
+//                //editName에 닉네임이 입력되어 있다면
+//                if (viewBinding.editName.text.toString().isNotEmpty()) {
+//                    val nickname = viewBinding.editName.text.toString()
+//
+//                    val postSignUpRequest = PostSignUpRequest(email.toString(), password.toString(), nickname)
+//                    SignUpService(this).tryPostSignUp(postSignUpRequest)
+//                } else {
+//                    Toast.makeText(activity, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            true
+//        }
     }
 
     override fun onPostSignUpSuccess(response: BaseResponse) {
@@ -98,10 +99,10 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
         dismissLoadingDialog()
 
         if (email != null) {
-            Log.d("**",email)
+            Log.d("**", email.toString())
         }
         if (password != null) {
-            Log.d("**", password)
+            Log.d("**", password.toString())
         }
 //        // 자동 로그인
         showLoadingDialog(requireContext())
@@ -149,13 +150,6 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
     override fun onPostChangePasswordSuccess(response: BaseResponse) {}
 
     override fun onPostChangePasswordFailure(message: String) {}
-
-    override fun onGetUserEmailCheckExist(response: UserEmailCheckResponse) {}
-
-    override fun onGetUserEmailCheckNotExist(message: String) {}
-
-    override fun onGetUserEmailCheckFailure(message: String) {}
-
     override fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse) {}
 
     override fun onGetUserEmailCheckNoTokenNotExist(message: String) {}

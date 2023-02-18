@@ -18,12 +18,6 @@ interface SignUpFragmentInterface {
 
     fun onPostChangePasswordFailure(message: String)
 
-    fun onGetUserEmailCheckExist(response: UserEmailCheckResponse)
-
-    fun onGetUserEmailCheckNotExist(message: String)
-
-    fun onGetUserEmailCheckFailure(message: String)
-
     fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse)
 
     fun onGetUserEmailCheckNoTokenNotExist(message: String)

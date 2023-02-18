@@ -56,15 +56,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	var statusCode = 1001
 	var request : Any = ""
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		//이제 이 부분 필요 없는 내용 아닌가????? ----- 일기리스트에서 넘어올 때,일기 아이디 받아오기
-//		recordId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//			intent.getSerializableExtra("recordId", GetRecordResponse::class.java)!!
-//		} else {
-//			intent.getSerializableExtra("item") as GetRecordResponse
-//		}
-//		println(item)
+	override fun onResume() {
+		super.onResume()
+
 		recordId=intent.getStringExtra("recordId").toString().toInt()
 
 		showLoadingDialog(this)
@@ -79,7 +73,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 		statusCode=2000
 		LikesService(this).tryCheckLikes(recordId = recordId.toString())
-
 
 		binding.daybookIvBack.setOnClickListener {
 			finish()

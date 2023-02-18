@@ -26,7 +26,6 @@ import com.recordOfMemory.databinding.FragmentLoginBinding
 import com.recordOfMemory.databinding.FragmentSignUpEmailBinding
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.models.UserEmailCheckNoTokenResponse
-import com.recordOfMemory.src.main.signUp.models.UserEmailCheckResponse
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import java.util.regex.Pattern
@@ -83,31 +82,32 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
             }
         }
 
-        viewBinding.editEmail.setOnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_DEL) {
-                val editable = (v as EditText).text
-                val start = v.selectionStart
-                val end = v.selectionEnd
-                if (start == end) {
-                    if (start > 0) {
-                        editable.delete(start - 1, start)
-                    }
-                } else {
-                    editable.delete(start, end)
-                }
-            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                if (checkEmail()) {
-                    val email = viewBinding.editEmail.text.toString()
-                    Log.d("입력받은 이메일",email)
-                    SignUpService(this).tryGetUserEmailNoTokenCheck(email)
-
-//                signUpCheckDialogFunction()
-                } else {
-                    Toast.makeText(activity, "이메일 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
-                }
-            }
-            true
-        }
+//        viewBinding.editEmail.setOnKeyListener { v, keyCode, event ->
+//            if (keyCode == KeyEvent.KEYCODE_DEL) {
+//                val editable = (v as EditText).text
+//                val start = v.selectionStart
+//                val end = v.selectionEnd
+//                if (start == end) {
+//                    if (start > 0) {
+//                        editable.delete(start - 1, start)
+//                    }
+//                } else {
+//                    editable.delete(start, end)
+//                }
+//            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                if (checkEmail()) {
+//                    val email = viewBinding.editEmail.text.toString()
+//                    Log.d("입력받은 이메일",email)
+//                    showLoadingDialog(requireContext())
+//                    SignUpService(this).tryGetUserEmailNoTokenCheck(email)
+//
+////                signUpCheckDialogFunction()
+//                } else {
+//                    Toast.makeText(activity, "이메일 형식이 올바르지 않습니다", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            true
+//        }
     }
 
     //이메일이 형식에 맞는지 확인하는 메소드
@@ -186,12 +186,6 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
 
     override fun onPostChangePasswordFailure(message: String) {}
 
-    override fun onGetUserEmailCheckExist(response: UserEmailCheckResponse) {}
-
-    override fun onGetUserEmailCheckNotExist(message: String) {}
-
-    override fun onGetUserEmailCheckFailure(message: String) {}
-
     //중복됨
     override fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse) {
 
@@ -201,7 +195,7 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
 
     //중복 없음
     override fun onGetUserEmailCheckNoTokenNotExist(message: String) {
-
+        dismissLoadingDialog()
         Log.d("이메일 중복확인", "중복없음")
         signUpCheckDialogFunction()
     }

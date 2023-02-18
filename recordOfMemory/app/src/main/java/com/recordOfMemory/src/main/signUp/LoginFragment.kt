@@ -172,12 +172,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
 
     override fun onPostChangePasswordFailure(message: String) {}
 
-    override fun onGetUserEmailCheckExist(response: UserEmailCheckResponse) {}
-
-    override fun onGetUserEmailCheckNotExist(message: String) {}
-
-    override fun onGetUserEmailCheckFailure(message: String) {}
-
     override fun onGetUserEmailCheckNoTokenExist(response: UserEmailCheckNoTokenResponse) {}
 
     override fun onGetUserEmailCheckNoTokenNotExist(message: String) {}

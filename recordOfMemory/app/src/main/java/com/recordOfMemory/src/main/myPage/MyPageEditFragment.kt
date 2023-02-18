@@ -94,21 +94,19 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		}
 
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
-//			if(!(checkName() && changeImg)){ //이름과 이미지 중에 바뀐 것이 있으면
+			if(!checkName() || changeImg){ //이름과 이미지 중에 바뀐 것이 있으면
 				//저장하고
 				nickname = binding.mypageEditBoxName.text.toString()
-
-//			}
-
-			println("imgUrl: ${imgUrl!!.body}")
-			println("nickname: $nickname")
+				println("nickname: $nickname")
 
 //			val jsonObject = JSONObject(
 //			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
 //				"{\"nickname\":\"${nickname}\"}").toString()
 
-			// 마이페이지로 넘어가기
-			MyPageEditService(this).tryPatchUsers(imgUrl, nickname)
+				// 마이페이지로 넘어가기
+				MyPageEditService(this).tryPatchUsers(imgUrl, nickname)
+			}
+
 		}
 
 

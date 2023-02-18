@@ -38,8 +38,4 @@ class OnboardingFragment4 : Fragment() {
             mainActivity!!.makeDiaryAndRecord()
         }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }
