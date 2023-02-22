@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
@@ -330,9 +331,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		cmtNum=item.cmtCnt
 
 		if(item.imgUrl != null){
+			binding.daybookImage.isVisible=true
 			daybookImageUrl=item.imgUrl
 			Glide.with(this).load(item.imgUrl)
 				.into(binding.daybookImage)
+		}else{
+			binding.daybookImage.isVisible=false
 		}
 	}
 
