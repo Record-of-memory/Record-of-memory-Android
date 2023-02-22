@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
@@ -71,6 +72,15 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		super.onViewCreated(view, savedInstanceState)
 		val fm = requireActivity().supportFragmentManager
 		val transaction: FragmentTransaction = fm.beginTransaction()
+
+		// 이미지 세팅
+		val userImg=arguments?.getString("userImg")
+		if(userImg.isNullOrEmpty()){
+			binding.mypageEditPersonImg.setImageResource(R.drawable.icn_user)
+		}else{
+			Glide.with(this).load(userImg)
+				.into(binding.mypageEditPersonImg)
+		}
 
 		binding.mypageEditBack.setOnClickListener { //뒤로가기 - 다른 방법이 있는지 확인할 것
 			fm.popBackStack()
