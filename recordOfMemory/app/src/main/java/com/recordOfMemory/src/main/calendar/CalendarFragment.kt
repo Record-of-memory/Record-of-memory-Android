@@ -79,7 +79,6 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         val endMonth = currentMonth.plusMonths(100)
         setupMonthCalendar(startMonth, endMonth, currentMonth, daysOfWeek) //다음달로 스크롤 가능
 
-        setMonthChangeBtn()
         showLoadingDialog(requireContext())
         val getCalendarDiariesRequest = GetCalendarDiariesRequest(date = selectedDate.toString())
         CalendarService(this).tryGetRecordsDate(getCalendarDiariesRequest)
@@ -148,15 +147,11 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
     private fun bindDate(date: LocalDate, textView: TextView, isSelectable: Boolean) {
         textView.text = date.dayOfMonth.toString()
         if (isSelectable) {
-            when {
-                selectedDate == date -> { //선택한 날
+            when (selectedDate) {
+                date -> { //선택한 날
                     textView.setTextColorRes(R.color.colorPrimary)
                     textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                 }
-//                today == date -> {  //오늘
-//                    textView.setTextColorRes(R.color.colorPrimary)
-//                    textView.setBackgroundResource(R.drawable.calendar_today_bg)
-//                }
                 else -> { //그 이외의 선택 가능한 날
                     textView.setTextColorRes(R.color.black)
                     textView.background = null
@@ -199,25 +194,13 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
         binding.calendarYearMonth.text = "$yearText $monthText"
     }
 
-    private fun setMonthChangeBtn() {
-        binding.calendarDotPastMonth.setOnClickListener {
-            binding.calendarDays.findFirstVisibleMonth()?.let {
-                binding.calendarDays.smoothScrollToMonth(it.yearMonth.previousMonth)
-            }
-        }
-
-        binding.calendarDotNextMonth.setOnClickListener {
-            binding.calendarDays.findFirstVisibleMonth()?.let {
-                binding.calendarDays.smoothScrollToMonth(it.yearMonth.nextMonth)
-            }
-        }
-    }
 
     override fun onGetRecordsDateSuccess(getCalendarDiariesResponse: GetCalendarDiariesResponse) {
         dismissLoadingDialog()
         val calendarRecordsList = getCalendarDiariesResponse.information
 
         binding.calendarRecyclerView.isVisible = true
+        binding.calendarEmpty.isVisible=false
 
         println("calendarRecordsList: $calendarRecordsList")
 
@@ -240,11 +223,10 @@ class CalendarFragment: BaseFragment<FragmentCalendarBinding>(FragmentCalendarBi
             val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
         }
-        // 토큰 갱신 문제가 아닐 경우
+        // 토큰 갱신 문제가 아닐 경우 - 해당 날짜에 일기가 없음
         else {
             Log.d("실패",message)
-            showCustomToast(message)
-
+            binding.calendarEmpty.isVisible=true
             binding.calendarRecyclerView.isVisible = false
         }
     }
