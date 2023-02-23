@@ -251,14 +251,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		commentAdapter.setOnItemClickListener(object : CommentAdapter.OnItemClickListener{
 			override fun onItemClick(v: View, pos : Int) {
 				deleteCommentFunction()
-//				Toast.makeText(this@DaybookActivity, "토스트 메세지 띄우기 입니다.", Toast.LENGTH_SHORT).show()
-//
-//				Intent(this@DaybookActivity, MainActivity::class.java).apply {
-//					putExtra("data", data)
-//					addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//				}.run { startActivity(this) }
 			}
-
 		})
 
 	}
@@ -273,6 +266,11 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		cancelButton.setOnClickListener {
 			mDialogView.dismiss()
 		}
+		val deleteButton = mDialogView.findViewById<TextView>(R.id.daybook_btn_comment_delete)
+		deleteButton.setOnClickListener {
+			//댓글 삭제 구현하기
+		}
+
 	}
 
 	override fun onGetCommentsFailure(message: String) {
