@@ -13,10 +13,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
@@ -271,6 +268,11 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		mDialogView.setContentView(R.layout.dialog_daybook_delete_comment)
 		mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 		mDialogView.show()
+
+		val cancelButton = mDialogView.findViewById<TextView>(R.id.daybook_btn_comment_delete_cancel)
+		cancelButton.setOnClickListener {
+			mDialogView.dismiss()
+		}
 	}
 
 	override fun onGetCommentsFailure(message: String) {

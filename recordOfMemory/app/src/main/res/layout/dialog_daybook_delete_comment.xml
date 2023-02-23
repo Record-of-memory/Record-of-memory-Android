@@ -6,7 +6,6 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
     android:background="@drawable/daybook_comment_delete_diolog"
-    android:clickable="true"
     android:elevation="5dp"
     android:paddingVertical="27dp">
 
