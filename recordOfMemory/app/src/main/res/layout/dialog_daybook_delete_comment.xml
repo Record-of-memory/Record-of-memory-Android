@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="260dp"
+    android:layout_height="141dp"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/daybook_comment_delete_diolog"
+    android:clickable="true"
+    android:elevation="5dp"
+    android:paddingVertical="27dp">
+
+    <TextView
+        android:id="@+id/daybook_comment_delete_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans_semi_bold"
+        android:text="댓글을 삭제하시겠어요?"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/daybook_btn_comment_delete_cancel"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/icon_daybook_delete_cancel_btn"
+        android:fontFamily="@font/noto_sans_regular"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="취소하기"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/daybook_btn_comment_delete"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/icon_daybook_delete_btn"
+        android:fontFamily="@font/noto_sans_regular"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="삭제하기"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

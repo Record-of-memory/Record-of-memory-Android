@@ -1,9 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package com.recordOfMemory.src.daybook
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.databinding.ItemCommentBinding
@@ -17,6 +21,17 @@ import kotlin.collections.ArrayList
 class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.Adapter<CommentAdapter.ViewHolder>(){
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+
+
+	interface OnItemClickListener{
+		fun onItemClick(v: View, pos : Int)
+	}
+	private var listener : OnItemClickListener? = null
+	fun setOnItemClickListener(listener : OnItemClickListener) {
+		this.listener = listener
+	}
+
+
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentAdapter.ViewHolder {
 		val binding:ItemCommentBinding=ItemCommentBinding.inflate(LayoutInflater.from(parent.context),parent,false)
@@ -43,7 +58,13 @@ class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.A
 				binding.itemComment1Time.text=item.createdAt
 			}
 
-
+			val pos = adapterPosition
+			if(pos!= RecyclerView.NO_POSITION)
+			{
+				itemView.setOnClickListener {
+					listener?.onItemClick(itemView,pos)
+				}
+			}
 
 //			Glide.with(binding.itemComment1Icon).load(item.imageUrl)
 //				.into(item as ImageView)
@@ -51,3 +72,4 @@ class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.A
 	}
 
 }
+

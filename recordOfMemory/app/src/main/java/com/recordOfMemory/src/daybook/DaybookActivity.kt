@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -27,6 +28,7 @@ import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
+import com.recordOfMemory.src.main.MainActivity
 import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
@@ -39,6 +41,7 @@ import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
 	MyPageInterface, DaybookInterface , LikesInterface, GetRefreshTokenInterface {
@@ -115,6 +118,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				LikesService(this).tryPostLikes(PostLikesRequest(recordId = recordId.toString()))
 			}
 		}
+
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -247,6 +251,26 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		commentList=response.information.data
 		commentAdapter = CommentAdapter(commentList)
 		binding.daybookCommentRV.adapter=commentAdapter
+		commentAdapter.setOnItemClickListener(object : CommentAdapter.OnItemClickListener{
+			override fun onItemClick(v: View, pos : Int) {
+				deleteCommentFunction()
+//				Toast.makeText(this@DaybookActivity, "토스트 메세지 띄우기 입니다.", Toast.LENGTH_SHORT).show()
+//
+//				Intent(this@DaybookActivity, MainActivity::class.java).apply {
+//					putExtra("data", data)
+//					addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//				}.run { startActivity(this) }
+			}
+
+		})
+
+	}
+
+	private fun deleteCommentFunction() {
+		val mDialogView = Dialog(this@DaybookActivity)
+		mDialogView.setContentView(R.layout.dialog_daybook_delete_comment)
+		mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+		mDialogView.show()
 	}
 
 	override fun onGetCommentsFailure(message: String) {
