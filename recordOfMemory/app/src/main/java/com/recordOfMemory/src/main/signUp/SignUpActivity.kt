@@ -19,6 +19,7 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(ActivitySignUpBinding
     private var signUpEmailFragment = SignUpEmailFragment()
     private var signUpPswdFragment = SignUpPswdFragment()
     private var signUpNicknameFragment = SignUpNicknameFragment()
+    private var signUpResetPasswordFragment = SignUpResetPasswordFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,7 @@ class SignUpActivity : BaseActivity<ActivitySignUpBinding>(ActivitySignUpBinding
             3 -> transaction.replace(binding.signUpFrm.id, signUpEmailFragment).addToBackStack(null)
             4 -> transaction.replace(binding.signUpFrm.id, signUpPswdFragment).addToBackStack(null)
             5 -> transaction.replace(binding.signUpFrm.id, signUpNicknameFragment).addToBackStack(null)
+            6 -> transaction.replace(binding.signUpFrm.id, signUpResetPasswordFragment).addToBackStack(null)
         }
         transaction.commit()
     }
