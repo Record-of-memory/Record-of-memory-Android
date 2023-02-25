@@ -70,7 +70,6 @@ Diary2Interface, GetRefreshTokenInterface{
                 .putExtra("item", item as java.io.Serializable)
                 .putExtra("screen_type","read")
                 .putExtra("recordId", item.id)
-                .putExtra("writerImg",item.user.imageUrl)
             )
         }
     }

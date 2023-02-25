@@ -35,6 +35,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //비밀번호 찾기 버튼 안보이게 해두기(임시)
+        binding.searchPswdBtn.isGone = true
+
         //뒤로가기 버튼 누르면
         binding.backBtn.setOnClickListener {
 //            signUpActivity!!.openFragmentSignUp(0)
@@ -55,11 +58,49 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
                 Toast.makeText(activity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             }
         }
-
-        //비밀번호 찾기 버튼 누르면
-        binding.searchPswdBtn.setOnClickListener {
-            signUpActivity!!.openFragmentSignUp(6)
-        }
+//        binding.editEmail.setOnKeyListener { v, keyCode, event ->
+//            if (keyCode == KeyEvent.KEYCODE_DEL) {
+//                val editable = (v as EditText).text
+//                val start = v.selectionStart
+//                val end = v.selectionEnd
+//                if (start == end) {
+//                    if (start > 0) {
+//                        editable.delete(start - 1, start)
+//                    }
+//                } else {
+//                    editable.delete(start, end)
+//                }
+//            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                // 엔터 눌렀을때 행동
+//                binding.editPswd.requestFocus()
+//                binding.editPswd.isCursorVisible = true
+//                binding.editPswd.text.clear()
+//            }
+//
+//            true
+//        }
+//        binding.editPswd.setOnKeyListener { v, keyCode, event ->
+//            if (keyCode == KeyEvent.KEYCODE_DEL) {
+//                val editable = (v as EditText).text
+//                val start = v.selectionStart
+//                val end = v.selectionEnd
+//                if (start == end) {
+//                    if (start > 0) {
+//                        editable.delete(start - 1, start)
+//                    }
+//                } else {
+//                    editable.delete(start, end)
+//                }
+//            } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                binding.loginBtn.performClick()
+//            }
+//
+//            true
+//        }
+//        //비밀번호 찾기 버튼 누르면
+//        binding.searchPswdBtn.setOnClickListener {
+//            signUpActivity!!.openFragmentSignUp(6)
+//        }
     }
 
     //이메일이 형식에 맞는지 확인하는 메소드
@@ -136,10 +177,4 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::b
     override fun onGetUserEmailCheckNoTokenNotExist(message: String) {}
 
     override fun onGetUserEmailCheckNoTokenFailure(message: String) {}
-
-    override fun onPostResetPasswordSuccess(response: BaseResponse) {}
-
-    override fun onPostResetPasswordWrong(message: String) {}
-
-    override fun onPostResetPasswordFailure(message: String) {}
 }

@@ -39,8 +39,4 @@ interface SignUpRetrofitInterface {
         @Path("email") email : String
     ): Call<UserEmailCheckNoTokenResponse>
 
-    //이메일로 임시 비밀번호 발급
-    @POST("/auth/send")
-    fun postResetPassword(@Body params : PostResetPasswordRequest) : Call<BaseResponse>
-
 }

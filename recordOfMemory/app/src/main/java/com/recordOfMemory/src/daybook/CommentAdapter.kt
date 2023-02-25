@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.recordOfMemory.R
 import com.recordOfMemory.databinding.ItemCommentBinding
 import com.recordOfMemory.src.daybook.retrofit.models.Comment
 import com.recordOfMemory.src.daybook.retrofit.models.GetCommentsResponse
@@ -59,6 +57,7 @@ class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.A
 			}else{
 				binding.itemComment1Time.text=item.createdAt
 			}
+
 			val pos = adapterPosition
 			if(pos!= RecyclerView.NO_POSITION)
 			{
@@ -66,11 +65,9 @@ class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.A
 					listener?.onItemClick(itemView,pos)
 				}
 			}
-			//이미지 세팅하기 ---- 여기 체크
-			if(!item.imageUrl.isNullOrEmpty()){
-				Glide.with(itemView).load(item.imageUrl)
-					.into(binding.itemComment1Icon)
-			}
+
+//			Glide.with(binding.itemComment1Icon).load(item.imageUrl)
+//				.into(item as ImageView)
 		}
 	}
 

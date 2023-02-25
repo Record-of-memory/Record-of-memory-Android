@@ -176,8 +176,42 @@ class SignUpService() {
             })
         }
     }
+//
+//    //이메일로 유저 확인
+//    fun tryGetUserEmailCheck(email : String){
+//        val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
+//        val X_ACCESS_TOKEN =
+//            ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, "")
+//                .toString()
+//        signUpRetrofitInterface.getUserEmailCheck(email, X_ACCESS_TOKEN).enqueue(object : Callback<UserEmailCheckResponse>{
+//            override fun onResponse(call: Call<UserEmailCheckResponse>, response: Response<UserEmailCheckResponse>) {
+//                Log.d("api연결", "이메일로 유저 확인")
+//                if (response.code() == 200) {
+//                    //유저 정보 조회 성공
+//                    signUpFragmentInterface.onGetUserEmailCheckExist(response.body() as UserEmailCheckResponse)
+//                    Log.d("code","200")
+//                } else if (response.code() == 400) {
+//                    //유저 정보 조회 실패
+//                    signUpFragmentInterface.onGetUserEmailCheckNotExist("유저 아님")
+//                    Log.d("code","400")
+//                } else if (response.code() == 401) {
+//                    val X_REFRESH_TOKEN =
+//                        ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
+//                            .toString()
+//                    //토큰 재발급
+//                    Log.d("code","401")
+//                    tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+//                    //재발급 후 자기 자신 한번 더 호출
+//                    tryGetUserEmailCheck(email)
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<UserEmailCheckResponse>, t: Throwable) {
+//                signUpFragmentInterface.onGetUserEmailCheckFailure(t.message ?: "통신 오류")
+//            }
+//        })
+//    }
 
-    //이메일로 유저 확인
     fun tryGetUserEmailNoTokenCheck(email : String){
         val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
         signUpRetrofitInterface.getUserEmailCheckNoToken(email).enqueue(object : Callback<UserEmailCheckNoTokenResponse>{
@@ -210,39 +244,6 @@ class SignUpService() {
 
             override fun onFailure(call: Call<UserEmailCheckNoTokenResponse>, t: Throwable) {
                 signUpFragmentInterface.onGetUserEmailCheckNoTokenFailure(t.message ?: "통신 오류")
-            }
-        })
-    }
-
-    //이메일로 임시 비밀번호 발급
-    fun tryPostResetPassword(postResetPasswordRequest: PostResetPasswordRequest){
-        val signUpRetrofitInterface = ApplicationClass.sRetrofit.create(SignUpRetrofitInterface::class.java)
-        signUpRetrofitInterface.postResetPassword(postResetPasswordRequest).enqueue(object :
-            Callback<BaseResponse> {
-            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                if (response.code() == 200) {
-                    signUpFragmentInterface.onPostResetPasswordSuccess(response.body() as BaseResponse)
-                    Log.d("code","200")
-                } else if (response.code() == 400) {
-                    signUpFragmentInterface.onPostResetPasswordWrong("회원가입 필요 이메일")
-                    Log.d("code","400")
-                } else {
-                    val gson = GsonBuilder().create()
-                    try {
-                        val error = gson.fromJson(
-                            response.errorBody()!!.string(),
-                            ErrorResponse::class.java)
-                        // 임시 비밀번호 발급 실패 에러 메시지
-                        signUpFragmentInterface.onPostResetPasswordFailure(error.information.message)
-                    } catch (e: IOException) {
-                        // 통신 오류 에러 메시지
-                        signUpFragmentInterface.onPostResetPasswordFailure(e.message ?: "통신 오류")
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                signUpFragmentInterface.onPostResetPasswordFailure(t.message ?: "통신 오류")
             }
         })
     }
