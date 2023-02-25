@@ -8,21 +8,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.recordOfMemory.R
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.config.BaseResponse
-import com.recordOfMemory.databinding.FragmentLoginBinding
 import com.recordOfMemory.databinding.FragmentSignUpEmailBinding
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.models.UserEmailCheckNoTokenResponse
@@ -30,7 +26,7 @@ import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import java.util.regex.Pattern
 
-class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::bind, R.layout.fragment_sign_up_email),
+class SignUpEmailFragment : BaseFragment<FragmentSignUpEmailBinding>(FragmentSignUpEmailBinding::bind, R.layout.fragment_sign_up_email),
     SignUpFragmentInterface {
     private lateinit var viewBinding: FragmentSignUpEmailBinding
     //이메일 검사 정규식
@@ -205,4 +201,10 @@ class SignUpEmailFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBind
         dismissLoadingDialog()
         Log.d("이메일 중복확인", "오류")
     }
+
+    override fun onPostResetPasswordSuccess(response: BaseResponse) {}
+
+    override fun onPostResetPasswordWrong(message: String) {}
+
+    override fun onPostResetPasswordFailure(message: String) {}
 }
