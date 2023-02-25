@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GridUser
 
 class Diary2GridRecyclerOutViewHolder(val context: Context, val items: Diary2Fragment.itemListAdapterToList, itemView: View)
     : RecyclerView.ViewHolder(itemView) {
@@ -19,17 +19,17 @@ class Diary2GridRecyclerOutViewHolder(val context: Context, val items: Diary2Fra
     val userImg = itemView.findViewById<ImageView>(R.id.item_diary2_grid_out_iv_img)
 
 
-    fun bindWithView(item: Diary2GridOutViewModel) {
+    fun bindWithView(item: GridUser) {
         val diary2LayoutManager = GridLayoutManager(context, 3)
 
-        itemWriter.text = item.writer
+        itemWriter.text = item.nickname
         itemRecyclerView.layoutManager = diary2LayoutManager
-        itemRecyclerView.adapter = Diary2GridRecyclerInViewAdapter(items, item.innerList)
+        itemRecyclerView.adapter = Diary2GridRecyclerInViewAdapter(items, item.records)
 
-        if(item.innerList[0].user.imageUrl.isNullOrEmpty()){
+        if(item.imgUrl.isNullOrEmpty()){
             userImg.setImageResource(R.drawable.icn_person)
         }else{
-            Glide.with(itemView).load(item.innerList[0].user.imageUrl)
+            Glide.with(itemView).load(item.imgUrl)
                 .into(userImg)
         }
 

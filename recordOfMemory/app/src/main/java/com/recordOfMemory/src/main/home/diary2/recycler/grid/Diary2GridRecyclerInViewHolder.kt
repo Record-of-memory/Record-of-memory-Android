@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GridRecord
 
 class Diary2GridRecyclerInViewHolder(val context: Context, itemView: View)
     : RecyclerView.ViewHolder(itemView) {
@@ -15,9 +16,7 @@ class Diary2GridRecyclerInViewHolder(val context: Context, itemView: View)
     val itemImg = itemView.findViewById<View>(R.id.item_diary2_grid_in_iv_img)
     val itemTitle = itemView.findViewById<TextView>(R.id.item_diary2_grid_in_tv_title)
 
-    fun bindWithView(item: GetMemberRecordResponse) {
-        println(item.imgUrl)
-
+    fun bindWithView(item: GridRecord) {
         Glide.with(itemView).load(item.imgUrl)
             .into(itemImg as ImageView)
         itemImg.clipToOutline = true

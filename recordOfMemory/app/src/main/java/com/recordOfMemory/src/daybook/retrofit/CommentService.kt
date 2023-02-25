@@ -3,7 +3,9 @@ package com.recordOfMemory.src.daybook.retrofit
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.config.ErrorResponse
+import com.recordOfMemory.src.daybook.retrofit.models.DeleteCommentRequest
 import com.recordOfMemory.src.daybook.retrofit.models.GetCommentsResponse
 import com.recordOfMemory.src.daybook.retrofit.models.PostCommentRequest
 import com.recordOfMemory.src.daybook.retrofit.models.PostCommentResponse
@@ -17,7 +19,7 @@ class CommentService(val commentInterface: CommentInterface) {
 	val X_ACCESS_TOKEN = "Bearer $token"
 	private val commentRetrofitInterface:CommentRetrofitInterface=ApplicationClass.sRetrofit.create(CommentRetrofitInterface::class.java)
 
-	fun tryGetComments(recordId:Int){
+	fun tryGetComments(recordId:String){
 		commentRetrofitInterface.getComments(Authorization = X_ACCESS_TOKEN, id=recordId)
 			.enqueue(object :Callback<GetCommentsResponse>{
 				override fun onResponse(call: Call<GetCommentsResponse>, response: Response<GetCommentsResponse>, ) {
@@ -75,6 +77,32 @@ class CommentService(val commentInterface: CommentInterface) {
 			}
 		})
 	}
+	fun tryDeleteComment(params: DeleteCommentRequest) {
+		commentRetrofitInterface.deleteComment(Authorization = X_ACCESS_TOKEN, params = params)
+			.enqueue(object :Callback<BaseResponse> {
+			override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+				if(response.code()==200){
+					commentInterface.onDeleteCommentSuccess(response.body() as BaseResponse)
+				}else if(response.code()==401){
+					commentInterface.onDeleteCommentFailure("refreshToken")
+				}else{
+					// error body 가져오는 코드 필요함
+					val gson = GsonBuilder().create()
+					try {
+						val error = gson.fromJson(
+							response.errorBody()!!.string(),
+							ErrorResponse::class.java)
+						commentInterface.onDeleteCommentFailure(error.information.message.split(": ")[1].split("\"")[0])
+					} catch (e: IOException) {
+						commentInterface.onDeleteCommentFailure(e.message ?: "통신 오류")
+					}
+				}
+			}
 
+			override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+				commentInterface.onDeleteCommentFailure(t.message?:"통신 오류")
+			}
+		})
+	}
 
 }

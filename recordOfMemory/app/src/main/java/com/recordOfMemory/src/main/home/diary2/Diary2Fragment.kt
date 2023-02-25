@@ -31,13 +31,10 @@ import com.recordOfMemory.src.main.home.diary2.member.show.Diary2ShowMemberFragm
 import com.recordOfMemory.src.main.home.diary2.recycler.grid.Diary2GridRecyclerOutViewAdapter
 import com.recordOfMemory.src.main.home.diary2.search.Diary2SearchFragment
 import com.recordOfMemory.src.main.home.diary2.recycler.list.Diary2ListRecyclerViewAdapter
-import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Interface
 
 import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMemberRecordResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.*
 import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
 import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.splash.SplashActivity
@@ -47,8 +44,8 @@ Diary2Interface, GetRefreshTokenInterface{
     // true - list / false - grid
     var stateFlag = true
 
-    lateinit var listItemList : ArrayList<GetMemberRecordResponse>
-    lateinit var gridItemList :  ArrayList<Diary2GridOutViewModel>
+    var listItemList : ArrayList<GetMemberRecordResponse> = ArrayList()
+    var gridItemList :  ArrayList<GridUser> = ArrayList()
     var memberList = ArrayList<GetUserResponse>()
     val items = itemListAdapterToList()
     var request : Any = ""
@@ -63,8 +60,15 @@ Diary2Interface, GetRefreshTokenInterface{
 
     inner class itemListAdapterToList {
         // 일기 open function
+        fun getItemId(item: GridRecord) {
+            println(item)
+            startActivity(Intent(activity, DaybookActivity()::class.java)
+                .putExtra("item", item as java.io.Serializable)
+                .putExtra("screen_type","read")
+                .putExtra("recordId", item.id)
+            )
+        }
         fun getItemId(item: GetMemberRecordResponse) {
-//            openItem(item)
             println(item)
             startActivity(Intent(activity, DaybookActivity()::class.java)
                 .putExtra("item", item as java.io.Serializable)
@@ -76,22 +80,49 @@ Diary2Interface, GetRefreshTokenInterface{
 
     override fun onResume() {
         super.onResume()
-        gridItemList = ArrayList()
-        showLoadingDialog(requireContext())
-        if(stateFlag) {
-            binding.diary2IvList.isChecked = true
-            binding.diary2IvGrid.isChecked = false
-        }
-        else {
-            binding.diary2IvList.isChecked = false
-            binding.diary2IvGrid.isChecked = true
-        }
+
         statusCode = 1000
         request = diaryId
+        showLoadingDialog(requireContext())
         Diary2Service(this).tryGetMembers(diaryId)
+        statusCode = 2000
+        Diary2Service(this).tryGetGridMembers(diaryId)
+
+        binding.diary2IvList.isChecked = stateFlag
+        binding.diary2IvGrid.isChecked = !stateFlag
+
+        if(stateFlag) {
+            if(listItemList.isNotEmpty()) {
+                binding.diary2LinearEmptyContent.isGone = true
+                val diary2LayoutManager = LinearLayoutManager(context)
+                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
+                binding.diary2RecyclerView.apply {
+                    layoutManager = diary2LayoutManager
+                    adapter = diary2RecyclerVIewAdapter
+                }
+            }
+            else {
+                binding.diary2LinearEmptyContent.isVisible = true
+            }
+        }
+        else {
+            if(gridItemList.isNotEmpty()) {
+                binding.diary2LinearEmptyContent.isGone = true
+                val diary2LayoutManager = LinearLayoutManager(context)
+                val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, gridItemList)
+                binding.diary2RecyclerView.apply {
+                    layoutManager = diary2LayoutManager
+                    adapter = diary2RecyclerVIewAdapter
+                }
+            }
+            else {
+                binding.diary2LinearEmptyContent.isVisible = true
+            }
+        }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        val items = itemListAdapterToList()
+
         name = requireArguments().getString("name").toString()
         diaryType = requireArguments().getString("diaryType").toString()
         diaryId = requireArguments().getString("diaryId").toString()
@@ -101,15 +132,6 @@ Diary2Interface, GetRefreshTokenInterface{
         val transaction: FragmentTransaction = fm.beginTransaction()
 
         super.onViewCreated(view, savedInstanceState)
-
-//        // 토큰 저장
-//        val editor = ApplicationClass.sSharedPreferences.edit()
-//        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.accessToken)
-//        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.refreshToken)
-//        editor.apply()
-//
-//        // 토큰 불러오기
-//        val accessToken = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN)
 
         binding.diary2IvSearch.setOnClickListener {
             val bundle = Bundle()
@@ -123,7 +145,6 @@ Diary2Interface, GetRefreshTokenInterface{
                 .commit()
             transaction.isAddToBackStackAllowed
         }
-
         binding.diary2BtnWrite.setOnClickListener { //버튼 누르면 새로은 일기 쓰는 화면으로 전환
             val intent=Intent(context,DaybookWritingActivity::class.java)
             intent.putExtra("screen_type","create")
@@ -134,38 +155,43 @@ Diary2Interface, GetRefreshTokenInterface{
 
         // list view
         binding.diary2IvList.setOnClickListener {
-            Log.e("list isChecked", binding.diary2IvList.isChecked.toString())
-            if(binding.diary2IvList.isChecked) {
-                binding.diary2IvList.isChecked = true
-                binding.diary2IvGrid.isChecked = false
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
+            if(!stateFlag) {
+                stateFlag = true
+                binding.diary2IvList.isChecked = stateFlag
+                binding.diary2IvGrid.isChecked = !stateFlag
+                if(listItemList.isNotEmpty()) {
+                    binding.diary2LinearEmptyContent.isGone = true
+                    val diary2LayoutManager = LinearLayoutManager(context)
+                    val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
+                    binding.diary2RecyclerView.apply {
+                        layoutManager = diary2LayoutManager
+                        adapter = diary2RecyclerVIewAdapter
+                    }
                 }
-            }
-            else {
-                binding.diary2IvList.isChecked = true
+                else {
+                    binding.diary2LinearEmptyContent.isVisible = true
+                }
             }
         }
+        // grid view
         binding.diary2IvGrid.setOnClickListener {
-//            gridItemList.add(Diary2GridOutViewModel("구리", listItemList))
-//            gridItemList.add(Diary2GridOutViewModel("나나", listItemList))
-
-            Log.e("grid isChecked", binding.diary2IvGrid.isChecked.toString())
-            if(binding.diary2IvGrid.isChecked) {
-                binding.diary2IvGrid.isChecked = true
-                binding.diary2IvList.isChecked = false
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, gridItemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
+            if(stateFlag) {
+                stateFlag = false
+                binding.diary2IvList.isChecked = stateFlag
+                binding.diary2IvGrid.isChecked = !stateFlag
+                if(gridItemList.isNotEmpty()) {
+                    binding.diary2LinearEmptyContent.isGone = true
+                    val diary2LayoutManager = LinearLayoutManager(context)
+                    val diary2RecyclerVIewAdapter =
+                        Diary2GridRecyclerOutViewAdapter(items, gridItemList)
+                    binding.diary2RecyclerView.apply {
+                        layoutManager = diary2LayoutManager
+                        adapter = diary2RecyclerVIewAdapter
+                    }
                 }
-            }
-            else {
-                binding.diary2IvGrid.isChecked = true
+                else {
+                    binding.diary2LinearEmptyContent.isVisible = true
+                }
             }
         }
 
@@ -188,10 +214,6 @@ Diary2Interface, GetRefreshTokenInterface{
         layoutParams.y = 200
         window?.attributes = layoutParams
 
-//        val params = mDialogView.window!!.attributes
-//        params.width = WindowManager.LayoutParams.WRAP_CONTENT
-//        params.height = WindowManager.LayoutParams.WRAP_CONTENT
-//        mDialogView.window?.attributes = params
         mDialogView.show()
 
         if(diaryType == "ALONE") {
@@ -262,26 +284,6 @@ Diary2Interface, GetRefreshTokenInterface{
         customDialog.show()
     }
 
-//    override fun onGetRecordsSuccess(response: GetRecordsResponse) {
-//    }
-//
-//    // 토큰 갱신 필요 시 토큰 갱신으로 이동
-//    override fun onGetRecordsFailure(message: String) {
-//        if(message == "refreshToken") {
-//            val X_REFRESH_TOKEN =
-//                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
-//                    .toString()
-//
-//            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
-//
-//        }
-//        // 토큰 갱신 문제가 아닐 경우
-//        else {
-//            //TODO
-//            showCustomToast("다시 시도해주세요.")
-//        }
-//   }
-
     override fun onDeleteDiarySuccess(response: BaseResponse) {
         dismissLoadingDialog()
         onGetLeaveSuccess()
@@ -293,13 +295,13 @@ Diary2Interface, GetRefreshTokenInterface{
             val X_REFRESH_TOKEN =
                 ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
                     .toString()
-
+            showLoadingDialog(requireContext())
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
 
         }
         // 토큰 갱신 문제가 아닐 경우
         else {
-            //TODO
+            showCustomToast("통신 오류입니다. 다시 시도해주세요.")
         }
     }
 
@@ -309,60 +311,18 @@ Diary2Interface, GetRefreshTokenInterface{
         memberList = response.information.users
         listItemList = response.information.records
 
-        if(diaryType == "WITH") {
-            val tempList = ArrayList<GetMemberRecordResponse>()
-            if(listItemList.size > 0) {
-                for (listItem in listItemList) {
-                    // listItem의 이메일이 memberList에 있는지 확인
-                    if (memberList.find { it.email == listItem.user.email } != null) {
-                        tempList.add(listItem)
-                    }
-                    // gridItemList에 tempList를 넣어준다.
-                }
-                gridItemList.add(Diary2GridOutViewModel(tempList[0].user.nickname, tempList))
-            }
-        }
-        else {
-            if(listItemList.size > 0) {
-                gridItemList.add(
-                    Diary2GridOutViewModel(
-                        listItemList[0].user.nickname,
-                        listItemList
-                    )
-                )
-            }
-        }
-
         // list
-        if(stateFlag) {
-            if(listItemList.size != 0) {
-                binding.diary2LinearEmptyContent.isGone = true
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
-                }
-            }
-            else {
-                binding.diary2LinearEmptyContent.isVisible = true
+        if(listItemList.size != 0) {
+            binding.diary2LinearEmptyContent.isGone = true
+            val diary2LayoutManager = LinearLayoutManager(context)
+            val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
+            binding.diary2RecyclerView.apply {
+                layoutManager = diary2LayoutManager
+                adapter = diary2RecyclerVIewAdapter
             }
         }
-
-        // grid
         else {
-            if (listItemList.size != 0) {
-                binding.diary2LinearEmptyContent.isGone = true
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter =
-                    Diary2GridRecyclerOutViewAdapter(items, gridItemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
-                }
-            } else {
-                binding.diary2LinearEmptyContent.isVisible = true
-            }
+            binding.diary2LinearEmptyContent.isVisible = true
         }
     }
 
@@ -373,25 +333,51 @@ Diary2Interface, GetRefreshTokenInterface{
                 ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
                     .toString()
 
+            showLoadingDialog(requireContext())
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
 
         }
         // 토큰 갱신 문제가 아닐 경우
         else {
-            //TODO
+            showCustomToast("통신 오류입니다. 다시 시도해주세요.")
+        }
+    }
+
+    override fun onGetGridMembersSuccess(response: GetGridMembersResponse) {
+        dismissLoadingDialog()
+        gridItemList = response.information.users
+    }
+
+    override fun onGetGridMembersFailure(message: String) {
+        dismissLoadingDialog()
+        if(message == "refreshToken") {
+            val X_REFRESH_TOKEN =
+                ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "")
+                    .toString()
+
+            showLoadingDialog(requireContext())
+            SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+
+        }
+        // 토큰 갱신 문제가 아닐 경우
+        else {
+            showCustomToast("통신 오류입니다. 다시 시도해주세요.")
         }
     }
 
     // 통신 시도 -> 토큰이 유효 X -> 토큰 갱신 O -> 통신 재시도
 
     override fun onPostRefreshSuccess(response: TokenResponse) {
+        dismissLoadingDialog()
         val editor = ApplicationClass.sSharedPreferences.edit()
         editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
         editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
         editor.apply()
 
+        showLoadingDialog(requireContext())
         when(statusCode) {
             1000 -> Diary2Service(this).tryGetMembers(request as String)
+            2000 -> Diary2Service(this).tryGetGridMembers(request as String)
             3000 -> Diary2Service(this).tryLeaveDiary(request as String)
         }
     }
@@ -409,6 +395,7 @@ Diary2Interface, GetRefreshTokenInterface{
         startActivity(intent)
     }
     fun onGetLeaveSuccess() {
+        dismissLoadingDialog()
         val customDialog= Dialog(requireContext())
         customDialog.setContentView(R.layout.dialog_custom2)
         customDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

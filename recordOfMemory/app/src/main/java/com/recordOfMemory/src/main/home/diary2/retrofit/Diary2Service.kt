@@ -7,6 +7,7 @@ import com.recordOfMemory.config.ErrorResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.Diary2InviteInterface
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetGridMembersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersResponse
 
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
@@ -99,26 +100,6 @@ class Diary2Service() {
             }
         })
     }
-//    fun tryGetRecords(diaryId: String) {
-//        diary2RetrofitInterface.getRecords(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
-//            Callback<GetRecordsResponse> {
-//            override fun onResponse(
-//                call: Call<GetRecordsResponse>,
-//                response: Response<GetRecordsResponse>
-//            ) {
-//                if(response.code() == 200) {
-//                    diary2Interface.onGetRecordsSuccess(response.body() as GetRecordsResponse)
-//                }
-//                else if(response.code() == 401) {
-//                    diary2Interface.onGetRecordsFailure("refreshToken")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<GetRecordsResponse>, t: Throwable) {
-//                diary2Interface.onGetRecordsFailure(t.message ?: "통신 오류")
-//            }
-//        })
-//    }
     fun tryLeaveDiary(diaryId: String) {
         diary2RetrofitInterface.deleteDiary(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
             Callback<BaseResponse> {
@@ -157,6 +138,26 @@ class Diary2Service() {
 
             override fun onFailure(call: Call<GetMembersResponse>, t: Throwable) {
                 diary2Interface.onGetMembersFailure(t.message ?: "통신 오류")
+            }
+        })
+    }
+    fun tryGetGridMembers(diaryId : String) {
+        diary2RetrofitInterface.getGridMembers(Authorization = X_ACCESS_TOKEN, diaryId = diaryId).enqueue(object :
+            Callback<GetGridMembersResponse> {
+            override fun onResponse(
+                call: Call<GetGridMembersResponse>,
+                response: Response<GetGridMembersResponse>
+            ) {
+                if(response.code() == 200) {
+                    diary2Interface.onGetGridMembersSuccess(response.body() as GetGridMembersResponse)
+                }
+                else if(response.code() == 401) {
+                    diary2Interface.onGetGridMembersFailure("refreshToken")
+                }
+            }
+
+            override fun onFailure(call: Call<GetGridMembersResponse>, t: Throwable) {
+                diary2Interface.onGetGridMembersFailure(t.message ?: "통신 오류")
             }
         })
     }

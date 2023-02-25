@@ -42,6 +42,6 @@ interface DaybookRetrofitInterface {
 	@GET("api/records/detail/{recordId}")
 	fun getDaybook(
 		@Header("Authorization") Authorization: String,
-		@Path("recordId") recordId:Int
+		@Path("recordId") recordId:String
 	):Call<GetDaybookResponse>
 }

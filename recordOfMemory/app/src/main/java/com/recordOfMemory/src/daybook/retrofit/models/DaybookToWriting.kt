@@ -3,7 +3,7 @@ package com.recordOfMemory.src.daybook.retrofit.models
 import java.io.Serializable
 
 data class DaybookToWriting(
-	val recordId:Int,
+	val recordId:String,
 	val diaryTitle:String,
 	val date:String,
 	val title:String,

@@ -94,10 +94,9 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 		}
 
 		binding.mypageEditCompleteBtn.setOnClickListener { //완료
-			if(!checkName() || changeImg){ //이름과 이미지 중에 바뀐 것이 있으면
+			if(checkName() || changeImg){ //이름과 이미지 중에 바뀐 것이 있으면
 				//저장하고
 				nickname = binding.mypageEditBoxName.text.toString()
-				println("nickname: $nickname")
 
 //			val jsonObject = JSONObject(
 //			val jsonBody = jsonObject.toRequestBody("application/json".toMediaTypeOrNull())
@@ -106,10 +105,10 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 				// 마이페이지로 넘어가기
 				MyPageEditService(this).tryPatchUsers(imgUrl, nickname)
 			}
-
+			else {
+				showCustomToast("변경된 내용이 없습니다.")
+			}
 		}
-
-
 	}
 
 	private fun chooseCameraOrAlbumDialogFunction(){
@@ -208,9 +207,6 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 
 					// Get the image file
 					val file = File(filePath)
-					println("content uri $contentURI")
-					println("file Path $filePath")
-					println("file $file")
 					val requestFile =
 						file.asRequestBody("image/*".toMediaTypeOrNull())
 
@@ -219,7 +215,6 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 							it1
 						)
 					}
-						println("imgUrl: $imgUrl")
 				}catch (e: IOException){
 					e.printStackTrace()
 					Toast.makeText(context, "Failed to load image from gallery", Toast.LENGTH_SHORT).show()
@@ -256,14 +251,10 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 								}
 
 							val filePath = getFilePath(contentURI)
-							println("filePath: $filePath")
-
 							// do something with the file path here
 
 							// Get the image file
 							val file = File(filePath)
-							println("file Path $filePath")
-							println("file $file")
 							val requestFile =
 								file.asRequestBody("image/*".toMediaTypeOrNull())
 
@@ -323,14 +314,7 @@ class MyPageEditFragment(): BaseFragment<FragmentMyPageEditBinding>(FragmentMyPa
 
 	private fun checkName():Boolean{
 		val userNewName=binding.mypageEditBoxName.text.toString()
-		return if(userNewName.isEmpty()){
-			false
-		}else{
-//			Toast.makeText(context,"$userNewName",Toast.LENGTH_SHORT).show()
-			//데이터 저장하기
-
-			true
-		}
+		return userNewName.isNotEmpty()
 	}
 
 	override fun onDeleteUsersSuccess(response: DeleteUsersResponse) {

@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.recordOfMemory.R
 import com.recordOfMemory.src.main.home.diary2.Diary2Fragment
-import com.recordOfMemory.src.main.home.diary2.recycler.grid.models.Diary2GridOutViewModel
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GridUser
 
-class Diary2GridRecyclerOutViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<Diary2GridOutViewModel>)
+class Diary2GridRecyclerOutViewAdapter(var items: Diary2Fragment.itemListAdapterToList, val itemList: ArrayList<GridUser>)
     : RecyclerView.Adapter<Diary2GridRecyclerOutViewHolder>() { init {
     setHasStableIds(true)
     }

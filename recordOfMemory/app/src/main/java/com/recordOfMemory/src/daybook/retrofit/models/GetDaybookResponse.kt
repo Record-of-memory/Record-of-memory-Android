@@ -8,7 +8,7 @@ data class GetDaybookResponse(
 )
 
 data class DaybookInformation(
-	@SerializedName("id") val id : Int,
+	@SerializedName("id") val id : String,
 	@SerializedName("date") val date : String,
 	@SerializedName("title") val title : String,
 	@SerializedName("content") val content : String,

@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -19,6 +20,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
+import com.recordOfMemory.config.ApplicationClass.Companion.X_REFRESH_TOKEN
 import com.recordOfMemory.config.BaseActivity
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.ActivityDaybookBinding
@@ -29,6 +31,7 @@ import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
 import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
@@ -37,6 +40,7 @@ import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
+import com.recordOfMemory.util.OnItemLongClickListener
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,8 +53,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
 	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
 	private val sdfFull2 = SimpleDateFormat("yyyy.MM.dd. (E)", Locale.KOREA) //날짜 포맷
-	private var recordId:Int =0 // 일기리스트에서 아이디 받아오면 굳이 필요 없는 변수일수도?
 	private var cmtNum:Int=0
+	var recordId = ""
 
 	private lateinit var userComment:Comment
 	var statusCode = 1001
@@ -59,20 +63,19 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onResume() {
 		super.onResume()
 
-		recordId=intent.getStringExtra("recordId").toString().toInt()
+		recordId=intent.getStringExtra("recordId").toString()
+
+		request = recordId
 
 		showLoadingDialog(this)
 		statusCode=1003
-		DaybookService(this).tryGetDaybook(recordId)
-
+		DaybookService(this).tryGetDaybook(request as String)
 		statusCode=1005
-		CommentService(this).tryGetComments(recordId)
-
+		CommentService(this).tryGetComments(request as String)
 		statusCode=1007
 		MyPageService(this).tryGetUsers()
-
 		statusCode=2000
-		LikesService(this).tryCheckLikes(recordId = recordId.toString())
+		LikesService(this).tryCheckLikes(request as String)
 
 		binding.daybookIvBack.setOnClickListener {
 			finish()
@@ -109,10 +112,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		binding.daybookClickHeartIcon.setOnClickListener {
 			showLoadingDialog(this)
 			if(binding.daybookClickHeartIcon.isSelected) {
-				LikesService(this).tryDeleteLikes(recordId = recordId.toString())
+				request = recordId
+				LikesService(this).tryDeleteLikes(recordId = recordId)
 			}
 			else {
-				LikesService(this).tryPostLikes(PostLikesRequest(recordId = recordId.toString()))
+				request = recordId
+				LikesService(this).tryPostLikes(PostLikesRequest(recordId = recordId))
 			}
 		}
 	}
@@ -121,7 +126,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		super.onActivityResult(requestCode, resultCode, data)
 		if(requestCode== 10){
 			Toast.makeText(this,data?.getStringExtra("recordId"),Toast.LENGTH_SHORT).show()
-			recordId= data?.getStringExtra("recordId")!!.toInt()
+			recordId= data?.getStringExtra("recordId")!!
 		}
 	}
 
@@ -245,13 +250,19 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onGetCommentsSuccess(response: GetCommentsResponse) {
 		commentList=response.information.data
-		commentAdapter = CommentAdapter(commentList)
+		commentAdapter = CommentAdapter(object :OnItemLongClickListener {
+				override fun onItemLongClick(view: View, position: Int): Boolean {
+					// handle the long press event for the item at the given position
+					showCustomDialog(position)
+					return true // return true to indicate that the event was handled
+				}
+		}, commentList)
 		binding.daybookCommentRV.adapter=commentAdapter
 	}
 
 	override fun onGetCommentsFailure(message: String) {
 		if(message == "refreshToken") {
-			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
 		}
 		// 토큰 갱신 문제가 아닐 경우
@@ -259,6 +270,16 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 			Log.d("실패",message)
 			Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
 		}
+	}
+
+	override fun onDeleteCommentSuccess(response: BaseResponse) {
+		TODO("Not yet implemented")
+		ㅈㅇㅂㄷㅈㅇ
+	}
+
+	override fun onDeleteCommentFailure(message: String) {
+		TODO("Not yet implemented")
+		ㅂㅇㅈㅂㅇㅂㅈ
 	}
 
 	override fun onPostSignOutSuccess(response: PostSignOutResponse) {}
@@ -358,12 +379,13 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		editor.apply()
 
 		when(statusCode) {
-			1003 -> DaybookService(this).tryGetDaybook(recordId)
-			1005 -> CommentService(this).tryGetComments(recordId)
+			1003 -> DaybookService(this).tryGetDaybook(request as String)
+			1005 -> CommentService(this).tryGetComments(request as String)
 			1007 -> MyPageService(this).tryGetUsers()
 			1009 -> CommentService(this).tryPostComment(request as PostCommentRequest)
 			1011 -> DaybookService(this).tryDeleteDaybook(request as PatchDaybookRequest)
-			2000  -> LikesService(this).tryCheckLikes(recordId = recordId.toString())
+			2000  -> LikesService(this).tryCheckLikes(request as String)
+			3000 -> CommentService(this).tryDeleteComment(DeleteCommentRequest(request as String))
 		}
 	}
 
@@ -410,5 +432,25 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onCheckLikesFailure(message: String) {
 		dismissLoadingDialog()
 		showCustomToast("좋아요를 누른 상태를 확인할 수 없습니다.")
+	}
+
+	fun showCustomDialog(position: Int) {
+		val customDialog= Dialog(this)
+		customDialog.setContentView(R.layout.dialog_daybook_delete_comment)
+		customDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+		val cancelBtn = customDialog.findViewById<TextView>(R.id.dialog_day_book_btn_cancel)
+		cancelBtn.setOnClickListener {
+			customDialog.dismiss()
+		}
+		val leaveBtn = customDialog.findViewById<TextView>(R.id.dialog_day_book_btn_delete_comment)
+		leaveBtn.setOnClickListener {
+			showLoadingDialog (this)
+			statusCode = 3000
+			request = commentList[position].commentId
+			CommentService(this@DaybookActivity).tryDeleteComment(DeleteCommentRequest(request as String))
+			customDialog.dismiss()
+		}
+		customDialog.show()
 	}
 }

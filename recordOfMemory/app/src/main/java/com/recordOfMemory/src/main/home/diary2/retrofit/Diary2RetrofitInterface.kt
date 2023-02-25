@@ -3,6 +3,7 @@ package com.recordOfMemory.src.main.home.diary2.retrofit
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.src.main.home.diary2.member.invite.retrofit.models.PostDiary2InviteRequest
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
+import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetGridMembersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetMembersResponse
 import com.recordOfMemory.src.main.home.diary2.retrofit.models.GetRecordsResponse
 import retrofit2.Call
@@ -41,4 +42,10 @@ interface Diary2RetrofitInterface {
         @Header("Authorization") Authorization: String,
         @Path("diaryId") diaryId : String
     ) :  Call<GetMembersResponse>
+
+    @GET("/api/records/grid/{diaryId}")
+    fun getGridMembers(
+        @Header("Authorization") Authorization: String,
+        @Path("diaryId") diaryId : String
+    ) :  Call<GetGridMembersResponse>
 }
