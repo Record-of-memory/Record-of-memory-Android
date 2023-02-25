@@ -21,7 +21,7 @@ import java.time.Instant
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CommentAdapter(private val listener: OnItemLongClickListener, private val commentList:ArrayList<Comment>) :RecyclerView.Adapter<CommentAdapter.ViewHolder>(){
+class CommentAdapter(private val commentList:ArrayList<Comment>) :RecyclerView.Adapter<CommentAdapter.ViewHolder>(){
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
 
@@ -49,11 +49,6 @@ class CommentAdapter(private val listener: OnItemLongClickListener, private val 
 
 
 	inner class ViewHolder(val binding: ItemCommentBinding): RecyclerView.ViewHolder(binding.root){
-		init {
-			itemView.setOnLongClickListener {
-				listener.onItemLongClick(itemView, bindingAdapterPosition)
-			}
-		}
 		fun bind(item :Comment){
 			binding.root.width
 			binding.itemComment1Writer.text=item.nickname
