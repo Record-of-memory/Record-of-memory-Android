@@ -38,6 +38,7 @@ class MyPageFragment :
 
     var statusCode = 1101
     var request : Any = ""
+    var userImg:String=""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,8 +54,14 @@ class MyPageFragment :
 
         // 마이페이지 인스턴스 1 -> 마이페이지에딧 인스턴스 1 -> 마이페이지 인스턴스 2
         binding.mypageEditBtn.setOnClickListener {
+            var bundle = Bundle()
+            bundle.putString("userImg",userImg)
+
+            var fragment2 = MyPageEditFragment(this)
+            fragment2.arguments=bundle
+
             transaction
-                .replace(R.id.main_frm, MyPageEditFragment(this))
+                .replace(R.id.main_frm, fragment2)
                 .addToBackStack(null)
                 .commit()
             transaction.isAddToBackStackAllowed
@@ -134,6 +141,7 @@ class MyPageFragment :
         }else{
             Glide.with(this).load(response.information.imageUrl)
                 .into(binding.mypagePersonImg)
+            userImg=response.information.imageUrl
         }
     }
 

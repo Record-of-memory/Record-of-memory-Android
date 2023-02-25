@@ -14,6 +14,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
@@ -44,7 +49,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	MyPageInterface, DaybookInterface , LikesInterface, GetRefreshTokenInterface {
 	private var commentList = ArrayList<Comment>()
 	private lateinit var commentAdapter :CommentAdapter
-	private var imageUri:String=""
+	private var writerImg:String=""
 	private var daybookImageUrl=""
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA)
 	private val sdfFull=SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
@@ -60,6 +65,14 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		super.onResume()
 
 		recordId=intent.getStringExtra("recordId").toString().toInt()
+		writerImg=intent.getStringExtra("writerImg").toString()
+		if(writerImg.isNullOrEmpty()){
+			binding.daybookWriterIcon.setImageResource(R.drawable.icn_person)
+		}else {
+			Glide.with(this).load(writerImg)
+				.into(binding.daybookWriterIcon)
+		}
+
 
 		showLoadingDialog(this)
 		statusCode=1003
@@ -292,10 +305,10 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onGetUsersSuccess(response: GetUsersResponse) {
 		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
 		if(response.information.imageUrl.isNullOrEmpty()){
-			binding.daybookWriterIcon.setImageResource(R.drawable.icn_person)
+			binding.daybookWriteCommentPersonIcon.setImageResource(R.drawable.icn_person)
 		}else {
 			Glide.with(this).load(response.information.imageUrl)
-				.into(binding.daybookWriterIcon)
+				.into(binding.daybookWriteCommentPersonIcon)
 		}
 	}
 
@@ -354,9 +367,12 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		cmtNum=item.cmtCnt
 
 		if(item.imgUrl != null){
+			binding.daybookImage.isVisible=true
 			daybookImageUrl=item.imgUrl
 			Glide.with(this).load(item.imgUrl)
 				.into(binding.daybookImage)
+		}else{
+			binding.daybookImage.isVisible=false
 		}
 	}
 

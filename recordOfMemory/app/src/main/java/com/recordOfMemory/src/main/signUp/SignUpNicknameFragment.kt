@@ -3,24 +3,20 @@ package com.recordOfMemory.src.main.signUp
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.recordOfMemory.R
 import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.config.BaseResponse
-import com.recordOfMemory.databinding.FragmentLoginBinding
 import com.recordOfMemory.databinding.FragmentSignUpNicknameBinding
 import com.recordOfMemory.src.main.signUp.models.*
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpFragmentInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 
-class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::bind, R.layout.fragment_sign_up_nickname),
+class SignUpNicknameFragment : BaseFragment<FragmentSignUpNicknameBinding>(FragmentSignUpNicknameBinding::bind, R.layout.fragment_sign_up_nickname),
     SignUpFragmentInterface {
     private lateinit var viewBinding: FragmentSignUpNicknameBinding
 
@@ -155,4 +151,10 @@ class SignUpNicknameFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginB
     override fun onGetUserEmailCheckNoTokenNotExist(message: String) {}
 
     override fun onGetUserEmailCheckNoTokenFailure(message: String) {}
+
+    override fun onPostResetPasswordSuccess(response: BaseResponse) {}
+
+    override fun onPostResetPasswordWrong(message: String) {}
+
+    override fun onPostResetPasswordFailure(message: String) {}
 }
