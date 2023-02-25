@@ -13,6 +13,7 @@ data class CommentsInformation(
 )
 
 data class Comment(
+	@SerializedName("id") val id:String,
 	@SerializedName("nickname") val nickname: String,
 	@SerializedName("imageUrl") val imageUrl:String?,
 	@SerializedName("content") var content:String,

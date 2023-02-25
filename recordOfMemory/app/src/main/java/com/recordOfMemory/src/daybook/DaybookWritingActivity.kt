@@ -66,7 +66,7 @@ DaybookInterface, DaybookWritingInterface {
 	private val sdfMini = SimpleDateFormat("yy.MM.dd", Locale.KOREA) //날짜 포맷
 
 	private var screenType:String=""
-	private var recordId:Int=0;
+	private var recordId = ""
 	private lateinit var imageUri:Uri
 	var diaryId = ""
 
@@ -80,14 +80,12 @@ DaybookInterface, DaybookWritingInterface {
 			} else {
 				intent.getSerializableExtra("item") as DaybookToWriting
 			}
-			//println(item)
 			recordId=itemGet.recordId
 			binding.daybookWritingDiaryTitle.text=itemGet.diaryTitle
 			binding.daybookWritingWriteTime.text= itemGet.date
 			binding.daybookWritingTitle.setText(itemGet.title)
 			binding.daybookWritingContent.setText(itemGet.content)
 			if(!itemGet.imgUrl.isNullOrEmpty()){ //이미지가 존재하면 추가해두기
-				println("imgUrl: ${itemGet.imgUrl}")
 				Glide.with(this).load(itemGet.imgUrl).into(binding.daybookWritingImage)
 				binding.daybookWritingFr.visibility=View.VISIBLE
 			}

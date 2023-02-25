@@ -260,25 +260,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		}
 	}
 
-	override fun onGetCommentsSuccess(response: GetCommentsResponse) {
-		commentList=response.information.data
-		commentAdapter = CommentAdapter(object :OnItemLongClickListener {
-				override fun onItemLongClick(view: View, position: Int): Boolean {
-					// handle the long press event for the item at the given position
-					showCustomDialog(position)
-					return true // return true to indicate that the event was handled
-				}
-		}, commentList)
-		binding.daybookCommentRV.adapter=commentAdapter
-		commentAdapter.setOnItemClickListener(object : CommentAdapter.OnItemClickListener{
-			override fun onItemClick(v: View, pos : Int) {
-				deleteCommentFunction()
-			}
-		})
-
-	}
-
-	private fun deleteCommentFunction() {
+	private fun deleteCommentFunction(pos:Int) {
 		val mDialogView = Dialog(this@DaybookActivity)
 		mDialogView.setContentView(R.layout.dialog_daybook_delete_comment)
 		mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -291,9 +273,26 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		val deleteButton = mDialogView.findViewById<TextView>(R.id.daybook_btn_comment_delete)
 		deleteButton.setOnClickListener {
 			//댓글 삭제 구현하기
+			showLoadingDialog (this)
+			statusCode = 3000
+			request = commentList[pos].id
+			CommentService(this@DaybookActivity).tryDeleteComment(DeleteCommentRequest(request as String))
+			mDialogView.dismiss()
 		}
-
+		mDialogView.show()
 	}
+
+	override fun onGetCommentsSuccess(response: GetCommentsResponse) {
+		commentList=response.information.data
+		commentAdapter = CommentAdapter(commentList)
+		binding.daybookCommentRV.adapter=commentAdapter
+		commentAdapter.setOnItemClickListener(object : CommentAdapter.OnItemClickListener{
+			override fun onItemClick(v: View, pos : Int) {
+				deleteCommentFunction(pos = pos)
+			}
+		})
+	}
+
 
 	override fun onGetCommentsFailure(message: String) {
 		if(message == "refreshToken") {
@@ -308,13 +307,24 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onDeleteCommentSuccess(response: BaseResponse) {
-		TODO("Not yet implemented")
-		ㅈㅇㅂㄷㅈㅇ
+		request = recordId
+		statusCode=1005
+		CommentService(this).tryGetComments(request as String)
+		dismissLoadingDialog()
+		showCustomToast("댓글 삭제가 성공적으로 완료되었습니다.")
 	}
 
 	override fun onDeleteCommentFailure(message: String) {
-		TODO("Not yet implemented")
-		ㅂㅇㅈㅂㅇㅂㅈ
+		dismissLoadingDialog()
+		if(message == "refreshToken") {
+			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
+			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
+		}
+		// 토큰 갱신 문제가 아닐 경우
+		else {
+			Log.d("실패",message)
+			Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+		}
 	}
 
 	override fun onPostSignOutSuccess(response: PostSignOutResponse) {}
@@ -322,7 +332,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onPostSignOutFailure(message: String) {}
 
 	override fun onGetUsersSuccess(response: GetUsersResponse) {
-		userComment= Comment(response.information.nickname,response.information.imageUrl,"","")
 		if(response.information.imageUrl.isNullOrEmpty()){
 			binding.daybookWriteCommentPersonIcon.setImageResource(R.drawable.icn_person)
 		}else {
@@ -470,25 +479,5 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onCheckLikesFailure(message: String) {
 		dismissLoadingDialog()
 		showCustomToast("좋아요를 누른 상태를 확인할 수 없습니다.")
-	}
-
-	fun showCustomDialog(position: Int) {
-		val customDialog= Dialog(this)
-		customDialog.setContentView(R.layout.dialog_daybook_delete_comment)
-		customDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-		val cancelBtn = customDialog.findViewById<TextView>(R.id.dialog_day_book_btn_cancel)
-		cancelBtn.setOnClickListener {
-			customDialog.dismiss()
-		}
-		val leaveBtn = customDialog.findViewById<TextView>(R.id.dialog_day_book_btn_delete_comment)
-		leaveBtn.setOnClickListener {
-			showLoadingDialog (this)
-			statusCode = 3000
-			request = commentList[position].commentId
-			CommentService(this@DaybookActivity).tryDeleteComment(DeleteCommentRequest(request as String))
-			customDialog.dismiss()
-		}
-		customDialog.show()
 	}
 }
