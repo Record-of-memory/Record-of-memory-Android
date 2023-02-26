@@ -22,7 +22,6 @@ import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentDiary2Binding
 import com.recordOfMemory.src.daybook.DaybookActivity
 import com.recordOfMemory.src.daybook.DaybookWritingActivity
-import com.recordOfMemory.src.main.home.diary.DiaryTogetherFragment
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.main.home.diary2.member.invite.Diary2InviteMemberFragment
@@ -79,50 +78,9 @@ Diary2Interface, GetRefreshTokenInterface{
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        statusCode = 1000
-        request = diaryId
-        showLoadingDialog(requireContext())
-        Diary2Service(this).tryGetMembers(diaryId)
-        statusCode = 2000
-        Diary2Service(this).tryGetGridMembers(diaryId)
-
-        binding.diary2IvList.isChecked = stateFlag
-        binding.diary2IvGrid.isChecked = !stateFlag
-
-        if(stateFlag) {
-            if(listItemList.isNotEmpty()) {
-                binding.diary2LinearEmptyContent.isGone = true
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
-                }
-            }
-            else {
-                binding.diary2LinearEmptyContent.isVisible = true
-            }
-        }
-        else {
-            if(gridItemList.isNotEmpty()) {
-                binding.diary2LinearEmptyContent.isGone = true
-                val diary2LayoutManager = LinearLayoutManager(context)
-                val diary2RecyclerVIewAdapter = Diary2GridRecyclerOutViewAdapter(items, gridItemList)
-                binding.diary2RecyclerView.apply {
-                    layoutManager = diary2LayoutManager
-                    adapter = diary2RecyclerVIewAdapter
-                }
-            }
-            else {
-                binding.diary2LinearEmptyContent.isVisible = true
-            }
-        }
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        val items = itemListAdapterToList()
+        Log.e("onViewCreated", "onViewCreated")
 
         name = requireArguments().getString("name").toString()
         diaryType = requireArguments().getString("diaryType").toString()
@@ -133,6 +91,14 @@ Diary2Interface, GetRefreshTokenInterface{
         val transaction: FragmentTransaction = fm.beginTransaction()
 
         super.onViewCreated(view, savedInstanceState)
+
+        statusCode = 1000
+        request = diaryId
+        showLoadingDialog(requireContext())
+        Diary2Service(this).tryGetMembers(diaryId)
+        statusCode = 2000
+        Diary2Service(this).tryGetGridMembers(diaryId)
+        setList(stateFlag)
 
         binding.diary2IvSearch.setOnClickListener {
             val bundle = Bundle()
@@ -160,18 +126,11 @@ Diary2Interface, GetRefreshTokenInterface{
                 stateFlag = true
                 binding.diary2IvList.isChecked = stateFlag
                 binding.diary2IvGrid.isChecked = !stateFlag
-                if(listItemList.isNotEmpty()) {
-                    binding.diary2LinearEmptyContent.isGone = true
-                    val diary2LayoutManager = LinearLayoutManager(context)
-                    val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
-                    binding.diary2RecyclerView.apply {
-                        layoutManager = diary2LayoutManager
-                        adapter = diary2RecyclerVIewAdapter
-                    }
-                }
-                else {
-                    binding.diary2LinearEmptyContent.isVisible = true
-                }
+                setList(true)
+            }
+            else {
+                binding.diary2IvList.isChecked = stateFlag
+                binding.diary2IvGrid.isChecked = !stateFlag
             }
         }
         // grid view
@@ -180,26 +139,17 @@ Diary2Interface, GetRefreshTokenInterface{
                 stateFlag = false
                 binding.diary2IvList.isChecked = stateFlag
                 binding.diary2IvGrid.isChecked = !stateFlag
-                if(gridItemList.isNotEmpty()) {
-                    binding.diary2LinearEmptyContent.isGone = true
-                    val diary2LayoutManager = LinearLayoutManager(context)
-                    val diary2RecyclerVIewAdapter =
-                        Diary2GridRecyclerOutViewAdapter(items, gridItemList)
-                    binding.diary2RecyclerView.apply {
-                        layoutManager = diary2LayoutManager
-                        adapter = diary2RecyclerVIewAdapter
-                    }
-                }
-                else {
-                    binding.diary2LinearEmptyContent.isVisible = true
-                }
+                setList(false)
+            }
+            else {
+                binding.diary2IvList.isChecked = stateFlag
+                binding.diary2IvGrid.isChecked = !stateFlag
             }
         }
 
         binding.diary2IvMore.setOnClickListener {
             showPopup()
         }
-
     }
 
     private fun showPopup() {
@@ -308,23 +258,10 @@ Diary2Interface, GetRefreshTokenInterface{
 
     override fun onGetMembersSuccess(response: GetMembersResponse) {
         dismissLoadingDialog()
-
         memberList = response.information.users
         listItemList = response.information.records
-
-        // list
-        if(listItemList.size != 0) {
-            binding.diary2LinearEmptyContent.isGone = true
-            val diary2LayoutManager = LinearLayoutManager(context)
-            val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
-            binding.diary2RecyclerView.apply {
-                layoutManager = diary2LayoutManager
-                adapter = diary2RecyclerVIewAdapter
-            }
-        }
-        else {
-            binding.diary2LinearEmptyContent.isVisible = true
-        }
+        if(stateFlag)
+            setList(true)
     }
 
     override fun onGetMembersFailure(message: String) {
@@ -347,6 +284,8 @@ Diary2Interface, GetRefreshTokenInterface{
     override fun onGetGridMembersSuccess(response: GetGridMembersResponse) {
         dismissLoadingDialog()
         gridItemList = response.information.users
+        if(!stateFlag)
+            setList(false)
     }
 
     override fun onGetGridMembersFailure(message: String) {
@@ -410,5 +349,38 @@ Diary2Interface, GetRefreshTokenInterface{
             customDialog.dismiss()
         }
         customDialog.show()
+    }
+
+    private fun setList(flag : Boolean) {
+        // flag : true -> list, false -> grid
+        if(flag) {
+            if(listItemList.isNotEmpty()) {
+                binding.diary2LinearEmptyContent.isGone = true
+                val diary2LayoutManager = LinearLayoutManager(context)
+                val diary2RecyclerVIewAdapter = Diary2ListRecyclerViewAdapter(items, listItemList)
+                binding.diary2RecyclerView.apply {
+                    layoutManager = diary2LayoutManager
+                    adapter = diary2RecyclerVIewAdapter
+                }
+            }
+            else {
+                binding.diary2LinearEmptyContent.isVisible = true
+            }
+        }
+        else {
+            if(gridItemList.isNotEmpty()) {
+                binding.diary2LinearEmptyContent.isGone = true
+                val diary2LayoutManager = LinearLayoutManager(context)
+                val diary2RecyclerVIewAdapter =
+                    Diary2GridRecyclerOutViewAdapter(items, gridItemList)
+                binding.diary2RecyclerView.apply {
+                    layoutManager = diary2LayoutManager
+                    adapter = diary2RecyclerVIewAdapter
+                }
+            }
+            else {
+                binding.diary2LinearEmptyContent.isVisible = true
+            }
+        }
     }
 }

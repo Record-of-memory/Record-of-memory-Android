@@ -73,8 +73,8 @@
 
     <android.widget.Button
         android:id="@+id/icon_diary_add"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/icn_diary_plus"
