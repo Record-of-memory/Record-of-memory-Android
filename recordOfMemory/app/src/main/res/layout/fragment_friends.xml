@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    tools:context=".src.main.friends.FriendsFragment">
+
+    <TextView
+        android:id="@+id/friends_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="119dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/noto_sans_regular"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/friends_tv_title"
+        android:textColor="@color/black"
+        android:textFontWeight="600"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/mypage_edit_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/icn_friends_together"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/friends_rv_list_request_follow"
+        android:background="@drawable/box_friends_request_follow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:layout_marginBottom="412dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/friends_rv_request_follow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/friends_tv_request_follow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="팔로우 요청"
+        android:textColor="@color/green4"
+        android:fontFamily="@font/noto_sans_regular"
+        android:textSize="16sp"
+        android:textFontWeight="600"
+        app:layout_constraintBottom_toTopOf="@+id/friends_rv_list_request_follow"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/friends_rv_list_friends_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/box_friends_list"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friends_rv_list_request_follow">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/friends_rv_friends_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/friends_tv_friends_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="친구 리스트"
+        android:textColor="@color/green4"
+        android:fontFamily="@font/noto_sans_regular"
+        android:textSize="16sp"
+        android:textFontWeight="600"
+        app:layout_constraintBottom_toTopOf="@+id/friends_rv_list_friends_list"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/friends_rv_list_friends_together"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/box_friends_memory_together"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friends_rv_list_friends_list">
+
+
+        <TextView
+            android:id="@+id/friends_tv_empty_diary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/diary2_background_empty_content"
+            android:text="아직 작성된 일기가 없어요"
+            android:textSize="11sp"
+            android:textFontWeight="400"
+            android:fontFamily="@font/noto_sans_regular"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_rv_friends_together"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/friends_tv_friends_together"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="친구와 함께했던 기억들"
+        android:textColor="@color/green4"
+        android:fontFamily="@font/noto_sans_regular"
+        android:textSize="16sp"
+        android:textFontWeight="600"
+        app:layout_constraintBottom_toTopOf="@+id/friends_rv_list_friends_together"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
