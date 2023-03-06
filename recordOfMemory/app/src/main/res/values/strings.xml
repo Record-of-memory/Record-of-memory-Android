@@ -99,6 +99,9 @@
 
     <!-- Friends -->
     <string name="friends_tv_title">함께하는 친구들</string>
+    <string name="friends_tv_invite_members">함께하기</string>
+    <string name="friends_invite_et_input_email">이메일을 입력해주세요</string>
+
 
     <!-- Util -->
     <string name="do_cancel">취소하기</string>
