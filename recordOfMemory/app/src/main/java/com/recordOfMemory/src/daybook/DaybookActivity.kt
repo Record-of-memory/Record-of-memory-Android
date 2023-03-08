@@ -31,10 +31,8 @@ import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
-import com.recordOfMemory.src.main.MainActivity
 import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
@@ -60,7 +58,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	private var cmtNum:Int=0
 	var recordId = ""
 
-	private lateinit var userComment:Comment
 	var statusCode = 1001
 	var request : Any = ""
 
@@ -234,10 +231,9 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 
 	override fun onPostCommentSuccess(response: PostCommentResponse) {
 		dismissLoadingDialog()
-		userComment.content=binding.daybookWriteComment.text.toString()
-		userComment.createdAt=sdfMini.format(System.currentTimeMillis())
-		commentList.add(0,userComment)
-		commentAdapter.notifyItemInserted(0)
+		request = recordId
+		statusCode=1005
+		CommentService(this).tryGetComments(request as String)
 
 		cmtNum+=1
 		binding.daybookCommentNumber.text=(cmtNum).toString()
@@ -283,18 +279,24 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onGetCommentsSuccess(response: GetCommentsResponse) {
+		dismissLoadingDialog()
+
 		commentList=response.information.data
 		commentAdapter = CommentAdapter(commentList)
 		binding.daybookCommentRV.adapter=commentAdapter
 		commentAdapter.setOnItemClickListener(object : CommentAdapter.OnItemClickListener{
 			override fun onItemClick(v: View, pos : Int) {
-				deleteCommentFunction(pos = pos)
+				if(commentList[pos].isMyComment) {
+					deleteCommentFunction(pos = pos)
+				}
 			}
 		})
 	}
 
 
 	override fun onGetCommentsFailure(message: String) {
+		dismissLoadingDialog()
+
 		if(message == "refreshToken") {
 			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -332,6 +334,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	override fun onPostSignOutFailure(message: String) {}
 
 	override fun onGetUsersSuccess(response: GetUsersResponse) {
+		dismissLoadingDialog()
+
 		if(response.information.imageUrl.isNullOrEmpty()){
 			binding.daybookWriteCommentPersonIcon.setImageResource(R.drawable.icn_person)
 		}else {
@@ -372,6 +376,8 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onGetDaybookSuccess(response: GetDaybookResponse) {
+		dismissLoadingDialog()
+
 		val item=response.information
 
 		recordId=item.id
@@ -405,6 +411,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 	}
 
 	override fun onGetDaybookFailure(message: String) {
+		dismissLoadingDialog()
 		if(message == "refreshToken") {
 			val X_REFRESH_TOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_REFRESH_TOKEN, "").toString()
 			SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -413,7 +420,6 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		else {
 			Log.d("실패",message)
 			Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
-			dismissLoadingDialog()
 			finish() //다시 일기리스트로 돌아감
 		}
 	}
@@ -425,6 +431,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 		editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
 		editor.apply()
 
+		showLoadingDialog(this)
 		when(statusCode) {
 			1003 -> DaybookService(this).tryGetDaybook(request as String)
 			1005 -> CommentService(this).tryGetComments(request as String)

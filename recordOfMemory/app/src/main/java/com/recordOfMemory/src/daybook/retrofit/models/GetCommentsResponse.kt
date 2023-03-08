@@ -17,6 +17,7 @@ data class Comment(
 	@SerializedName("nickname") val nickname: String,
 	@SerializedName("imageUrl") val imageUrl:String?,
 	@SerializedName("content") var content:String,
-	@SerializedName("createdAt") var createdAt:String
+	@SerializedName("createdAt") var createdAt:String,
+	@SerializedName("isMyComment") val isMyComment:Boolean
 ) : Serializable
 
