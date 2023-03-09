@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:paddingHorizontal="24dp"
-    tools:context=".src.main.friends.FriendsFragment">
+    tools:context=".src.main.friends.RequestFriendsFragment">
 
 
     <android.widget.Button
