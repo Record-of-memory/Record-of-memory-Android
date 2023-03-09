@@ -10,6 +10,36 @@
     android:paddingHorizontal="24dp"
     tools:context=".src.main.friends.FriendsFragment">
 
+
+    <android.widget.Button
+        android:id="@+id/friends_btn_friends_request"
+        android:layout_width="180dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/selector_btn"
+        android:fontFamily="@font/noto_sans_regular"
+        android:includeFontPadding="false"
+        android:text="친구 리스트"
+        android:textColor="@drawable/diary_btn_color"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/friends_btn_friends_list"
+        app:layout_constraintTop_toBottomOf="@+id/friends_tv_title" />
+
+    <android.widget.Button
+        android:id="@+id/friends_btn_friends_list"
+        android:layout_width="180dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/selector_friends_btn"
+        android:fontFamily="@font/noto_sans_regular"
+        android:includeFontPadding="false"
+        android:text="친구 요청"
+        android:textColor="@drawable/diary_btn_color"
+        android:textFontWeight="400"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friends_tv_title" />
+
     <TextView
         android:id="@+id/friends_tv_title"
         android:layout_width="wrap_content"
@@ -27,7 +57,7 @@
 
 
     <ImageView
-        android:id="@+id/mypage_edit_btn"
+        android:id="@+id/friends_add_btn"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="35dp"
@@ -38,50 +68,51 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/friends_rv_list_request_follow"
+        android:id="@+id/friends_ll_get_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/box_friends_request_follow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="125dp"
-        android:layout_marginBottom="412dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/friends_tv_get_friend">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friends_rv_request_follow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_rv_get_friend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/friends_tv_request_follow"
+        android:id="@+id/friends_tv_get_friend"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="팔로우 요청"
-        android:textColor="@color/green4"
+        android:layout_height="28dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/noto_sans_regular"
-        android:textSize="16sp"
+        android:text="받은 요청"
+        android:textColor="@color/green4"
         android:textFontWeight="600"
-        app:layout_constraintBottom_toTopOf="@+id/friends_rv_list_request_follow"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friends_btn_friends_list" />
 
     <LinearLayout
-        android:id="@+id/friends_rv_list_friends_list"
+        android:id="@+id/friends_ll_send_friend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/box_friends_list"
-        android:layout_marginTop="52dp"
+        android:background="@drawable/box_friends_request_follow"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friends_rv_list_request_follow">
+        app:layout_constraintTop_toBottomOf="@+id/friends_tv_friends_list">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friends_rv_friends_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_rv_send_friend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 
@@ -89,63 +120,15 @@
         android:id="@+id/friends_tv_friends_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="친구 리스트"
-        android:textColor="@color/green4"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/noto_sans_regular"
-        android:textSize="16sp"
+        android:text="보낸 요청"
+        android:textColor="@color/green4"
         android:textFontWeight="600"
-        app:layout_constraintBottom_toTopOf="@+id/friends_rv_list_friends_list"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/friends_rv_list_friends_together"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:background="@drawable/box_friends_memory_together"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/friends_ll_send_friend"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friends_rv_list_friends_list">
-
-
-        <TextView
-            android:id="@+id/friends_tv_empty_diary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/diary2_background_empty_content"
-            android:text="아직 작성된 일기가 없어요"
-            android:textSize="11sp"
-            android:textFontWeight="400"
-            android:fontFamily="@font/noto_sans_regular"
-            android:gravity="center"
-            android:textColor="@color/black"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/friends_rv_friends_together"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </androidx.recyclerview.widget.RecyclerView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/friends_tv_friends_together"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="친구와 함께했던 기억들"
-        android:textColor="@color/green4"
-        android:fontFamily="@font/noto_sans_regular"
-        android:textSize="16sp"
-        android:textFontWeight="600"
-        app:layout_constraintBottom_toTopOf="@+id/friends_rv_list_friends_together"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/friends_ll_get_friend" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
