@@ -97,38 +97,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/friends_btn_friends_list" />
 
-    <LinearLayout
-        android:id="@+id/friends_ll_send_friend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/box_friends_request_follow"
-        android:paddingHorizontal="25dp"
-        android:paddingVertical="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friends_tv_friends_list">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/friends_rv_send_friend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-    <TextView
-        android:id="@+id/friends_tv_friends_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/noto_sans_regular"
-        android:text="보낸 요청"
-        android:textColor="@color/green4"
-        android:textFontWeight="600"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/friends_ll_send_friend"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friends_ll_get_friend" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
