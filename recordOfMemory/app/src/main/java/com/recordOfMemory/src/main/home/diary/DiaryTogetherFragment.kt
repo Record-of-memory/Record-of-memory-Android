@@ -19,6 +19,7 @@ import com.recordOfMemory.config.ApplicationClass
 import com.recordOfMemory.config.BaseFragment
 import com.recordOfMemory.config.BaseResponse
 import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
+import com.recordOfMemory.src.main.friends.FriendsListFragment
 import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
 import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
@@ -71,6 +72,12 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
     }
 
     private fun addNewDiaryFunction() {
+//        val fm = requireActivity().supportFragmentManager //친구 리스트 테스트용
+//        val transaction: FragmentTransaction = fm.beginTransaction()
+//        transaction
+//            .replace(R.id.main_frm, fm.findFragmentByTag("FriendsListFragment") ?: FriendsListFragment(), "FriendsListFragment")
+//            .commit()
+//        transaction.isAddToBackStackAllowed
         val mDialogView = Dialog(requireContext())
         mDialogView.setContentView(R.layout.fragment_pop_diary)
         mDialogView.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
