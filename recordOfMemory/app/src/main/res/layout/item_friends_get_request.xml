@@ -46,10 +46,10 @@
         android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_marginStart="11dp"
-        android:background="@drawable/icn_friends_request_deny"
+        android:background="@drawable/icn_friends_delete_btn"
         android:enabled="true"
         android:fontFamily="@font/noto_sans_regular"
-        android:text="거절"
+        android:text="삭제"
         android:textColor="@color/black"
         android:textSize="12sp" />
 </LinearLayout>
