@@ -18,8 +18,9 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(FragmentFri
         val transaction: FragmentTransaction = fm.beginTransaction()
 
         binding.friendsBtnFriendsList.isSelected = true
+        binding.friendsBtnFriendsRequest.isSelected = false
 
-        showLoadingDialog(requireContext())
+        //showLoadingDialog(requireContext()) friends_being_together_iv_back
 
         binding.friendsBtnFriendsRequest.setOnClickListener { //친구요청 으로 전환
             transaction
@@ -27,6 +28,14 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(FragmentFri
                 .commit()
             transaction.isAddToBackStackAllowed
         }
+
+        binding.friendsAddBtn.setOnClickListener { //함께하기로 전환
+            transaction
+                .replace(R.id.main_frm, fm.findFragmentByTag("BeingTogetherFragment") ?: BeingTogetherFragment(), "BeingTogetherFragment")
+                .commit()
+            transaction.isAddToBackStackAllowed
+        }
+
     }
 
 }
