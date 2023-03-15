@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    tools:context="com.recordOfMemory.src.daybook.DaybookActivity">
+    tools:context="kr.co.app.recordOfMemory.src.daybook.DaybookActivity">
 
     <ImageView
         android:id="@+id/daybook_writing_iv_back"
