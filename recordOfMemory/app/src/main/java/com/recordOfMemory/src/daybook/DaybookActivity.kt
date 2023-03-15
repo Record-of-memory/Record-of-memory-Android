@@ -5,15 +5,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,10 +27,8 @@ import com.recordOfMemory.src.daybook.retrofit.CommentService
 import com.recordOfMemory.src.daybook.retrofit.DaybookInterface
 import com.recordOfMemory.src.daybook.retrofit.DaybookService
 import com.recordOfMemory.src.daybook.retrofit.models.*
-import com.recordOfMemory.src.main.MainActivity
 import com.recordOfMemory.src.main.home.diary2.likes.*
 import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
-import com.recordOfMemory.src.main.home.diary2.retrofit.Diary2Service
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageInterface
 import com.recordOfMemory.src.main.myPage.retrofit.MyPageService
 import com.recordOfMemory.src.main.myPage.retrofit.models.PostSignOutResponse
@@ -43,10 +37,8 @@ import com.recordOfMemory.src.main.signUp.models.TokenResponse
 import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import com.recordOfMemory.src.splash.SplashActivity
-import com.recordOfMemory.util.OnItemLongClickListener
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.log
 
 class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBinding::inflate),CommentInterface,
 	MyPageInterface, DaybookInterface , LikesInterface, GetRefreshTokenInterface {
@@ -164,9 +156,7 @@ class DaybookActivity : BaseActivity<ActivityDaybookBinding>(ActivityDaybookBind
 				imgUrl = daybookImageUrl)
 
 			intent.putExtra("item",itemSend)
-//			startActivityForResult(intent,10)
 			startActivity(intent)
-			//finish()
 			miniDialog.dismiss()
 
 		}
