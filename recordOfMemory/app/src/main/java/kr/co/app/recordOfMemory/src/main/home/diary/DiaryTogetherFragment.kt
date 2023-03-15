@@ -15,22 +15,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 <<<<<<< Updated upstream:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/home/diary/DiaryTogetherFragment.kt
-import com.recordOfMemory.R
-import com.recordOfMemory.config.ApplicationClass
-import com.recordOfMemory.config.BaseFragment
-import com.recordOfMemory.config.BaseResponse
-import com.recordOfMemory.databinding.FragmentDiaryTogetherBinding
-import com.recordOfMemory.src.main.friends.FriendsListFragment
-import com.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
-import com.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
-import com.recordOfMemory.src.main.home.diary.retrofit.DiaryService
-import com.recordOfMemory.src.main.home.diary.retrofit.models.ResultDiaries
-import com.recordOfMemory.src.main.home.diary2.member.models.GetUsersResponse
-import com.recordOfMemory.src.main.signUp.models.PostRefreshRequest
-import com.recordOfMemory.src.main.signUp.models.TokenResponse
-import com.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
-import com.recordOfMemory.src.main.signUp.retrofit.SignUpService
-import com.recordOfMemory.src.splash.SplashActivity
 =======
 import kr.co.app.recordOfMemory.R
 import kr.co.app.recordOfMemory.config.BaseFragment

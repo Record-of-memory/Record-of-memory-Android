@@ -1,14 +1,11 @@
-package com.recordOfMemory.src.main.friends
+package kr.co.app.recordOfMemory.src.main.friends
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
-import com.recordOfMemory.R
-import com.recordOfMemory.config.BaseFragment
-import com.recordOfMemory.databinding.FragmentBeingTogetherBinding
+import kr.co.app.recordOfMemory.R
+import kr.co.app.recordOfMemory.config.BaseFragment
+import kr.co.app.recordOfMemory.databinding.FragmentBeingTogetherBinding
 
 
 class BeingTogetherFragment : BaseFragment<FragmentBeingTogetherBinding>(FragmentBeingTogetherBinding::bind, R.layout.fragment_being_together) {
