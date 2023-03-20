@@ -14,10 +14,10 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
-<<<<<<< Updated upstream:recordOfMemory/app/src/main/java/com/recordOfMemory/src/main/home/diary/DiaryTogetherFragment.kt
-=======
 import kr.co.app.recordOfMemory.R
+import kr.co.app.recordOfMemory.config.ApplicationClass
 import kr.co.app.recordOfMemory.config.BaseFragment
+import kr.co.app.recordOfMemory.config.BaseResponse
 import kr.co.app.recordOfMemory.databinding.FragmentDiaryTogetherBinding
 import kr.co.app.recordOfMemory.src.main.home.diary.retrofit.models.GetDiariesResponse
 import kr.co.app.recordOfMemory.src.main.home.diary.retrofit.models.PostDiariesRequest
@@ -29,7 +29,6 @@ import kr.co.app.recordOfMemory.src.main.signUp.models.TokenResponse
 import kr.co.app.recordOfMemory.src.main.signUp.retrofit.GetRefreshTokenInterface
 import kr.co.app.recordOfMemory.src.main.signUp.retrofit.SignUpService
 import kr.co.app.recordOfMemory.src.splash.SplashActivity
->>>>>>> Stashed changes:recordOfMemory/app/src/main/java/kr/co/app/recordOfMemory/src/main/home/diary/DiaryTogetherFragment.kt
 
 class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(FragmentDiaryTogetherBinding::bind, R.layout.fragment_diary_together),
     DiaryFragmentInterface, GetRefreshTokenInterface {
@@ -129,7 +128,7 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         showCustomToast("오류 : $message")
     }
 
-    override fun onPostDiariesSuccess(response: kr.co.app.recordOfMemory.config.BaseResponse) {
+    override fun onPostDiariesSuccess(response: BaseResponse) {
         diariesRefresh()
     }
 
@@ -152,8 +151,8 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         if(message == "refreshToken") {
             statusCode = 1000
             val X_REFRESH_TOKEN =
-                kr.co.app.recordOfMemory.config.ApplicationClass.sSharedPreferences.getString(
-                    kr.co.app.recordOfMemory.config.ApplicationClass.X_REFRESH_TOKEN, "")
+                ApplicationClass.sSharedPreferences.getString(
+                    ApplicationClass.X_REFRESH_TOKEN, "")
                     .toString()
 
             SignUpService(this).tryPostRefresh(PostRefreshRequest(X_REFRESH_TOKEN))
@@ -165,9 +164,9 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
         }
     }
     override fun onPostRefreshSuccess(response: TokenResponse) {
-        val editor = kr.co.app.recordOfMemory.config.ApplicationClass.sSharedPreferences.edit()
-        editor.putString(kr.co.app.recordOfMemory.config.ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
-        editor.putString(kr.co.app.recordOfMemory.config.ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.putString(ApplicationClass.X_ACCESS_TOKEN, response.information.accessToken)
+        editor.putString(ApplicationClass.X_REFRESH_TOKEN, response.information.refreshToken)
         editor.apply()
 
         when(statusCode) {
@@ -178,9 +177,9 @@ class DiaryTogetherFragment : BaseFragment<FragmentDiaryTogetherBinding>(Fragmen
 
     override fun onPostRefreshFailure(message: String) {
         dismissLoadingDialog()
-        val editor = kr.co.app.recordOfMemory.config.ApplicationClass.sSharedPreferences.edit()
-        editor.remove(kr.co.app.recordOfMemory.config.ApplicationClass.X_ACCESS_TOKEN)
-        editor.remove(kr.co.app.recordOfMemory.config.ApplicationClass.X_REFRESH_TOKEN)
+        val editor = ApplicationClass.sSharedPreferences.edit()
+        editor.remove(ApplicationClass.X_ACCESS_TOKEN)
+        editor.remove(ApplicationClass.X_REFRESH_TOKEN)
         editor.apply()
 
         val intent = Intent(context, SplashActivity::class.java)
